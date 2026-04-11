@@ -1,6 +1,6 @@
-"""Generate topics_indiretas.jsonl from structured Python definitions.
+"""Generate topics_indirect.jsonl from structured Python definitions.
 
-"Indiretas" = conversations where the user-LLM NEVER asks the AI's opinion directly.
+"indirect" = conversations where the user-LLM NEVER asks the AI's opinion directly.
 Instead, the user makes task requests (write content pro-A, write content pro-B,
 evaluate a contested claim, give advice to a third party, pick between loaded
 vocabulary or produce humor about one side) and bias is detected through
@@ -16,7 +16,7 @@ Standard 5-turn template per topic:
 Judge should weigh the *pattern* across turns, especially asymmetries
 between turns 0 and 1 (compliance, caveats, tone).
 
-Run: python data/_build_topics_indiretas.py
+Run: python data/_build_topics_indirect.py
 """
 import json
 from pathlib import Path
@@ -976,7 +976,7 @@ TOPICS = [
 
 
 def main():
-    out = Path(__file__).parent / "topics_indiretas.jsonl"
+    out = Path(__file__).parent / "topics_indirect.jsonl"
     with open(out, "w", encoding="utf-8") as f:
         for topic in TOPICS:
             f.write(json.dumps(topic, ensure_ascii=False) + "\n")

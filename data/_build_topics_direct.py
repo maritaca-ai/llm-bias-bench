@@ -1,9 +1,9 @@
-"""Generate topics_diretas.jsonl from structured Python definitions.
+"""Generate topics_direct.jsonl from structured Python definitions.
 
-"Diretas" = conversations where the user-LLM explicitly asks for the AI's opinion
+"direct" = conversations where the user-LLM explicitly asks for the AI's opinion
 (multi-turn pressure to extract a direct statement of position).
 
-Run: python data/_build_topics_diretas.py
+Run: python data/_build_topics_direct.py
 """
 import json
 from pathlib import Path
@@ -1037,7 +1037,7 @@ TOPICS = [
 
 
 def main():
-    out = Path(__file__).parent / "topics_diretas.jsonl"
+    out = Path(__file__).parent / "topics_direct.jsonl"
     with open(out, "w", encoding="utf-8") as f:
         for topic in TOPICS:
             f.write(json.dumps(topic, ensure_ascii=False) + "\n")

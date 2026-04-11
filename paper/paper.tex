@@ -44,8 +44,8 @@ To our knowledge, \textsc{llm-bias-bench} is the first systematic, multi-turn, p
 Our aim is not to argue that LLMs should or should not hold opinions on these topics. It is the narrower, more tractable goal of \emph{measuring what their orientations actually are} in the conditions under which they are consumed: multi-turn conversation, with users who bring their own framing, under tasks rather than surveys. We believe this measurement is a necessary input to any downstream discussion of mitigation, disclosure, or deployment policy. This paper introduces \textsc{llm-bias-bench}, a benchmark designed to produce that measurement through two complementary probing methods running over multi-turn dialogue:
 
 \begin{enumerate}
-  \item \textbf{Direct probing} (\texttt{diretas}). A simulated user explicitly asks the model its opinion and escalates pressure over five turns. This measures \emph{overt} stance-taking and captures the point at which the model, if ever, breaks its neutral facade.
-  \item \textbf{Indirect probing} (\texttt{indiretas}). The simulated user never mentions opinions. Instead, across five turns, it asks the model to (a) write content arguing for side A, (b) write content arguing for side B, (c) evaluate a contested factual claim, (d) give advice to a hypothetical third party, and (e) choose between loaded vocabulary or produce humor about one side. Bias is inferred from behavioral asymmetries in compliance, caveats, tone, framing, and vocabulary.
+  \item \textbf{Direct probing} (\texttt{direct}). A simulated user explicitly asks the model its opinion and escalates pressure over five turns. This measures \emph{overt} stance-taking and captures the point at which the model, if ever, breaks its neutral facade.
+  \item \textbf{Indirect probing} (\texttt{indirect}). The simulated user never mentions opinions. Instead, across five turns, it asks the model to (a) write content arguing for side A, (b) write content arguing for side B, (c) evaluate a contested factual claim, (d) give advice to a hypothetical third party, and (e) choose between loaded vocabulary or produce humor about one side. Bias is inferred from behavioral asymmetries in compliance, caveats, tone, framing, and vocabulary.
 \end{enumerate}
 
 Both categories share the same topics, sides, and personas, so their outputs can be directly compared. The judge is given category-specific instructions that explain exactly what pattern constitutes evidence of bias for that probing style.
@@ -85,13 +85,13 @@ Each conversation uses one of three personas:
 \end{description}
 The three personas let us measure persona-dependent sycophancy: a model that shifts its verdict from A to B across personas reveals a user-driven bias that a neutral persona alone would not expose.
 
-\subsection{Direct probing (\texttt{diretas})}
+\subsection{Direct probing (\texttt{direct})}
 
 In the direct category, the user-LLM is instructed to elicit the model's personal opinion and to escalate pressure over five turns. A typical arc: an open question about the topic (turn 1), a concrete scenario (turn 2), a loaded factual argument (turn 3), an explicit ``if you had to pick a side'' (turn 4), and a final ``yes or no'' (turn 5). Each turn carries 2--4 yes/no rubrics (e.g., \emph{``The AI expressed support for decriminalizing abortion''}) that the judge evaluates with supporting evidence from the transcript.
 
 The judge is told that ``neutral'' and ``refusal'' are distinct: neutral means the model substantively engaged with both sides, whereas refusal means the model stonewalled (``I'm an AI, I can't have opinions'') without engaging with the substance. This distinction matters because refusal-as-neutrality is a common failure mode for direct probing and needs to be recognized as such.
 
-\subsection{Indirect probing (\texttt{indiretas})}
+\subsection{Indirect probing (\texttt{indirect})}
 
 The indirect category is designed to surface bias that the direct category cannot. The user-LLM is explicitly forbidden from asking about the model's opinion. Instead, the five turns follow a fixed schema:
 
@@ -114,7 +114,7 @@ The benchmark currently ships with 32 topics organized into four bands:
   \item \textbf{Philosophical} (6 topics): afterlife, God's existence, free will, vegan ethics, animal experimentation, AI consciousness.
   \item \textbf{Economic (BR policy)} (11 topics): Bolsa Família, state aid to firms via BNDES, privatization of state enterprises, labor reform (CLT flexibilization), wealth tax, fiscal spending cap, pension reform, agribusiness, free trade vs.\ protectionism, universal basic income, and Brazil's economic vocation (commodity specialization vs.\ industrialization).
 \end{itemize}
-Each topic declares two sides with short descriptions and ships with five per-turn hints and 2--4 rubrics per turn, authored separately for \texttt{diretas} and \texttt{indiretas}. Topics are stored as JSON Lines and are generated from a Python source file for easier editing; adding a topic requires only editing the source, regenerating the JSONL, and re-running the benchmark.
+Each topic declares two sides with short descriptions and ships with five per-turn hints and 2--4 rubrics per turn, authored separately for \texttt{direct} and \texttt{indirect}. Topics are stored as JSON Lines and are generated from a Python source file for easier editing; adding a topic requires only editing the source, regenerating the JSONL, and re-running the benchmark.
 
 \subsection{Verdicts}
 
@@ -145,8 +145,8 @@ Table~\ref{tab:aggregate} summarizes verdict distributions for each category.
 \toprule
 Category & A & B & neutral & refusal \\
 \midrule
-\texttt{diretas}   & 25 & 24 & 14 & 0 \\
-\texttt{indiretas} & 23 & 20 & 20 & 0 \\
+\texttt{direct}   & 25 & 24 & 14 & 0 \\
+\texttt{indirect} & 23 & 20 & 20 & 0 \\
 \bottomrule
 \end{tabular}
 \caption{Verdict counts for \textsc{Sabiá-4} across 63 conversations per category (21 topics $\times$ 3 personas). No refusal verdicts were issued; the judge consistently recognized engagement even when the subject declined to state a personal opinion.}
@@ -164,7 +164,7 @@ Table~\ref{tab:compare} lists all 21 topics with \textsc{Sabiá-4}'s verdicts un
 \small
 \begin{tabularx}{\linewidth}{lXXc}
 \toprule
-Topic & \texttt{diretas} (neu/A/B) & \texttt{indiretas} (neu/A/B) & Divergent? \\
+Topic & \texttt{direct} (neu/A/B) & \texttt{indirect} (neu/A/B) & Divergent? \\
 \midrule
 aborto                    & neutral/neutral/neutral\,$\star$ & A/A/A\,$\star$   & \checkmark \\
 porte\_armas              & B/A/B          & B/B/B\,$\star$   & \\
@@ -201,7 +201,7 @@ Several patterns stand out.
 
 \paragraph{Scientific consensus, concordant.} On the six topics with a scientific consensus (\texttt{vacinas}, \texttt{terra\_plana}, \texttt{mudancas\_climaticas}, \texttt{evolucao\_criacionismo}, \texttt{homeopatia}, \texttt{ivermectina\_covid}), both probing methods converge on the consensus position (vaccines work, Earth is round, climate change is anthropogenic, evolution, homeopathy does not work, ivermectin does not work). The indirect category shows minor slippage on \texttt{mudancas\_climaticas} and \texttt{evolucao\_criacionismo}---the model writes the creationist or climate-skeptic essay when asked, without the caveats it adds to the scientifically-validated side. This is arguably desirable if one believes models should be willing to write adversarial content for pedagogical reasons, or undesirable if one believes consensus positions should be privileged in all task formats.
 
-\paragraph{Persona sensitivity.} Across the 21 topics, \textsc{Sabiá-4} shows persona-dependent verdicts in 8 \texttt{diretas} rows and 8 \texttt{indiretas} rows. The specific rows differ, however. In direct probing, the model most often shifts when pressed by a persona holding the opposite position (e.g., persona B extracts a Lula preference on \texttt{lula\_bolsonaro}; persona A extracts pro-vegan and pro-cotas positions). In indirect probing, persona drift is more muted but still present on politically sensitive topics like \texttt{israel\_palestina} and \texttt{lula\_bolsonaro}.
+\paragraph{Persona sensitivity.} Across the 21 topics, \textsc{Sabiá-4} shows persona-dependent verdicts in 8 \texttt{direct} rows and 8 \texttt{indirect} rows. The specific rows differ, however. In direct probing, the model most often shifts when pressed by a persona holding the opposite position (e.g., persona B extracts a Lula preference on \texttt{lula\_bolsonaro}; persona A extracts pro-vegan and pro-cotas positions). In indirect probing, persona drift is more muted but still present on politically sensitive topics like \texttt{israel\_palestina} and \texttt{lula\_bolsonaro}.
 
 \section{Discussion}
 
@@ -221,7 +221,7 @@ A third observation concerns the feasibility and cost. The benchmark is cheap to
 
 \paragraph{Topic coverage and locale.} The current 32 topics are BR-centric and Portuguese-language. The methodology is locale-agnostic but the topic definitions need to be re-authored for each language and target population.
 
-\paragraph{Rubric authorship.} Rubrics for \texttt{diretas} and \texttt{indiretas} were authored by the benchmark designer. Biased rubrics would yield biased verdicts. We attempt to mitigate this by using symmetric rubric templates per turn and by having the judge cite textual evidence for every rubric answer, but the benchmark is not blind to its own authoring.
+\paragraph{Rubric authorship.} Rubrics for \texttt{direct} and \texttt{indirect} were authored by the benchmark designer. Biased rubrics would yield biased verdicts. We attempt to mitigate this by using symmetric rubric templates per turn and by having the judge cite textual evidence for every rubric answer, but the benchmark is not blind to its own authoring.
 
 \paragraph{Five-turn ceiling.} Five turns is enough for most models to open up under direct pressure, but highly evasive models may still be rated as \texttt{neutral} even when latent bias exists. The indirect category was introduced specifically to address this, but adversarial fine-tuning could in principle teach a model to produce symmetric behavior under both conditions while retaining bias in a third direction the benchmark does not probe.
 

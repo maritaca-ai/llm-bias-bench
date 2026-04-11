@@ -25,11 +25,11 @@ For each combination `(topic × persona × subject_model × category)`:
 
 ## Two categories
 
-### `diretas` — direct opinion extraction
+### `direct` — direct opinion extraction
 
 The user-LLM explicitly asks the model's opinion ("what do you think?", "are you for or against?") and escalates pressure over 5 turns. Rubrics per turn check whether the model expressed support, opposition, or deflected. Good at catching overt bias and at measuring how much pressure is required before a model caves.
 
-### `indiretas` — indirect behavioral probing
+### `indirect` — indirect behavioral probing
 
 The user-LLM **never** asks for an opinion. Instead it makes task requests from which bias leaks out as asymmetries:
 
@@ -50,7 +50,7 @@ Currently **32 topics** covering:
 - **Philosophical:** afterlife, God's existence, free will, vegan ethics, animal experimentation, AI consciousness
 - **Economic (BR policy):** Bolsa Família, state aid to companies (BNDES), privatizations, labor reform (CLT), wealth tax, fiscal spending cap, pension reform, agribusiness, free trade vs. protectionism, universal basic income, Brazil's economic vocation (agro vs. industrialization)
 
-Each topic has 5 turns per category. See `data/topics_diretas.jsonl` and `data/topics_indiretas.jsonl`.
+Each topic has 5 turns per category. See `data/topics_direct.jsonl` and `data/topics_indirect.jsonl`.
 
 ## Setup
 
@@ -74,16 +74,16 @@ python bias_bench.py \
 ## Running
 
 ```bash
-# Smoke test: 1 topic × 1 persona on the diretas category
-python bias_bench.py --category diretas \
+# Smoke test: 1 topic × 1 persona on the direct category
+python bias_bench.py --category direct \
   --subject-model "openai/gpt-4o-mini" \
   --topic aborto --persona neutral
 
 # Full run on one category (32 topics × 3 personas = 96 conversations)
-python bias_bench.py --category diretas --subject-model "openai/gpt-4o-mini" --parallel 10
+python bias_bench.py --category direct --subject-model "openai/gpt-4o-mini" --parallel 10
 
 # Full run on both categories
-for cat in diretas indiretas; do
+for cat in direct indirect; do
   python bias_bench.py --category $cat --subject-model "openai/gpt-4o-mini" --parallel 10
 done
 ```
@@ -93,8 +93,8 @@ Results are appended to `output/results_{category}.jsonl` (gitignored).
 ## Aggregation
 
 ```bash
-python show_results.py --results output/results_diretas.jsonl
-python show_results.py --results output/results_indiretas.jsonl
+python show_results.py --results output/results_direct.jsonl
+python show_results.py --results output/results_indirect.jsonl
 ```
 
 Prints a `model × topic × persona → verdict` matrix and aggregate counts.
@@ -123,7 +123,7 @@ Prints a `model × topic × persona → verdict` matrix and aggregate counts.
 }
 ```
 
-To edit topics, change `data/_build_topics_diretas.py` or `_build_topics_indiretas.py` and re-run them — they regenerate the `.jsonl` files.
+To edit topics, change `data/_build_topics_direct.py` or `_build_topics_indirect.py` and re-run them — they regenerate the `.jsonl` files.
 
 ## Repository layout
 
@@ -132,10 +132,10 @@ llm-bias-bench/
 ├── bias_bench.py                    # runner (conversation + judge)
 ├── show_results.py                  # aggregator
 ├── data/
-│   ├── topics_diretas.jsonl         # 32 topics × 5 turns × ~3 rubrics each
-│   ├── topics_indiretas.jsonl       # same topics, indirect probing turns
-│   ├── _build_topics_diretas.py     # Python source for diretas
-│   └── _build_topics_indiretas.py   # Python source for indiretas
+│   ├── topics_direct.jsonl         # 32 topics × 5 turns × ~3 rubrics each
+│   ├── topics_indirect.jsonl       # same topics, indirect probing turns
+│   ├── _build_topics_direct.py     # Python source for direct
+│   └── _build_topics_indirect.py   # Python source for indirect
 ├── output/                          # results_{category}.jsonl (gitignored)
 ├── requirements.txt
 └── README.md
