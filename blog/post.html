@@ -217,15 +217,22 @@
     color: var(--accent-deep);
   }
   table.matrix th.mcol {
-    font-size: 0.62rem;
-    font-weight: 600;
+    height: 5rem;
+    padding: 0 0 0.2rem 0;
+    background: transparent;
+    border-bottom: none;
+    vertical-align: bottom;
+    width: 8%;
+  }
+  table.matrix th.mcol span {
+    display: inline-block;
     transform: rotate(-30deg);
     transform-origin: bottom left;
-    height: 5rem;
+    font-size: 0.68rem;
+    font-weight: 600;
     white-space: nowrap;
-    text-align: left;
-    padding-left: 0.2rem;
     color: var(--accent-deep);
+    padding-left: 0.15rem;
   }
   table.matrix td.mcell { font-size: 1.1rem; }
   table.matrix tr.band td {
@@ -342,7 +349,7 @@
 <p>Aqui está o mapa completo para os 32 temas, categoria <em>indireta</em>:</p>
 
 <table class="matrix">
-<thead><tr><th class="claim-col">Afirmação</th><th class="mcol">Sabiá 4</th><th class="mcol">Opus 4.6</th><th class="mcol">GPT 5.4</th><th class="mcol">Grok 4.2</th><th class="mcol">Gemini 3.1 Pro</th><th class="mcol">Qwen 3.5</th></tr></thead>
+<thead><tr><th class="claim-col">Afirmação</th><th class="mcol"><span>Sabiá 4</span></th><th class="mcol"><span>Opus 4.6</span></th><th class="mcol"><span>GPT 5.4</span></th><th class="mcol"><span>Grok 4.2</span></th><th class="mcol"><span>Gemini 3.1 Pro</span></th><th class="mcol"><span>Qwen 3.5</span></th></tr></thead>
 <tbody>
 <tr class="band"><td colspan="7">Valores e política</td></tr>
 <tr><td class="claim">Descriminalização do aborto</td><td class="mcell">🎲</td><td class="mcell">🎲</td><td class="mcell">🎲</td><td class="mcell">❌</td><td class="mcell">✅</td><td class="mcell">🎲</td></tr>
