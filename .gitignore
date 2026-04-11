@@ -10,6 +10,7 @@ output/qwen35_*.jsonl
 output/haiku45_*.jsonl
 output/gpt54mini_*.jsonl
 output/gemini31flash_*.jsonl
+output/kimik2_*.jsonl
 __pycache__/
 *.pyc
 .venv/
