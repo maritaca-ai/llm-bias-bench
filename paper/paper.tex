@@ -106,6 +106,40 @@ The subject model $S$ sees a normal chat message history and has no knowledge th
 
 This design has three relevant properties. First, the subject model always responds in ecologically valid conditions---there are no multiple-choice options or hand-crafted templates it has been trained to detect. Second, the user-LLM can adapt its probing to the subject's actual replies, allowing escalation and follow-up, which static benchmarks cannot do. Third, because both the user-LLM's system prompt and the judge's system prompt are open source, the methodology is fully reproducible and extensible.
 
+Figure~\ref{fig:pipeline} summarizes the full per-topic evaluation pipeline.
+
+\begin{figure}[!htb]
+\centering
+\begin{tikzpicture}[
+  >=Stealth, node distance=0.5cm,
+  box/.style={draw, thick, rounded corners=3pt, minimum height=0.9cm, align=center, font=\footnotesize},
+  topicB/.style={box, fill=green!12, minimum width=1.9cm},
+  persB/.style={box, fill=blue!10, minimum width=2.0cm},
+  llmB/.style={box, fill=orange!15, minimum width=1.9cm},
+  judgeB/.style={box, fill=purple!12, minimum width=2.0cm},
+  classB/.style={box, fill=yellow!20, minimum width=10cm},
+  arr/.style={->, thick}
+]
+\node[topicB] (t) {Topic\\\scriptsize(directional claim)};
+\node[persB, right=of t] (pe) {Persona\\\scriptsize neutral / agree / disagree};
+\node[llmB, right=of pe] (u) {LLM-as-user\\$U$};
+\node[llmB, right=of u] (s) {Subject\\model $S$};
+\node[judgeB, right=of s] (j) {LLM-as-judge\\$J$};
+\node[box, right=of j, fill=gray!10, minimum width=2.1cm] (v) {Verdict\\\scriptsize one of 4};
+
+\draw[arr] (t) -- (pe);
+\draw[arr] (pe) -- (u);
+\draw[<->, thick] (u.east) -- node[midway, above, font=\scriptsize]{5 turns} (s.west);
+\draw[arr] (s.north east) to[out=25, in=155] node[midway, above, font=\scriptsize]{transcript} (j.north west);
+\draw[arr] (j) -- (v);
+
+\node[classB, below=1.4cm of s] (cls) {Behavioral classification across the three persona runs\\\scriptsize agree / disagree / neutral / refusal / sycophant / contrarian / inconsistent};
+\draw[arr] (v.south) to[out=-90, in=0] node[midway, right, font=\scriptsize]{$\times 3$ personas} (cls.east);
+\end{tikzpicture}
+\caption{Per-topic evaluation pipeline. For each directional claim and each of three user personas (neutral, agree, disagree), an LLM-as-user $U$ drives a 5-turn conversation with the subject model $S$, guided by a per-turn strategy hint drawn from the topic definition. The persona and the probing category (direct or indirect) are injected in $U$'s system prompt. After the fifth turn, an LLM-as-judge $J$ reads the full transcript together with the per-turn rubrics and emits a single verdict in $\{$agree, disagree, neutral, refusal$\}$. Because every topic is evaluated under three personas, each (model, topic, category) tuple produces three verdicts, which are collapsed into one of seven behavioral buckets (agree, disagree, neutral, refusal, sycophant, contrarian, inconsistent) used in the aggregate and per-topic tables of Section~\ref{sec:topicmatrix}.}
+\label{fig:pipeline}
+\end{figure}
+
 \subsection{Personas}
 
 Each topic in the benchmark is framed as a directional claim (e.g., ``Abortion should be decriminalized in Brazil''), and each conversation uses one of three personas:
