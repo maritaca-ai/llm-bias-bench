@@ -161,46 +161,10 @@ The judge is also required to answer each per-turn rubric (yes/no with textual e
 
 We run the full benchmark on \textsc{Sabiá-4}, a Brazilian-Portuguese LLM, across 32 topics $\times$ 3 personas $\times$ 2 categories = 192 conversations. The user-LLM and judge are both \texttt{anthropic/claude-opus-4.6} via OpenRouter. The subject model is served via Maritaca's native API. Each conversation uses five turns. Total wall-clock time with 10-way parallelism is roughly 20 minutes. Additional runs on \textsc{Claude Opus 4.6}, \textsc{GPT-5.4}, \textsc{Grok 4.20}, \textsc{Gemini 3.1 Pro}, \textsc{Sabiazinho-4}, and \textsc{Qwen3.5-397B} are reported in the appendix.
 
-\subsection{Aggregate results across models}
-
-We collapse each (model, category) pair into four mutually exclusive buckets that summarize the model's behavior on the 32 topics. \textbf{Neutral}: the model consistently refused to take a side across all three personas while still engaging. \textbf{Position}: the model consistently agreed or disagreed with the claim across all three personas---a persona-independent stance. \textbf{Sycophant}: the model agreed with the \texttt{agree} user and disagreed with the \texttt{disagree} user, mirroring whichever direction the user leaned. \textbf{Inconsistent}: no clean pattern across personas (including the rare \emph{contrarian} case, where the model reflexively pushes back on the user). We analyze refusal separately in Section~\ref{sec:abl-refusal} because it is rare and behaves differently from the four main buckets.
-
-Table~\ref{tab:aggregate} shows the distribution per model and per probing category, as percentages of 32 topics. Frontier-scale and smaller subject models are reported in the same table; smaller models are of independent interest because they handle a disproportionate share of user-facing traffic (embedded chatbots, on-device assistants, search summaries), so their bias profiles matter regardless of how they compare to their larger siblings.
-
-\begin{table}[h]
-\centering \small
-\begin{tabular}{l|rrrr|rrrr}
-\toprule
- & \multicolumn{4}{c|}{Direct (\%)} & \multicolumn{4}{c}{Indirect (\%)} \\
-Model & Neu & Pos & Syc & Inc & Neu & Pos & Syc & Inc \\
-\midrule
-\multicolumn{9}{l}{\textit{Frontier-scale}} \\
-\textsc{Sabi\'a-4}        &  3.1 & 46.9 & 28.1 & 21.9 &  9.4 & 34.4 & 12.5 & 43.8 \\
-\textsc{Opus 4.6}         &  9.4 & 28.1 & 28.1 & 34.4 &  6.2 & 31.2 &  6.2 & 56.2 \\
-\textsc{GPT-5.4}          &  0.0 & 65.6 & 18.8 & 15.6 & 12.5 & 40.6 &  6.2 & 40.6 \\
-\textsc{Grok 4.20}        &  0.0 & 62.5 & 12.5 & 25.0 &  3.1 & 31.2 &  9.4 & 56.2 \\
-\textsc{Gemini 3.1 Pro}   & 28.1 & 31.2 & 15.6 & 25.0 &  9.4 & 28.1 & 25.0 & 37.5 \\
-\textsc{Qwen3.5}          & \multicolumn{8}{c}{\emph{pending}} \\
-\midrule
-\multicolumn{9}{l}{\textit{Smaller}} \\
-\textsc{Sabiazinho-4}     &  0.0 & 50.0 & 31.2 & 18.8 &  3.1 & 43.8 & 12.5 & 40.6 \\
-\textsc{Haiku 4.5}        & 15.6 & 25.0 &  3.1 & 56.2 &  3.1 & 50.0 &  6.2 & 40.6 \\
-\textsc{GPT-5.4-mini}     &  3.1 & 68.8 & 15.6 & 12.5 & 12.5 & 43.8 & 12.5 & 31.2 \\
-\textsc{Gemini 3.1 Flash} & 15.6 & 31.2 & 34.4 & 18.8 &  9.4 & 21.9 & 15.6 & 53.1 \\
-\bottomrule
-\end{tabular}
-\caption{Per-model aggregate classification over 32 topics, as percentages, for all subject models. \textbf{Neu}tral = all three personas produced the neutral verdict. \textbf{Pos}ition = all three personas produced the same agree or disagree verdict. \textbf{Syc}ophant = the \texttt{agree} user got \texttt{agree} and the \texttt{disagree} user got \texttt{disagree}. \textbf{Inc}onsistent = no clean pattern (includes the rare contrarian case, $<4\%$ for all models).}
-\label{tab:aggregate}
-\end{table}
-
-Two observations jump out immediately.
-
-\paragraph{``Take a position'' is not the same as ``agree/disagree honestly.''} \textsc{GPT-5.4} and \textsc{Grok 4.20} look the most opinionated in direct probing ($65.6\%$ and $62.5\%$ of topics resolve to a persona-independent position). But those same two models drop to $40.6\%$ and $31.2\%$ under indirect probing---roughly half the topics on which they verbally stated a stance do not show matching behavioral alignment under task framings. \textsc{Gemini 3.1 Pro} sits at the opposite extreme: $28\%$ of its direct-probing topics come out consistently neutral, by far the highest rate in the set---the model has been trained to decline stating a position. \textsc{Sabi\'a-4} and \textsc{Sabiazinho-4} have the highest \emph{sycophancy} rates under direct probing ($28$--$31\%$), meaning their verdict more often tracks whichever direction the user persona leaned.
-
-\paragraph{Sycophancy drops sharply from direct to indirect.} Across every model, sycophancy under indirect probing is at most $12.5\%$ and typically $6$--$9\%$, compared to $12$--$31\%$ under direct probing. The user-LLM in indirect mode never states an opinion to mirror, so the most obvious mirroring cue is absent and the bias, if any, has to emerge from behavioral asymmetry. The drop is a reassuring sanity check on the indirect category: it is not merely re-measuring the same direct-probing signal.
-
 \subsection{Per-topic behavioral classification}
 \label{sec:topicmatrix}
+
+We collapse each (model, category) pair into four mutually exclusive buckets that summarize the model's behavior on the 32 topics. \textbf{Neutral}: the model consistently refused to take a side across all three personas while still engaging. \textbf{Position}: the model consistently agreed or disagreed with the claim across all three personas---a persona-independent stance. \textbf{Sycophant}: the model agreed with the \texttt{agree} user and disagreed with the \texttt{disagree} user, mirroring whichever direction the user leaned. \textbf{Inconsistent}: no clean pattern across personas (including the rare \emph{contrarian} case, where the model reflexively pushes back on the user). We analyze refusal separately in Section~\ref{sec:abl-refusal} because it is rare and behaves differently from the four main buckets.
 
 Table~\ref{tab:topicmatrix} reports the indirect-category classification for each of the 32 topics across the nine fully-measured models, grouped by thematic band. For compactness, each cell is a single letter; codes are defined in the caption.
 
@@ -260,6 +224,42 @@ Reading Table~\ref{tab:topicmatrix} across rows reveals sharper patterns than th
 \paragraph{Philosophical topics are mostly inconsistent.} The philosophical band is dominated by \textit{I}: the models' behavioral patterns are simply not stable when asked to write symmetric essays on free will, the afterlife, or God's existence. Unlike values or economics, these topics have no ready RLHF-trained script to follow, so small asymmetries in turn-by-turn behavior dominate the classification.
 
 \paragraph{Gun access is the one contested political topic with cross-model agreement.} Five of the six models resolve to \textbf{D} (consistently \emph{disagree} with the claim that civilian gun access should be easier). The lone exception is \textsc{GP}, which is sycophant. This is the most direction-uniform values/political row in the table, suggesting a shared RLHF prior that treats looser gun regulation as a position to push back on.
+
+\subsection{Aggregate results across models}
+
+Table~\ref{tab:aggregate} shows the distribution per model and per probing category, as percentages of 32 topics. Frontier-scale and smaller subject models are reported in the same table; smaller models are of independent interest because they handle a disproportionate share of user-facing traffic (embedded chatbots, on-device assistants, search summaries), so their bias profiles matter regardless of how they compare to their larger siblings.
+
+\begin{table}[h]
+\centering \small
+\begin{tabular}{l|rrrr|rrrr}
+\toprule
+ & \multicolumn{4}{c|}{Direct (\%)} & \multicolumn{4}{c}{Indirect (\%)} \\
+Model & Neu & Pos & Syc & Inc & Neu & Pos & Syc & Inc \\
+\midrule
+\multicolumn{9}{l}{\textit{Frontier-scale}} \\
+\textsc{Sabi\'a-4}        &  3.1 & 46.9 & 28.1 & 21.9 &  9.4 & 34.4 & 12.5 & 43.8 \\
+\textsc{Opus 4.6}         &  9.4 & 28.1 & 28.1 & 34.4 &  6.2 & 31.2 &  6.2 & 56.2 \\
+\textsc{GPT-5.4}          &  0.0 & 65.6 & 18.8 & 15.6 & 12.5 & 40.6 &  6.2 & 40.6 \\
+\textsc{Grok 4.20}        &  0.0 & 62.5 & 12.5 & 25.0 &  3.1 & 31.2 &  9.4 & 56.2 \\
+\textsc{Gemini 3.1 Pro}   & 28.1 & 31.2 & 15.6 & 25.0 &  9.4 & 28.1 & 25.0 & 37.5 \\
+\textsc{Qwen3.5}          & \multicolumn{8}{c}{\emph{pending}} \\
+\midrule
+\multicolumn{9}{l}{\textit{Smaller}} \\
+\textsc{Sabiazinho-4}     &  0.0 & 50.0 & 31.2 & 18.8 &  3.1 & 43.8 & 12.5 & 40.6 \\
+\textsc{Haiku 4.5}        & 15.6 & 25.0 &  3.1 & 56.2 &  3.1 & 50.0 &  6.2 & 40.6 \\
+\textsc{GPT-5.4-mini}     &  3.1 & 68.8 & 15.6 & 12.5 & 12.5 & 43.8 & 12.5 & 31.2 \\
+\textsc{Gemini 3.1 Flash} & 15.6 & 31.2 & 34.4 & 18.8 &  9.4 & 21.9 & 15.6 & 53.1 \\
+\bottomrule
+\end{tabular}
+\caption{Per-model aggregate classification over 32 topics, as percentages, for all subject models. \textbf{Neu}tral = all three personas produced the neutral verdict. \textbf{Pos}ition = all three personas produced the same agree or disagree verdict. \textbf{Syc}ophant = the \texttt{agree} user got \texttt{agree} and the \texttt{disagree} user got \texttt{disagree}. \textbf{Inc}onsistent = no clean pattern (includes the rare contrarian case, $<4\%$ for all models).}
+\label{tab:aggregate}
+\end{table}
+
+Two observations jump out immediately.
+
+\paragraph{``Take a position'' is not the same as ``agree/disagree honestly.''} \textsc{GPT-5.4} and \textsc{Grok 4.20} look the most opinionated in direct probing ($65.6\%$ and $62.5\%$ of topics resolve to a persona-independent position). But those same two models drop to $40.6\%$ and $31.2\%$ under indirect probing---roughly half the topics on which they verbally stated a stance do not show matching behavioral alignment under task framings. \textsc{Gemini 3.1 Pro} sits at the opposite extreme: $28\%$ of its direct-probing topics come out consistently neutral, by far the highest rate in the set---the model has been trained to decline stating a position. \textsc{Sabi\'a-4} and \textsc{Sabiazinho-4} have the highest \emph{sycophancy} rates under direct probing ($28$--$31\%$), meaning their verdict more often tracks whichever direction the user persona leaned.
+
+\paragraph{Sycophancy drops sharply from direct to indirect.} Across every model, sycophancy under indirect probing is at most $12.5\%$ and typically $6$--$9\%$, compared to $12$--$31\%$ under direct probing. The user-LLM in indirect mode never states an opinion to mirror, so the most obvious mirroring cue is absent and the bias, if any, has to emerge from behavioral asymmetry. The drop is a reassuring sanity check on the indirect category: it is not merely re-measuring the same direct-probing signal.
 
 \section{Ablations}
 \label{sec:ablations}
