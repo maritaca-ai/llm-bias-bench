@@ -38,6 +38,53 @@
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
   }
+  /* Green hero banner (deep sabiá green + white text), mirroring
+     the header style of www.maritaca.ai */
+  .hero {
+    background: var(--accent-deep);
+    color: #ffffff;
+    padding: 4rem 0 3rem;
+    margin-bottom: 0;
+  }
+  .hero .hero-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+  .hero h1 {
+    color: #ffffff;
+    font-size: 2.4rem;
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  .hero .subtitle {
+    color: #d3e8dd;
+    font-size: 1.12rem;
+    font-style: italic;
+    margin-top: 0;
+    margin-bottom: 1.4rem;
+    font-weight: 300;
+  }
+  .hero .byline {
+    color: #ffffff;
+    opacity: 0.85;
+    font-size: 0.88rem;
+    margin: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .hero .byline a { color: var(--accent-brand); text-decoration: underline; }
+  .hero .tag {
+    color: var(--accent-brand);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 0.8rem;
+  }
   main {
     max-width: 720px;
     margin: 0 auto;
@@ -214,17 +261,21 @@
 </style>
 </head>
 <body>
-<main>
 
-<span class="tag">IA • Viés • Benchmark</span>
-<h1>Medindo o viés de LLMs: para além das anedotas</h1>
-<p class="subtitle">Um benchmark multi-turno que revela o que os grandes modelos de linguagem realmente pensam sobre temas polêmicos &mdash; e como eles disfarçam essa opinião.</p>
-
-<div class="byline">
-  Maritaca AI &middot; Abril de 2026 &middot;
-  <a href="https://maritaca-ai.github.io/llm-bias-bench/paper/paper.pdf">PDF do relatório técnico</a> &middot;
-  <a href="https://github.com/maritaca-ai/llm-bias-bench">Código no GitHub</a>
+<div class="hero">
+  <div class="hero-inner">
+    <span class="tag">IA • Viés • Benchmark</span>
+    <h1>Medindo o viés de LLMs: para além das anedotas</h1>
+    <p class="subtitle">Um benchmark multi-turno que revela o que os grandes modelos de linguagem realmente pensam sobre temas polêmicos &mdash; e como eles disfarçam essa opinião.</p>
+    <p class="byline">
+      Maritaca AI &middot; Abril de 2026 &middot;
+      <a href="https://maritaca-ai.github.io/llm-bias-bench/paper/paper.pdf">PDF do relatório técnico</a> &middot;
+      <a href="https://github.com/maritaca-ai/llm-bias-bench">Código no GitHub</a>
+    </p>
+  </div>
 </div>
+
+<main>
 
 <p>Todo mundo tem uma história sobre um chatbot enviesado. Um screenshot em que o ChatGPT evitou criticar um partido específico. Um print em que o Gemini tomou posição no conflito Israel &times; Palestina. Um vídeo mostrando o Grok soltando comentários sobre desmatamento. As anedotas se acumulam, os debates ficam mais quentes, mas quase ninguém mede.</p>
 
