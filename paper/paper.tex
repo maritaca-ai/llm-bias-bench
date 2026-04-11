@@ -18,6 +18,7 @@
 \usepackage{pifont}
 \usepackage{tikz}
 \usetikzlibrary{positioning, arrows.meta, fit, backgrounds}
+\usepackage[section]{placeins}
 \bibliographystyle{plainnat}
 
 % Cell glyphs for the per-topic classification table. Colored Zapf
@@ -170,7 +171,7 @@ We collapse each (model, category) pair into four mutually exclusive buckets tha
 
 Table~\ref{tab:topicmatrix} reports the indirect-category classification for each of the 32 topics across the six frontier-scale fully-measured models, grouped by thematic band. For compactness, each cell is a single letter; codes are defined in the caption.
 
-\begin{table}[h]\centering\small
+\begin{table}[!htbp]\centering\small
 \begin{tabularx}{\linewidth}{@{}X@{\,\,}cccccc@{}}\toprule
 Claim / topic & \textsc{Sab4} & \textsc{Opus} & \textsc{GPT5} & \textsc{Grok} & \textsc{GemP} & \textsc{Qwn3} \\
 \midrule
@@ -231,7 +232,7 @@ Reading Table~\ref{tab:topicmatrix} across rows reveals sharper patterns than th
 
 Table~\ref{tab:aggregate} shows the distribution per model and per probing category, as percentages of 32 topics. Frontier-scale and smaller subject models are reported in the same table; smaller models are of independent interest because they handle a disproportionate share of user-facing traffic (embedded chatbots, on-device assistants, search summaries), so their bias profiles matter regardless of how they compare to their larger siblings.
 
-\begin{table}[h]
+\begin{table}[!htbp]
 \centering \small
 \begin{tabular}{l|rrrr|rrrr}
 \toprule
@@ -272,7 +273,7 @@ Two observations jump out immediately.
 
 The direct and indirect probing categories are two independent measurements of the same underlying property (the model's behavior on a directional claim), so it is natural to ask how much they agree. We define the \emph{divergence rate} of a model as the fraction of topics on which its direct-probing classification differs categorically from its indirect-probing classification. Table~\ref{tab:divergence} shows the divergence for the six frontier-scale fully-measured models.
 
-\begin{table}[h]
+\begin{table}[!htbp]
 \centering \small
 \begin{tabular}{l|rr}
 \toprule
@@ -300,7 +301,7 @@ For downstream deployment in decision-support settings, we argue that divergence
 
 Table~\ref{tab:divergent} zooms into the per-topic level: it shows the 19 claims (out of 34) on which at least four of the six frontier models resolve to a different behavioral bucket between direct and indirect probing. This table is the concrete, per-topic version of the divergence rate: each cell with two symbols is one instance of the ``says one thing, does another'' pattern we flag as a decision-support risk.
 
-\begin{table}[h]\centering\small
+\begin{table}[!htbp]\centering\small
 \begin{tabularx}{\linewidth}{@{}X@{\,\,}cccccc@{}}\toprule
 Claim / topic & \textsc{Sab4} & \textsc{Opus} & \textsc{GPT5} & \textsc{Grok} & \textsc{GemP} & \textsc{Qwn3} \\
 \midrule
@@ -337,7 +338,7 @@ Claim / topic & \textsc{Sab4} & \textsc{Opus} & \textsc{GPT5} & \textsc{Grok} & 
 
 The judge's verdict space includes \texttt{refusal} as a distinct category from \texttt{neutral}: refusal means the model consistently stonewalls with variants of ``as an AI I cannot have opinions'' without engaging with the substance, whereas neutral means the model substantively engages with both sides of the claim without endorsing either. Across all measured runs in this benchmark, refusal verdicts are \emph{rare}. Table~\ref{tab:refusal} reports the per-conversation refusal rate (fraction of the $96$ conversations per model-category that the judge classified as refusal).
 
-\begin{table}[h]
+\begin{table}[!htbp]
 \centering \small
 \begin{tabular}{l|rr}
 \toprule
@@ -404,7 +405,7 @@ The main takeaway is methodological: measuring LLM bias via a single probing sty
 
 For completeness, this appendix holds the three per-topic classification matrices that do not fit in the main text: the direct-probing analogue of Table~\ref{tab:topicmatrix} for the frontier-scale models (Table~\ref{tab:direct-frontier}); the indirect-probing matrix for the four smaller models (Table~\ref{tab:indirect-smaller}); and the direct-probing matrix for the same smaller models (Table~\ref{tab:direct-smaller}). All cells use the same symbol legend as the main text.
 
-\begin{table}[h]\centering\small
+\begin{table}[!htbp]\centering\small
 \begin{tabularx}{\linewidth}{@{}X@{\,\,}cccccc@{}}\toprule
 Claim / topic & \textsc{Sab4} & \textsc{Opus} & \textsc{GPT5} & \textsc{Grok} & \textsc{GemP} & \textsc{Qwn3} \\
 \midrule
@@ -451,7 +452,7 @@ Claim / topic & \textsc{Sab4} & \textsc{Opus} & \textsc{GPT5} & \textsc{Grok} & 
 \label{tab:direct-frontier}
 \end{table}
 
-\begin{table}[h]\centering\small
+\begin{table}[!htbp]\centering\small
 \begin{tabularx}{\linewidth}{@{}X@{\,\,}cccc@{}}\toprule
 Claim / topic & \textsc{Sabz} & \textsc{Haik} & \textsc{GPTm} & \textsc{GemF} \\
 \midrule
@@ -498,7 +499,7 @@ Claim / topic & \textsc{Sabz} & \textsc{Haik} & \textsc{GPTm} & \textsc{GemF} \\
 \label{tab:indirect-smaller}
 \end{table}
 
-\begin{table}[h]\centering\small
+\begin{table}[!htbp]\centering\small
 \begin{tabularx}{\linewidth}{@{}X@{\,\,}cccc@{}}\toprule
 Claim / topic & \textsc{Sabz} & \textsc{Haik} & \textsc{GPTm} & \textsc{GemF} \\
 \midrule
