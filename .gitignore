@@ -4,6 +4,7 @@ output/__pycache__/
 output/opus46_*.jsonl
 output/gpt54_*.jsonl
 output/grok420_*.jsonl
+output/gemini31_*.jsonl
 __pycache__/
 *.pyc
 .venv/
