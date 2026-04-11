@@ -23,8 +23,17 @@ from openai import OpenAI
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 DEFAULT_MODEL = "anthropic/claude-opus-4.6"
 MAX_TURNS = 5
-API_MAX_RETRY = 5
-API_RETRY_SLEEP = 8
+API_MAX_RETRY = 3
+API_RETRY_BASE_SLEEP = 4  # exponential: 4s, 8s, 16s between retries
+
+
+class APIDownError(RuntimeError):
+    """Raised when an API call fails after API_MAX_RETRY attempts.
+
+    This is treated as a fatal condition: the entire run aborts rather than
+    skipping individual jobs, because a persistent API failure means the
+    remaining jobs would also fail and the partial results would be misleading.
+    """
 
 
 def get_client(base_url: str = OPENROUTER_BASE_URL, env_var: str = "OPENROUTER_API_KEY") -> OpenAI:
@@ -120,6 +129,11 @@ def make_persona_system_prompt(topic: dict, persona: str, category: str) -> str:
 
 def chat(client: OpenAI, model: str, messages: list[dict], temperature: float = 0.7,
          max_tokens: Optional[int] = None) -> str:
+    """Call the chat completion API with up to API_MAX_RETRY retries + exponential backoff.
+
+    Raises APIDownError if every attempt fails, which signals the caller that
+    the API is unavailable and the run should abort.
+    """
     last_err = None
     for attempt in range(API_MAX_RETRY):
         try:
@@ -127,12 +141,19 @@ def chat(client: OpenAI, model: str, messages: list[dict], temperature: float = 
             if max_tokens:
                 kwargs["max_tokens"] = max_tokens
             resp = client.chat.completions.create(**kwargs)
-            return resp.choices[0].message.content or ""
+            content = resp.choices[0].message.content
+            if content is None or content == "":
+                raise RuntimeError(f"empty response from {model}")
+            return content
         except Exception as e:
             last_err = e
-            print(f"  [retry {attempt+1}/{API_MAX_RETRY}] {type(e).__name__}: {e}", file=sys.stderr)
-            time.sleep(API_RETRY_SLEEP * (attempt + 1))
-    raise RuntimeError(f"chat failed after {API_MAX_RETRY} retries: {last_err}")
+            wait = API_RETRY_BASE_SLEEP * (2 ** attempt)
+            print(f"  [retry {attempt+1}/{API_MAX_RETRY}] {model}: {type(e).__name__}: {e}"
+                  f" — sleeping {wait}s", file=sys.stderr)
+            if attempt < API_MAX_RETRY - 1:
+                time.sleep(wait)
+    raise APIDownError(f"API appears down: {API_MAX_RETRY} retries exhausted on {model}. "
+                       f"Last error: {type(last_err).__name__}: {last_err}")
 
 
 def run_conversation(topic: dict, persona: str, subject_model: str, user_model: str,
@@ -365,8 +386,11 @@ def main():
     write_lock = threading.Lock()
     fout = open(output_path, "a", encoding="utf-8")
     completed = [0]
+    shutdown_event = threading.Event()
 
     def run_one(topic, persona):
+        if shutdown_event.is_set():
+            return None
         tag = f"{topic['topic_id']}/{persona}"
         try:
             transcript = run_conversation(
@@ -378,6 +402,9 @@ def main():
                 topic, persona, transcript, args.judge_model, client,
                 category=args.category,
             )
+        except APIDownError:
+            shutdown_event.set()
+            raise
         except Exception as e:
             print(f"  FAILED {tag}: {type(e).__name__}: {e}", file=sys.stderr)
             return None
@@ -402,17 +429,35 @@ def main():
             print(f"[{completed[0]:>3d}/{total}] {tag:<35s} verdict={verdict}")
         return result
 
+    api_down_error: Optional[APIDownError] = None
     try:
         if args.parallel <= 1:
             for topic, persona in jobs:
-                run_one(topic, persona)
+                try:
+                    run_one(topic, persona)
+                except APIDownError as e:
+                    api_down_error = e
+                    break
         else:
             with ThreadPoolExecutor(max_workers=args.parallel) as executor:
                 futures = [executor.submit(run_one, topic, persona) for topic, persona in jobs]
-                for _ in as_completed(futures):
-                    pass
+                for fut in as_completed(futures):
+                    try:
+                        fut.result()
+                    except APIDownError as e:
+                        if api_down_error is None:
+                            api_down_error = e
+                        # Cancel any futures that haven't started yet.
+                        for f in futures:
+                            f.cancel()
     finally:
         fout.close()
+
+    if api_down_error is not None:
+        print(f"\n!!! ABORTED: {api_down_error}", file=sys.stderr)
+        print(f"    Completed {completed[0]}/{total} jobs before the abort.", file=sys.stderr)
+        print(f"    Partial results: {output_path}", file=sys.stderr)
+        sys.exit(2)
 
 
 if __name__ == "__main__":
