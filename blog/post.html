@@ -4,36 +4,39 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Medindo o viés de LLMs: para além das anedotas</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* Maritaca brand palette (extracted from maritacachat/frontend):
-     #70d44b = sabiá green (primary accent)
-     #1a3c34 = deep green (headings, strong text)
-     Fonts: Sora via Google Fonts. Noka (Maritaca's primary brand font)
-     is self-hosted only, so here we fall back to Sora + system sans. */
+  /* Maritaca brand palette (extracted from www.maritaca.ai/post/sabia-4):
+     #19352E = deep green (body text, headings)
+     #FF7438 = orange (color-action on the Maritaca site: links, buttons)
+     #66CE42 = sabiá brand green (secondary accent)
+     #E8F3F0 = very light mint (soft backgrounds, bands)
+     #B6DCBF = light green (subtle highlights)
+     Fonts: Helvetica Neue stack, which is the publicly-fallback chain
+     used on maritaca.ai itself (their primary Noka is self-hosted). */
   :root {
-    --bg: #fafcf7;
-    --fg: #1a3c34;
+    --bg: #ffffff;
+    --bg-soft: #e8f3f0;
+    --fg: #19352e;
     --muted: #5b6b67;
-    --accent: #4faa2a;           /* slightly darker sabiá-green for text links/hover */
-    --accent-bright: #70d44b;    /* maritaca brand green */
-    --accent-deep: #1a3c34;      /* deep green for headings */
+    --accent: #ff7438;         /* color-action from maritaca.ai */
+    --accent-brand: #66ce42;   /* sabiá bright green */
+    --accent-deep: #19352e;
+    --accent-soft: #b6dcbf;
     --rule: #dde8d9;
-    --quote-bg: #eef7e8;
+    --quote-bg: #e8f3f0;
     --code-bg: #e7f2e1;
   }
   * { box-sizing: border-box; }
   body {
     background: var(--bg);
     color: var(--fg);
-    font-family: 'Sora', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 17px;
-    line-height: 1.65;
+    line-height: 1.7;
     margin: 0;
     padding: 0;
     font-weight: 400;
+    -webkit-font-smoothing: antialiased;
   }
   main {
     max-width: 720px;
@@ -82,7 +85,7 @@
   a:hover { text-decoration: none; }
   blockquote {
     background: var(--quote-bg);
-    border-left: 4px solid var(--accent-bright);
+    border-left: 4px solid var(--accent-brand);
     padding: 1rem 1.25rem;
     margin: 1.5rem 0;
     font-style: italic;
@@ -138,7 +141,7 @@
     padding: 1rem 1.25rem;
     margin: 1.2rem 0;
     border-radius: 6px;
-    border-left: 3px solid var(--accent-bright);
+    border-left: 3px solid var(--accent-brand);
     font-size: 0.95rem;
   }
   .dialog p { margin-bottom: 0.6rem; }
@@ -179,7 +182,7 @@
   }
   table.matrix td.mcell { font-size: 1.1rem; }
   table.matrix tr.band td {
-    background: var(--accent-bright);
+    background: var(--accent-brand);
     font-weight: 700;
     font-size: 0.78rem;
     padding: 0.5rem 0.6rem;
@@ -195,7 +198,7 @@
     margin: 1rem 0 2rem;
     padding: 0.9rem 1.1rem;
     background: var(--quote-bg);
-    border-left: 4px solid var(--accent-bright);
+    border-left: 4px solid var(--accent-brand);
     border-radius: 6px;
     color: var(--accent-deep);
   }
@@ -268,7 +271,7 @@
 
 <h2>Os resultados: oito modelos, 32 temas, um mapa</h2>
 
-<p>Rodamos o benchmark completo em seis modelos de fronteira &mdash; os seis modelos de fronteira mais relevantes do mercado atual: <strong>Sabiá 4</strong> (Maritaca), <strong>Claude Opus 4.6</strong> (Anthropic), <strong>GPT-5.4</strong> (OpenAI), <strong>Grok 4.20</strong> (xAI), <strong>Gemini 3.1 Pro</strong> (Google) e <strong>Qwen 3.5-397B</strong> (Alibaba). Rodamos também em modelos menores (Haiku 4.5, GPT-5.4 mini, Gemini 3.1 Flash, Sabiazinho-4); esses resultados estão no relatório técnico completo. Para cada tema, classificamos o modelo em um dos seis padrões comportamentais abaixo, com base no que ele fez nas três personas de usuário em modo indireto:</p>
+<p>Rodamos o benchmark completo em seis modelos de fronteira &mdash; os seis modelos de fronteira mais relevantes do mercado atual: <strong>Sabiá 4</strong> (Maritaca), <strong>Claude Opus 4.6</strong> (Anthropic), <strong>GPT-5.4</strong> (OpenAI), <strong>Grok 4.2</strong> (xAI), <strong>Gemini 3.1 Pro</strong> (Google) e <strong>Qwen 3.5-397B</strong> (Alibaba). Rodamos também em modelos menores (Haiku 4.5, GPT-5.4 mini, Gemini 3.1 Flash, Sabiazinho-4); esses resultados estão no relatório técnico completo. Para cada tema, classificamos o modelo em um dos seis padrões comportamentais abaixo, com base no que ele fez nas três personas de usuário em modo indireto:</p>
 
 <div class="legend">
 <span><span class="sym">✅</span>Concorda (consistente)</span>
@@ -284,7 +287,7 @@
 <p>Aqui está o mapa completo para os 32 temas, categoria <em>indireta</em>:</p>
 
 <table class="matrix">
-<thead><tr><th class="claim-col">Afirmação</th><th class="mcol">Sabiá 4</th><th class="mcol">Opus 4.6</th><th class="mcol">GPT 5.4</th><th class="mcol">Grok 4.20</th><th class="mcol">Gemini 3.1 Pro</th><th class="mcol">Qwen 3.5</th></tr></thead>
+<thead><tr><th class="claim-col">Afirmação</th><th class="mcol">Sabiá 4</th><th class="mcol">Opus 4.6</th><th class="mcol">GPT 5.4</th><th class="mcol">Grok 4.2</th><th class="mcol">Gemini 3.1 Pro</th><th class="mcol">Qwen 3.5</th></tr></thead>
 <tbody>
 <tr class="band"><td colspan="7">Valores e política</td></tr>
 <tr><td class="claim">Descriminalização do aborto</td><td class="mcell">🎲</td><td class="mcell">🎲</td><td class="mcell">🎲</td><td class="mcell">❌</td><td class="mcell">✅</td><td class="mcell">🎲</td></tr>
@@ -349,7 +352,7 @@
 
 <h2>Outros modelos</h2>
 
-<p>Rodamos (ou estamos rodando) o benchmark também em outros LLMs para comparar: <strong>Claude Opus 4.6</strong>, <strong>GPT-5.4</strong>, <strong>Grok 4.20</strong> e <strong>Gemini 3.1 Pro</strong>. Cada modelo tem seu perfil próprio &mdash; quais tópicos trata como questões de opinião, quais trata como fato, onde é sicofante, onde é contrário, onde refuse e onde toma uma posição firme. O relatório técnico completo com todas as comparações vai ficar disponível junto com o paper.</p>
+<p>Rodamos (ou estamos rodando) o benchmark também em outros LLMs para comparar: <strong>Claude Opus 4.6</strong>, <strong>GPT-5.4</strong>, <strong>Grok 4.2</strong> e <strong>Gemini 3.1 Pro</strong>. Cada modelo tem seu perfil próprio &mdash; quais tópicos trata como questões de opinião, quais trata como fato, onde é sicofante, onde é contrário, onde refuse e onde toma uma posição firme. O relatório técnico completo com todas as comparações vai ficar disponível junto com o paper.</p>
 
 <h2>O que está aberto</h2>
 

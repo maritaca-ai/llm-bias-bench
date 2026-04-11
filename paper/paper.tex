@@ -159,7 +159,7 @@ The judge is also required to answer each per-turn rubric (yes/no with textual e
 
 \subsection{Setup}
 
-We run the full benchmark on \textsc{Sabiá-4}, a Brazilian-Portuguese LLM, across 32 topics $\times$ 3 personas $\times$ 2 categories = 192 conversations. The user-LLM and judge are both \texttt{anthropic/claude-opus-4.6} via OpenRouter. The subject model is served via Maritaca's native API. Each conversation uses five turns. Total wall-clock time with 10-way parallelism is roughly 20 minutes. Additional runs on \textsc{Claude Opus 4.6}, \textsc{GPT-5.4}, \textsc{Grok 4.20}, \textsc{Gemini 3.1 Pro}, \textsc{Sabiazinho-4}, and \textsc{Qwen3.5-397B} are reported in the appendix.
+We run the full benchmark on \textsc{Sabiá-4}, a Brazilian-Portuguese LLM, across 32 topics $\times$ 3 personas $\times$ 2 categories = 192 conversations. The user-LLM and judge are both \texttt{anthropic/claude-opus-4.6} via OpenRouter. The subject model is served via Maritaca's native API. Each conversation uses five turns. Total wall-clock time with 10-way parallelism is roughly 20 minutes. Additional runs on \textsc{Claude Opus 4.6}, \textsc{GPT-5.4}, \textsc{Grok 4.2}, \textsc{Gemini 3.1 Pro}, \textsc{Sabiazinho-4}, and \textsc{Qwen3.5-397B} are reported in the appendix.
 
 \subsection{Per-topic behavioral classification}
 \label{sec:topicmatrix}
@@ -209,13 +209,13 @@ Claim / topic & \textsc{Sab4} & \textsc{Opus} & \textsc{GPT5} & \textsc{Grok} & 
 \quad Brazil should adopt UBI & \clsSycophant & \clsInconsistent & \clsInconsistent & \clsDisagree & \clsInconsistent & \clsSycophant \\
 \quad Brazil should specialize in agro & \clsInconsistent & \clsSycophant & \clsSycophant & \clsInconsistent & \clsSycophant & \clsSycophant \\
 \bottomrule\end{tabularx}
-\caption{Per-topic \emph{indirect}-category classification for six frontier-scale fully-measured models (frontier plus non-Maritaca smaller models). Columns: \textsc{Sab4}=Sabi\'a-4, \textsc{Opus}=Opus 4.6, \textsc{GPT5}=GPT-5.4, \textsc{Grok}=Grok 4.20, \textsc{GemP}=Gemini 3.1 Pro, \textsc{Qwn3}=Qwen3.5-397B. Smaller models (Haiku 4.5, GPT-5.4-mini, Gemini 3.1 Flash, Sabiazinho-4) are reported in the appendix. Sabiazinho-4 is reported in the appendix. Cell legend: \clsAgree\,=\,consistently agree, \clsDisagree\,=\,consistently disagree, \clsNeutral\,=\,consistently neutral, \clsSycophant\,=\,sycophant (mirrors the user), \clsInconsistent\,=\,inconsistent (no clean pattern), \clsContrarian\,=\,contrarian (pushes back on the user). Detailed per-persona verdicts and the direct-probing analogue are in the appendix.}
+\caption{Per-topic \emph{indirect}-category classification for six frontier-scale fully-measured models (frontier plus non-Maritaca smaller models). Columns: \textsc{Sab4}=Sabi\'a-4, \textsc{Opus}=Opus 4.6, \textsc{GPT5}=GPT-5.4, \textsc{Grok}=Grok 4.2, \textsc{GemP}=Gemini 3.1 Pro, \textsc{Qwn3}=Qwen3.5-397B. Smaller models (Haiku 4.5, GPT-5.4-mini, Gemini 3.1 Flash, Sabiazinho-4) are reported in the appendix. Sabiazinho-4 is reported in the appendix. Cell legend: \clsAgree\,=\,consistently agree, \clsDisagree\,=\,consistently disagree, \clsNeutral\,=\,consistently neutral, \clsSycophant\,=\,sycophant (mirrors the user), \clsInconsistent\,=\,inconsistent (no clean pattern), \clsContrarian\,=\,contrarian (pushes back on the user). Detailed per-persona verdicts and the direct-probing analogue are in the appendix.}
 \label{tab:topicmatrix}
 \end{table}
 
 Reading Table~\ref{tab:topicmatrix} across rows reveals sharper patterns than the aggregate table can.
 
-\paragraph{Scientific consensus is stable across frontier models.} The six scientific-consensus topics resolve to \textbf{A} (consistent agreement with the consensus) for almost every model. The exceptions are mild: \textsc{Gemini 3.1 Pro} slips into sycophant on climate change and inconsistent on homeopathy; \textsc{Opus 4.6}, \textsc{GPT-5.4}, \textsc{Grok 4.20} all slip into inconsistent on evolution. Indirect probing is not breaking these models' adherence to empirical consensus as a whole, even though the judge occasionally flags an asymmetric essay.
+\paragraph{Scientific consensus is stable across frontier models.} The six scientific-consensus topics resolve to \textbf{A} (consistent agreement with the consensus) for almost every model. The exceptions are mild: \textsc{Gemini 3.1 Pro} slips into sycophant on climate change and inconsistent on homeopathy; \textsc{Opus 4.6}, \textsc{GPT-5.4}, \textsc{Grok 4.2} all slip into inconsistent on evolution. Indirect probing is not breaking these models' adherence to empirical consensus as a whole, even though the judge occasionally flags an asymmetric essay.
 
 \paragraph{Progressive convergence on social issues.} On \emph{abortion}, \emph{racial quotas}, and \emph{same-sex marriage}, the models that do resolve to a persona-independent position resolve to \textbf{A} (pro-decriminalization, pro-quotas, pro-same-sex marriage). Two models (\textsc{GP}, \textsc{Sz}) show consistent \textbf{A} on all three of these topics; others fall into \textit{I} (indirect bias that is less clean) or \underline{S} (\textsc{Grok} on quotas and same-sex marriage). No frontier model resolves to \textbf{D} on any of the three.
 
@@ -240,7 +240,7 @@ Model & Neu & Pos & Syc & Inc & Neu & Pos & Syc & Inc \\
 \textsc{Sabi\'a-4}        &  3.1 & 46.9 & 28.1 & 21.9 &  9.4 & 34.4 & 12.5 & 43.8 \\
 \textsc{Opus 4.6}         &  9.4 & 28.1 & 28.1 & 34.4 &  6.2 & 31.2 &  6.2 & 56.2 \\
 \textsc{GPT-5.4}          &  0.0 & 65.6 & 18.8 & 15.6 & 12.5 & 40.6 &  6.2 & 40.6 \\
-\textsc{Grok 4.20}        &  0.0 & 62.5 & 12.5 & 25.0 &  3.1 & 31.2 &  9.4 & 56.2 \\
+\textsc{Grok 4.2}        &  0.0 & 62.5 & 12.5 & 25.0 &  3.1 & 31.2 &  9.4 & 56.2 \\
 \textsc{Gemini 3.1 Pro}   & 28.1 & 31.2 & 15.6 & 25.0 &  9.4 & 28.1 & 25.0 & 37.5 \\
 \textsc{Qwen3.5}          & \multicolumn{4}{c|}{\emph{pending}} &  6.2 & 28.1 &  9.4 & 56.2 \\
 \textsc{Kimi K2}          & \multicolumn{8}{c}{\emph{pending}} \\
@@ -258,7 +258,7 @@ Model & Neu & Pos & Syc & Inc & Neu & Pos & Syc & Inc \\
 
 Two observations jump out immediately.
 
-\paragraph{``Take a position'' is not the same as ``agree/disagree honestly.''} \textsc{GPT-5.4} and \textsc{Grok 4.20} look the most opinionated in direct probing ($65.6\%$ and $62.5\%$ of topics resolve to a persona-independent position). But those same two models drop to $40.6\%$ and $31.2\%$ under indirect probing---roughly half the topics on which they verbally stated a stance do not show matching behavioral alignment under task framings. \textsc{Gemini 3.1 Pro} sits at the opposite extreme: $28\%$ of its direct-probing topics come out consistently neutral, by far the highest rate in the set---the model has been trained to decline stating a position. \textsc{Sabi\'a-4} and \textsc{Sabiazinho-4} have the highest \emph{sycophancy} rates under direct probing ($28$--$31\%$), meaning their verdict more often tracks whichever direction the user persona leaned.
+\paragraph{``Take a position'' is not the same as ``agree/disagree honestly.''} \textsc{GPT-5.4} and \textsc{Grok 4.2} look the most opinionated in direct probing ($65.6\%$ and $62.5\%$ of topics resolve to a persona-independent position). But those same two models drop to $40.6\%$ and $31.2\%$ under indirect probing---roughly half the topics on which they verbally stated a stance do not show matching behavioral alignment under task framings. \textsc{Gemini 3.1 Pro} sits at the opposite extreme: $28\%$ of its direct-probing topics come out consistently neutral, by far the highest rate in the set---the model has been trained to decline stating a position. \textsc{Sabi\'a-4} and \textsc{Sabiazinho-4} have the highest \emph{sycophancy} rates under direct probing ($28$--$31\%$), meaning their verdict more often tracks whichever direction the user persona leaned.
 
 \paragraph{Sycophancy drops sharply from direct to indirect.} Across every model, sycophancy under indirect probing is at most $12.5\%$ and typically $6$--$9\%$, compared to $12$--$31\%$ under direct probing. The user-LLM in indirect mode never states an opinion to mirror, so the most obvious mirroring cue is absent and the bias, if any, has to emerge from behavioral asymmetry. The drop is a reassuring sanity check on the indirect category: it is not merely re-measuring the same direct-probing signal.
 
@@ -279,7 +279,7 @@ Model & Divergent topics & Rate \\
 \textsc{Sabi\'a-4}        & 20/32 & 62\% \\
 \textsc{Opus 4.6}         & 16/32 & 50\% \\
 \textsc{GPT-5.4}          & 16/32 & 50\% \\
-\textsc{Grok 4.20}        & 18/32 & 56\% \\
+\textsc{Grok 4.2}        & 18/32 & 56\% \\
 \textsc{Gemini 3.1 Pro}   & 22/32 & 69\% \\
 \midrule
 \textsc{Sabiazinho-4}     & 14/32 & 44\% \\
@@ -310,7 +310,7 @@ Model & Direct refusal (\%) & Indirect refusal (\%) \\
 \textsc{Sabi\'a-4}        & 0.0 & 0.0 \\
 \textsc{Opus 4.6}         & 1.0 & 0.0 \\
 \textsc{GPT-5.4}          & 0.0 & 0.0 \\
-\textsc{Grok 4.20}        & 0.0 & 0.0 \\
+\textsc{Grok 4.2}        & 0.0 & 0.0 \\
 \textsc{Gemini 3.1 Pro}   & 0.0 & 0.0 \\
 \midrule
 \textsc{Sabiazinho-4}     & 0.0 & 0.0 \\
