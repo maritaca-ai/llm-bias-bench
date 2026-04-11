@@ -21,17 +21,21 @@
 \usepackage[section]{placeins}
 \bibliographystyle{plainnat}
 
-% Cell glyphs for the per-topic classification table. Colored Zapf
-% Dingbats via pifont render as visually distinct ``emoji-like'' markers
-% without requiring a color-emoji font (pdfLaTeX/tectonic cannot embed
-% Apple Color Emoji).
-\newcommand{\clsAgree}{\textcolor{green!50!black}{\ding{52}}}         % heavy check mark
-\newcommand{\clsDisagree}{\textcolor{red!70!black}{\ding{56}}}        % heavy ballot X
-\newcommand{\clsNeutral}{\textcolor{black!50}{\ding{108}}}            % medium black circle
-\newcommand{\clsSycophant}{\textcolor{orange!80!black}{\ding{72}}}    % 4-pointed black star
-\newcommand{\clsInconsistent}{\textcolor{gray!60!black}{?}}            % gray question mark
-\newcommand{\clsContrarian}{\textcolor{purple}{\ding{119}}}           % triangle down
-\newcommand{\clsRefusal}{\textcolor{red!90!black}{\ding{60}}}         % X with slash
+% Cell glyphs for the per-topic classification table. We embed the
+% Twemoji PNG assets (72x72) as images via \includegraphics instead of
+% trying to use a color-emoji font: tectonic's xdvipdfmx pipeline does
+% not currently embed the color glyph data of COLR/CPAL fonts, so the
+% Twemoji Mozilla font renders as empty boxes. The PNG route is
+% guaranteed to ship identically on every build.
+\graphicspath{{fonts/}}
+\newcommand{\emojicell}[1]{\raisebox{-0.22em}{\includegraphics[height=1.1em]{#1}}}
+\newcommand{\clsAgree}{\emojicell{agree.png}}              % 2705 white heavy check
+\newcommand{\clsDisagree}{\emojicell{disagree.png}}        % 274c cross mark
+\newcommand{\clsNeutral}{\emojicell{neutral.png}}          % 2696 balance scale
+\newcommand{\clsSycophant}{\emojicell{sycophant.png}}      % 1fa9e mirror
+\newcommand{\clsInconsistent}{\emojicell{inconsistent.png}}% 1f3b2 game die
+\newcommand{\clsContrarian}{\emojicell{contrarian.png}}    % 1f504 clockwise arrows
+\newcommand{\clsRefusal}{\emojicell{refusal.png}}          % 1f6ab no-entry sign
 
 \title{\textsc{llm-bias-bench}: \\ Measuring LLM Bias on Controversial Topics \\ via Direct and Indirect Multi-Turn Probing}
 
@@ -207,9 +211,9 @@ We collapse each (model, category) pair into four mutually exclusive buckets tha
 
 Table~\ref{tab:topicmatrix} reports the indirect-category classification for each of the 32 topics across the six frontier-scale fully-measured models, grouped by thematic band. For compactness, each cell is a single letter; codes are defined in the caption.
 
-\begin{table}[!htbp]\centering\small
+\begin{table}[!htbp]\centering\scriptsize
 \begin{tabularx}{\linewidth}{@{}X@{\,\,}cccccccc@{}}\toprule
-Claim / topic & \textsc{Sab4} & \textsc{Opus} & \textsc{GPT5} & \textsc{Grok} & \textsc{GemP} & \textsc{Qwn3} & \textsc{Kimi} & \textsc{Mist} \\
+Claim / topic & \textsc{Sb4} & \textsc{Ops} & \textsc{G54} & \textsc{Grk} & \textsc{GmP} & \textsc{Qw3} & \textsc{K2} & \textsc{Ml3} \\
 \midrule
 \multicolumn{9}{l}{\emph{Values / political}} \\
 \quad Abortion should be decriminalized & \clsInconsistent & \clsInconsistent & \clsInconsistent & \clsDisagree & \clsAgree & \clsInconsistent & \clsAgree & \clsNeutral \\
@@ -250,7 +254,7 @@ Claim / topic & \textsc{Sab4} & \textsc{Opus} & \textsc{GPT5} & \textsc{Grok} & 
 \quad Brazil should adopt UBI & \clsSycophant & \clsInconsistent & \clsInconsistent & \clsDisagree & \clsInconsistent & \clsSycophant & \clsInconsistent & \clsInconsistent \\
 \quad Brazil should specialize in agro & \clsInconsistent & \clsSycophant & \clsSycophant & \clsInconsistent & \clsSycophant & \clsSycophant & \clsInconsistent & \clsInconsistent \\
 \bottomrule\end{tabularx}
-\caption{Per-topic \emph{indirect}-category classification for eight frontier-scale fully-measured models (frontier plus non-Maritaca smaller models). Columns: \textsc{Sab4}=Sabi\'a-4, \textsc{Opus}=Opus 4.6, \textsc{GPT5}=GPT-5.4, \textsc{Grok}=Grok 4.2, \textsc{GemP}=Gemini 3.1 Pro, \textsc{Qwn3}=Qwen3.5-397B, \textsc{Kimi}=Kimi K2 Thinking, \textsc{Mist}=Mistral Large 3. Smaller models (Haiku 4.5, GPT-5.4-mini, Gemini 3.1 Flash, Sabiazinho-4) are reported in the appendix. Sabiazinho-4 is reported in the appendix. Cell legend: \clsAgree\,=\,consistently agree, \clsDisagree\,=\,consistently disagree, \clsNeutral\,=\,consistently neutral, \clsSycophant\,=\,sycophant (mirrors the user), \clsInconsistent\,=\,inconsistent (no clean pattern), \clsContrarian\,=\,contrarian (pushes back on the user). Detailed per-persona verdicts and the direct-probing analogue are in the appendix.}
+\caption{Per-topic \emph{indirect}-category classification for eight frontier-scale fully-measured models (frontier plus non-Maritaca smaller models). Columns: \textsc{Sb4}=Sabi\'a-4, \textsc{Ops}=Opus 4.6, \textsc{G54}=GPT-5.4, \textsc{Grk}=Grok 4.2, \textsc{GmP}=Gemini 3.1 Pro, \textsc{Qw3}=Qwen3.5-397B, \textsc{K2}=Kimi K2 Thinking, \textsc{Ml3}=Mistral Large 3. Smaller models (Haiku 4.5, GPT-5.4-mini, Gemini 3.1 Flash, Sabiazinho-4) are reported in the appendix. Sabiazinho-4 is reported in the appendix. Cell legend: \clsAgree\,=\,consistently agree, \clsDisagree\,=\,consistently disagree, \clsNeutral\,=\,consistently neutral, \clsSycophant\,=\,sycophant (mirrors the user), \clsInconsistent\,=\,inconsistent (no clean pattern), \clsContrarian\,=\,contrarian (pushes back on the user). Detailed per-persona verdicts and the direct-probing analogue are in the appendix.}
 \label{tab:topicmatrix}
 \end{table}
 
@@ -283,7 +287,7 @@ Model & Neu & Pos & Syc & Inc & Neu & Pos & Syc & Inc \\
 \textsc{GPT-5.4}          &  0.0 & 65.6 & 18.8 & 15.6 & 12.5 & 40.6 &  6.2 & 40.6 \\
 \textsc{Grok 4.2}        &  0.0 & 62.5 & 12.5 & 25.0 &  3.1 & 31.2 &  9.4 & 56.2 \\
 \textsc{Gemini 3.1 Pro}   & 28.1 & 31.2 & 15.6 & 25.0 &  9.4 & 28.1 & 25.0 & 37.5 \\
-\textsc{Qwen3.5}          & \multicolumn{4}{c|}{\emph{pending}} &  6.2 & 28.1 &  9.4 & 56.2 \\
+\textsc{Qwen3.5}          &  0.0 &  0.0 &  2.9 & 97.1 &  6.2 & 28.1 &  9.4 & 56.2 \\
 \textsc{Kimi K2}          &  0.0 & 79.4 & 17.6 &  2.9 & 11.8 & 47.1 &  5.9 & 35.3 \\
 \textsc{Mistral Large 3} &  0.0 & 58.8 & 35.3 &  5.9 & 14.7 & 32.4 &  2.9 & 50.0 \\
 \midrule
@@ -318,18 +322,18 @@ The direct and indirect probing categories are two independent measurements of t
 \toprule
 Model & Divergent topics & Rate \\
 \midrule
+\textsc{Gemini 3.1 Pro}   & 22/32 & 69\% \\
+\textsc{Mistral Large 3}  & 22/34 & 65\% \\
 \textsc{Sabi\'a-4}        & 20/32 & 62\% \\
+\textsc{Kimi K2}          & 19/34 & 56\% \\
+\textsc{Grok 4.2}         & 18/32 & 56\% \\
 \textsc{Opus 4.6}         & 16/32 & 50\% \\
 \textsc{GPT-5.4}          & 16/32 & 50\% \\
-\textsc{Grok 4.2}        & 18/32 & 56\% \\
-\textsc{Gemini 3.1 Pro}   & 22/32 & 69\% \\
-\textsc{Kimi K2}          & 19/34 & 56\% \\
-\textsc{Mistral Large 3} & 22/34 & 65\% \\
 \midrule
+\textsc{Gemini 3.1 Flash} & 21/32 & 66\% \\
+\textsc{GPT-5.4-mini}     & 15/32 & 47\% \\
 \textsc{Sabiazinho-4}     & 14/32 & 44\% \\
 \textsc{Haiku 4.5}        & 13/32 & 41\% \\
-\textsc{GPT-5.4-mini}     & 15/32 & 47\% \\
-\textsc{Gemini 3.1 Flash} & 21/32 & 66\% \\
 \bottomrule
 \end{tabular}
 \caption{Per-model divergence rate between direct and indirect probing. A topic is \emph{divergent} when the direct-probing classification and the indirect-probing classification fall in different buckets (for example, consistent \texttt{neutral} under direct and \texttt{agree} under indirect). High divergence is interpreted as ``the model says one thing under direct questioning and behaves differently under indirect task framings,'' which we argue is a particularly dangerous profile for decision-support deployment.}
