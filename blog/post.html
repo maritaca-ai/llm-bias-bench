@@ -4,25 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Medindo o viés de LLMs: para além das anedotas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  /* Maritaca brand palette (extracted from maritacachat/frontend):
+     #70d44b = sabiá green (primary accent)
+     #1a3c34 = deep green (headings, strong text)
+     Fonts: Sora via Google Fonts. Noka (Maritaca's primary brand font)
+     is self-hosted only, so here we fall back to Sora + system sans. */
   :root {
-    --bg: #fdfdfb;
-    --fg: #1c1c1c;
-    --muted: #555;
-    --accent: #8a2b2b;
-    --rule: #e5e2da;
-    --quote-bg: #f5f2ea;
-    --code-bg: #f0ede4;
+    --bg: #fafcf7;
+    --fg: #1a3c34;
+    --muted: #5b6b67;
+    --accent: #4faa2a;           /* slightly darker sabiá-green for text links/hover */
+    --accent-bright: #70d44b;    /* maritaca brand green */
+    --accent-deep: #1a3c34;      /* deep green for headings */
+    --rule: #dde8d9;
+    --quote-bg: #eef7e8;
+    --code-bg: #e7f2e1;
   }
   * { box-sizing: border-box; }
   body {
     background: var(--bg);
     color: var(--fg);
-    font-family: Georgia, "Times New Roman", serif;
-    font-size: 18px;
+    font-family: 'Sora', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 17px;
     line-height: 1.65;
     margin: 0;
     padding: 0;
+    font-weight: 400;
   }
   main {
     max-width: 720px;
@@ -30,21 +41,26 @@
     padding: 3rem 1.5rem 6rem;
   }
   h1 {
-    font-size: 2.2rem;
-    line-height: 1.2;
+    font-size: 2.3rem;
+    line-height: 1.15;
     margin-bottom: 0.3rem;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    color: var(--accent-deep);
   }
   h2 {
-    font-size: 1.45rem;
-    margin-top: 2.8rem;
-    margin-bottom: 0.6rem;
-    letter-spacing: -0.005em;
+    font-size: 1.5rem;
+    margin-top: 3rem;
+    margin-bottom: 0.7rem;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+    color: var(--accent-deep);
   }
   h3 {
     font-size: 1.15rem;
     margin-top: 2rem;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.4rem;
+    font-weight: 600;
     color: var(--accent);
   }
   .subtitle {
@@ -66,11 +82,11 @@
   a:hover { text-decoration: none; }
   blockquote {
     background: var(--quote-bg);
-    border-left: 4px solid var(--accent);
+    border-left: 4px solid var(--accent-bright);
     padding: 1rem 1.25rem;
     margin: 1.5rem 0;
     font-style: italic;
-    color: #333;
+    color: var(--accent-deep);
   }
   blockquote p:last-child { margin-bottom: 0; }
   code {
@@ -84,11 +100,12 @@
   li { margin-bottom: 0.4rem; }
   .tag {
     display: inline-block;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--muted);
+    letter-spacing: 0.08em;
+    color: var(--accent);
     margin-right: 0.6rem;
+    font-weight: 600;
   }
   table {
     width: 100%;
@@ -120,12 +137,13 @@
     background: var(--quote-bg);
     padding: 1rem 1.25rem;
     margin: 1.2rem 0;
-    border-radius: 4px;
+    border-radius: 6px;
+    border-left: 3px solid var(--accent-bright);
     font-size: 0.95rem;
   }
   .dialog p { margin-bottom: 0.6rem; }
   .dialog p:last-child { margin-bottom: 0; }
-  .dialog .who { font-weight: 600; color: var(--accent); }
+  .dialog .who { font-weight: 600; color: var(--accent-deep); }
   
   table.matrix {
     font-size: 0.72rem;
@@ -143,10 +161,10 @@
   }
   table.matrix th.claim-col, table.matrix td.claim {
     text-align: left;
-    font-family: Georgia, serif;
     font-size: 0.78rem;
     padding-right: 0.5rem;
     width: 38%;
+    color: var(--accent-deep);
   }
   table.matrix th.mcol {
     font-size: 0.62rem;
@@ -157,16 +175,17 @@
     white-space: nowrap;
     text-align: left;
     padding-left: 0.2rem;
+    color: var(--accent-deep);
   }
   table.matrix td.mcell { font-size: 1.1rem; }
   table.matrix tr.band td {
-    background: var(--quote-bg);
+    background: var(--accent-bright);
     font-weight: 700;
-    font-family: Georgia, serif;
     font-size: 0.78rem;
-    padding: 0.5rem 0.5rem;
+    padding: 0.5rem 0.6rem;
     text-align: left;
-    color: var(--accent);
+    color: #fff;
+    letter-spacing: 0.02em;
   }
   .legend {
     display: flex;
@@ -174,10 +193,11 @@
     gap: 0.9rem 1.8rem;
     font-size: 0.85rem;
     margin: 1rem 0 2rem;
-    padding: 0.8rem 1rem;
+    padding: 0.9rem 1.1rem;
     background: var(--quote-bg);
-    border-radius: 4px;
-    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    border-left: 4px solid var(--accent-bright);
+    border-radius: 6px;
+    color: var(--accent-deep);
   }
   .legend span { white-space: nowrap; }
   .legend .sym { font-size: 1.2rem; margin-right: 0.3rem; }
