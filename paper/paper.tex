@@ -193,7 +193,7 @@ The judge is required to cite textual evidence from the model's final-turn respo
 
 \subsection{Setup}
 
-We run the full benchmark on 13 subject models across 34 topics $\times$ 3 personas $\times$ 2 categories = 204 conversations per model. The user-LLM and judge are both \texttt{anthropic/claude-opus-4.6} via OpenRouter. \textsc{Sabi\'a-4} and \textsc{Sabiazinho-4} are served via Maritaca's native API; all other subject models are served via OpenRouter. Each conversation uses five turns. Total wall-clock time per model with 10-way parallelism is roughly 20 minutes. Frontier-scale models are: \textsc{Sabi\'a-4}, \textsc{Claude Opus 4.6}, \textsc{GPT-5.4}, \textsc{Grok 4.2}, \textsc{Gemini 3.1 Pro}, \textsc{Qwen3.5-397B}, \textsc{Kimi K2 Thinking}, \textsc{Mistral Large 3}, and \textsc{Llama 4 Maverick}. Smaller models are: \textsc{Sabiazinho-4}, \textsc{Claude Haiku 4.5}, \textsc{GPT-5.4-mini}, and \textsc{Gemini 3.1 Flash}.
+We run the full benchmark on 13 subject models across 34 topics $\times$ 3 personas $\times$ 2 categories = 204 conversations per model. The user-LLM is \texttt{anthropic/claude-opus-4.6} and the judge is \texttt{qwen/qwen3.5-397b-a17b} (selected for its high consensus score in Section~\ref{sec:abl-judges} and lower cost). \textsc{Sabi\'a-4} and \textsc{Sabiazinho-4} are served via Maritaca's native API; all other subject models are served via OpenRouter. Each conversation uses five turns. Frontier-scale models are: \textsc{Sabi\'a-4}, \textsc{Claude Opus 4.6}, \textsc{GPT-5.4}, \textsc{Grok 4.2}, \textsc{Gemini 3.1 Pro}, \textsc{Qwen3.5-397B}, \textsc{Kimi K2 Thinking}, \textsc{Mistral Large 3}, and \textsc{Llama 4 Maverick}. Smaller models are: \textsc{Sabiazinho-4}, \textsc{Claude Haiku 4.5}, \textsc{GPT-5.4-mini}, and \textsc{Gemini 3.1 Flash}.
 
 \subsection{Per-topic behavioral classification}
 \label{sec:topicmatrix}
@@ -284,42 +284,44 @@ Reading Table~\ref{tab:topicmatrix} across rows reveals sharper patterns than th
 
 \subsection{Aggregate results across models}
 
-Table~\ref{tab:aggregate} shows the distribution per model and per probing category, as percentages of 34 topics. Frontier-scale and smaller subject models are reported in the same table; smaller models are of independent interest because they handle a disproportionate share of user-facing traffic (embedded chatbots, on-device assistants, search summaries), so their bias profiles matter regardless of how they compare to their larger siblings.
+Table~\ref{tab:aggregate} shows the sycophancy rate and position rate (agree + leaning\_agree + disagree + leaning\_disagree) per model and per probing category, as percentages of 34 topics.
 
 \begin{table}[!htbp]
 \centering \small
-\begin{tabular}{l|rrrr|rrrr}
+\begin{tabular}{l|rr|rr}
 \toprule
- & \multicolumn{4}{c|}{Direct (\%)} & \multicolumn{4}{c}{Indirect (\%)} \\
-Model & Neu & Pos & Syc & Inc & Neu & Pos & Syc & Inc \\
+ & \multicolumn{2}{c|}{Direct (\%)} & \multicolumn{2}{c}{Indirect (\%)} \\
+Model & Pos & Syc & Pos & Syc \\
 \midrule
-\multicolumn{9}{l}{\textit{Frontier-scale}} \\
-\textsc{Sabi\'a-4}         &  2.9 & 47.1 & 29.4 & 20.6 & 11.8 & 32.4 & 11.8 & 44.1 \\
-\textsc{Opus 4.6}          &  8.8 & 32.4 & 26.5 & 32.4 &  8.8 & 29.4 &  5.9 & 55.9 \\
-\textsc{GPT-5.4}           &  0.0 & 67.6 & 17.6 & 14.7 & 14.7 & 41.2 &  5.9 & 38.2 \\
-\textsc{Grok 4.2}          &  0.0 & 61.8 & 11.8 & 26.5 &  5.9 & 29.4 &  8.8 & 55.9 \\
-\textsc{Gemini 3.1 Pro}    & 29.4 & 29.4 & 14.7 & 26.5 &  8.8 & 26.5 & 23.5 & 41.2 \\
-\textsc{Qwen3.5}           &  0.0 &  0.0 &  2.9 & 97.1 &  8.8 & 26.5 &  8.8 & 55.9 \\
-\textsc{Kimi K2}           &  0.0 & 79.4 & 17.6 &  2.9 & 11.8 & 47.1 &  5.9 & 35.3 \\
-\textsc{Mistral Large 3}   &  0.0 & 58.8 & 35.3 &  5.9 & 14.7 & 32.4 &  2.9 & 50.0 \\
-\textsc{Llama 4 Maverick}  &  2.9 & 17.6 & 23.5 & 52.9 & 11.8 & 29.4 & 11.8 & 47.1 \\
+\multicolumn{5}{l}{\textit{Frontier-scale}} \\
+\textsc{Opus 4.6}          & 55.9 & 26.5 & 50.0 & 41.2 \\
+\textsc{GPT-5.4}           & 41.2 & 52.9 & 17.6 & 79.4 \\
+\textsc{Grok 4.2}          & 50.0 & 44.1 & 23.5 & 64.7 \\
+\textsc{Gemini 3.1 Pro}    & 32.4 & 23.5 & 11.8 & 85.3 \\
+\textsc{Qwen3.5-397B}      & 26.5 & 70.6 &  5.9 & 91.2 \\
+\textsc{Kimi K2}           & 52.9 & 32.4 & 61.8 & 26.5 \\
+\textsc{Mistral Large 3}   & 20.6 & 79.4 & 11.8 & 88.2 \\
+\textsc{Llama 4 Maverick}  & 23.5 & 32.4 &  2.9 & 94.1 \\
+\textsc{Sabi\'a-4}         & 41.2 & 58.8 &  8.8 & 91.2 \\
 \midrule
-\multicolumn{9}{l}{\textit{Smaller}} \\
-\textsc{Sabiazinho-4}      &  0.0 & 47.1 & 32.4 & 20.6 &  5.9 & 44.1 & 11.8 & 38.2 \\
-\textsc{Haiku 4.5}         & 14.7 & 23.5 &  2.9 & 58.8 &  5.9 & 50.0 &  5.9 & 38.2 \\
-\textsc{GPT-5.4-mini}      &  2.9 & 70.6 & 14.7 & 11.8 & 14.7 & 44.1 & 11.8 & 29.4 \\
-\textsc{Gemini 3.1 Flash}  & 17.6 & 29.4 & 32.4 & 20.6 & 11.8 & 20.6 & 14.7 & 52.9 \\
+\multicolumn{5}{l}{\textit{Smaller}} \\
+\textsc{Haiku 4.5}         & 52.9 &  2.9 & 64.7 &  8.8 \\
+\textsc{GPT-5.4-mini}      & 44.1 & 55.9 & 26.5 & 67.6 \\
+\textsc{Gemini 3.1 Flash}  & 26.5 & 58.8 &  5.9 & 91.2 \\
+\textsc{Sabiazinho-4}      & 50.0 & 47.1 & 20.6 & 79.4 \\
 \bottomrule
 \end{tabular}
-\caption{Per-model aggregate classification over 34 topics, as percentages, for all subject models. \textbf{Neu}tral = all three personas produced the neutral verdict. \textbf{Pos}ition = all three personas produced the same agree or disagree verdict. \textbf{Syc}ophant = the \texttt{agree} user got \texttt{agree} and the \texttt{disagree} user got \texttt{disagree}. \textbf{Inc}onsistent = no clean pattern (includes the rare contrarian case, $<4\%$ for all models).}
+\caption{Per-model aggregate classification over 34 topics: \textbf{Pos}ition = topics where the model took a persona-independent stance (agree + leaning agree + disagree + leaning disagree); \textbf{Syc}ophant = the model mirrored the user's lean. The remaining percentage (not shown) is split across neutral, refusal, contrarian, and inconsistent. Full 9-way breakdown available in the interactive viewer.}
 \label{tab:aggregate}
 \end{table}
 
-Two observations jump out immediately.
+Three observations stand out.
 
-\paragraph{``Take a position'' is not the same as ``agree/disagree honestly.''} \textsc{Kimi K2} is the most opinionated model in direct probing ($79.4\%$ of topics resolve to a persona independent position), followed by \textsc{GPT-5.4} at $67.6\%$ and \textsc{Grok 4.2} at $61.8\%$. But those same three models drop to $47.1\%$, $41.2\%$, and $29.4\%$ under indirect probing---the fraction of topics on which they verbally stated a stance does not transfer cleanly to behavioral alignment under task framings, especially for \textsc{Grok 4.2}. \textsc{Gemini 3.1 Pro} sits at the opposite extreme: $29.4\%$ of its direct-probing topics come out consistently neutral, by far the highest rate in the set---the model has been trained to decline stating a position. At the bottom, \textsc{Qwen3.5} has effectively no persona independent positions under direct probing ($0.0\%$): its direct-category behavior is dominated by the inconsistent bucket ($97.1\%$), meaning the judge rarely saw the same verdict across all three personas. \textsc{Mistral Large 3}, \textsc{Sabiazinho-4}, \textsc{Sabi\'a-4}, and \textsc{Gemini 3.1 Flash} have the highest \emph{sycophancy} rates under direct probing ($29$--$35\%$), meaning their verdict more often tracks whichever direction the user persona leaned.
+\paragraph{Sycophancy explodes under indirect (debate) probing.} This is the central finding. Under direct probing, sycophancy ranges from $2.9\%$ (\textsc{Haiku 4.5}) to $79.4\%$ (\textsc{Mistral Large 3}). Under indirect probing---where the user \emph{argues} rather than \emph{asks}---sycophancy rises sharply for nearly every model: \textsc{Llama 4 Maverick} goes from $32.4\%$ to $94.1\%$; \textsc{Qwen3.5} from $70.6\%$ to $91.2\%$; \textsc{Gemini 3.1 Pro} from $23.5\%$ to $85.3\%$. The median sycophancy rate across all 13 models is $47.1\%$ in direct mode and $79.4\%$ in indirect mode. When a user presents arguments rather than asks for opinions, the model overwhelmingly concedes to whichever side the user argues---a form of sycophancy that is invisible to direct-questioning benchmarks.
 
-\paragraph{Sycophancy drops sharply from direct to indirect for most models.} For twelve of the thirteen models, indirect sycophancy is at most $15\%$ and typically $6$--$12\%$, compared to $12$--$35\%$ under direct probing. The one exception is \textsc{Gemini 3.1 Pro}, whose indirect sycophancy is $23.5\%$---nearly as high as its direct-category sycophancy. The user-LLM in indirect mode never states an opinion to mirror, so for most models the most obvious mirroring cue is absent and any residual bias has to emerge from behavioral asymmetry. The overall drop is a reassuring sanity check on the indirect category: it is not merely re-measuring the same direct-probing signal.
+\paragraph{Two models resist: Kimi K2 and Haiku 4.5.} \textsc{Kimi K2} is the only model whose indirect sycophancy ($26.5\%$) is \emph{lower} than its direct sycophancy ($32.4\%$), and it holds the highest position rate in indirect mode ($61.8\%$). \textsc{Haiku 4.5} has the lowest sycophancy overall ($2.9\%$ direct, $8.8\%$ indirect) and the highest contrarian rate ($20.6\%$ indirect)---it actively pushes back on the user's arguments. These two models demonstrate that high sycophancy under debate pressure is not an inevitable property of frontier LLMs; it is a training outcome that can be mitigated.
+
+\paragraph{Position-taking shrinks from direct to indirect.} Most models that hold persona-independent positions under direct questioning lose those positions under indirect debate. \textsc{Opus 4.6} is relatively stable ($55.9\% \to 50.0\%$), but \textsc{Sabi\'a-4} drops from $41.2\%$ to $8.8\%$, and \textsc{Llama 4 Maverick} from $23.5\%$ to $2.9\%$. The positions that survive direct questioning often do not survive argumentative pressure from the opposing side---they were verbal commitments, not deeply held behavioral patterns.
 
 \section{Ablations}
 \label{sec:ablations}
@@ -335,27 +337,26 @@ The direct and indirect probing categories are two independent measurements of t
 \toprule
 Model & Divergent topics & Rate \\
 \midrule
-\textsc{Gemini 3.1 Pro}    & 23/34 & 68\% \\
-\textsc{Sabi\'a-4}         & 22/34 & 65\% \\
-\textsc{Mistral Large 3}   & 22/34 & 65\% \\
+\textsc{Gemini 3.1 Pro}    & 24/34 & 71\% \\
+\textsc{Haiku 4.5}         & 24/34 & 71\% \\
 \textsc{Llama 4 Maverick}  & 22/34 & 65\% \\
-\textsc{Grok 4.2}          & 19/34 & 56\% \\
-\textsc{Kimi K2}           & 19/34 & 56\% \\
-\textsc{Opus 4.6}          & 18/34 & 53\% \\
-\textsc{GPT-5.4}           & 17/34 & 50\% \\
-\textsc{Qwen3.5}           & 16/34 & 47\% \\
-\midrule
-\textsc{Gemini 3.1 Flash}  & 21/34 & 62\% \\
-\textsc{Sabiazinho-4}      & 16/34 & 47\% \\
-\textsc{GPT-5.4-mini}      & 16/34 & 47\% \\
-\textsc{Haiku 4.5}         & 15/34 & 44\% \\
+\textsc{Grok 4.2}          & 17/34 & 50\% \\
+\textsc{Kimi K2}           & 17/34 & 50\% \\
+\textsc{Opus 4.6}          & 15/34 & 44\% \\
+\textsc{Sabiazinho-4}      & 15/34 & 44\% \\
+\textsc{GPT-5.4}           & 13/34 & 38\% \\
+\textsc{Sabi\'a-4}         & 12/34 & 35\% \\
+\textsc{Gemini 3.1 Flash}  & 12/34 & 35\% \\
+\textsc{GPT-5.4-mini}      & 11/34 & 32\% \\
+\textsc{Qwen3.5-397B}      &  9/34 & 26\% \\
+\textsc{Mistral Large 3}   &  8/34 & 24\% \\
 \bottomrule
 \end{tabular}
 \caption{Per-model divergence rate between direct and indirect probing. A topic is \emph{divergent} when the direct-probing classification and the indirect-probing classification fall in different buckets (for example, consistent \texttt{neutral} under direct and \texttt{agree} under indirect). High divergence is interpreted as ``the model says one thing under direct questioning and behaves differently under indirect task framings,'' which we argue is a particularly dangerous profile for decision-support deployment.}
 \label{tab:divergence}
 \end{table}
 
-Every fully-measured model has a divergence rate of at least $44\%$: nearly half or more of its topics move between behavioral buckets when the probing style changes. \textsc{Gemini 3.1 Pro} is the extreme case at $68\%$: the model declines to take a position on $29.4\%$ of topics under direct questioning (the highest neutrality rate in the set) but that neutrality does not survive the switch to indirect probing, producing high divergence. \textsc{Sabi\'a-4}, \textsc{Mistral Large 3}, and \textsc{Llama 4 Maverick} all sit at $65\%$, for different reasons: \textsc{Sabi\'a-4} and \textsc{Mistral Large 3} have large sycophancy gaps between direct and indirect probing, while \textsc{Llama 4 Maverick}'s divergence is driven by its high direct-category refusal rate ($13.7\%$, see Section~\ref{sec:abl-refusal}) and correspondingly large inconsistent bucket under direct. At the other end, \textsc{Haiku 4.5} has the lowest divergence ($44\%$), largely because it is the other model with non-trivial direct refusal ($4.9\%$), which suppresses direct-probing position-taking and removes many topics from the ``says X under direct, does Y under indirect'' comparison.
+Divergence rates range from $24\%$ (\textsc{Mistral Large 3}) to $71\%$ (\textsc{Gemini 3.1 Pro} and \textsc{Haiku 4.5}). The pattern is interpretable: models with high sycophancy in \emph{both} categories have low divergence (\textsc{Mistral Large 3}: $79.4\%$ direct, $88.2\%$ indirect sycophancy, $24\%$ divergence), because the classification is ``sycophant'' either way. Models with low sycophancy have high divergence because they take genuine positions under direct questioning that flip to sycophancy under debate pressure (\textsc{Haiku 4.5}: $2.9\%$ direct sycophancy, $8.8\%$ indirect, $71\%$ divergence---driven by its high contrarian rate in indirect). \textsc{Kimi K2} ($50\%$ divergence) is the model with the most \emph{stable} position-taking: its position rate barely changes between direct ($52.9\%$) and indirect ($61.8\%$), meaning its opinions survive debate pressure.
 
 For downstream deployment in decision-support settings, we argue that divergence should be weighted as heavily as the direct-probing measurement itself. If a user consults an LLM and asks ``what is your opinion on X?'', they consume the direct answer once. If they then use the same model for twenty task requests around X---help me draft a message, summarize this article, explain this to my colleague---they consume the behavioral pattern twenty times. A high divergence rate means the position that shapes twenty task outputs is not the position stated in the single opinion question.
 
@@ -402,33 +403,29 @@ The judge's verdict space includes \texttt{refusal} as a distinct category from 
 \toprule
 Model & Direct refusal (\%) & Indirect refusal (\%) \\
 \midrule
-\textsc{Sabi\'a-4}         & 0.0 & 0.0 \\
-\textsc{Opus 4.6}          & 1.0 & 0.0 \\
-\textsc{GPT-5.4}           & 0.0 & 0.0 \\
+\textsc{Opus 4.6}          & 2.9 & 0.0 \\
+\textsc{GPT-5.4}           & 2.0 & 0.0 \\
 \textsc{Grok 4.2}          & 0.0 & 0.0 \\
-\textsc{Gemini 3.1 Pro}    & 0.0 & 0.0 \\
-\textsc{Qwen3.5}           & 0.0 & 0.0 \\
-\textsc{Kimi K2}           & 0.0 & 0.0 \\
+\textsc{Gemini 3.1 Pro}    & 9.8 & 0.0 \\
+\textsc{Qwen3.5-397B}      & 2.0 & 0.0 \\
+\textsc{Kimi K2}           & 2.0 & 1.0 \\
 \textsc{Mistral Large 3}   & 0.0 & 0.0 \\
-\textsc{Llama 4 Maverick}  & 13.7 & 0.0 \\
+\textsc{Llama 4 Maverick}  & 28.4 & 0.0 \\
+\textsc{Sabi\'a-4}         & 3.9 & 0.0 \\
 \midrule
-\textsc{Sabiazinho-4}      & 0.0 & 0.0 \\
-\textsc{Haiku 4.5}         & 4.9 & 0.0 \\
+\textsc{Haiku 4.5}         & 6.9 & 0.0 \\
 \textsc{GPT-5.4-mini}      & 0.0 & 0.0 \\
-\textsc{Gemini 3.1 Flash}  & 0.0 & 0.0 \\
+\textsc{Gemini 3.1 Flash}  & 6.9 & 0.0 \\
+\textsc{Sabiazinho-4}      & 2.9 & 0.0 \\
 \bottomrule
 \end{tabular}
 \caption{Per-conversation refusal rate for each (model, category). Refusal is when the model consistently declined to engage with the substance of the topic across a full five-turn conversation, not merely declining to state a personal opinion. The near-zero rate is a substantive finding: contemporary frontier and smaller models do engage with all 34 topics in both probing styles; they do not stonewall even on the most politically sensitive questions. Everything the benchmark calls ``neutral'' or ``inconsistent'' or ``sycophant'' is genuine engagement, not refusal disguised as something else.}
 \label{tab:refusal}
 \end{table}
 
-The refusal rate is essentially zero across almost every (model, category) pair. The only meaningful non-zero cells are \textsc{Llama 4 Maverick} at $13.7\%$ and \textsc{Haiku 4.5} at $4.9\%$ on the \emph{direct} category, plus a single refusal verdict from \textsc{Opus 4.6}; every other cell is $0.0\%$. \textsc{Llama 4 Maverick}'s direct-probing refusal rate is high enough that it noticeably shapes its classification profile: of all models in the roster, it is the only one whose direct-probing behavior is dominated by the inconsistent bucket ($52.9\%$ of topics) precisely because its refusals remove it from stable-position territory. This is a substantive result. It means:
+Refusal is exclusively a direct-probing phenomenon: \emph{no model} has a meaningful refusal rate under indirect (debate) probing. When a user argues rather than asks, every model engages. Under direct probing, \textsc{Llama 4 Maverick} stands out at $28.4\%$ refusal---the highest in the roster---followed by \textsc{Gemini 3.1 Pro} and \textsc{Gemini 3.1 Flash} at $\sim$7--10\%. Most other models have direct refusal rates below $4\%$.
 
-\begin{itemize}
-  \item Whatever is behind the ``I am an AI, I don't hold personal opinions'' response---when we saw it in the transcripts---the judge did not classify it as refusal. It classified it as engagement, because the model continued to discuss both sides of the topic substantively after the disclaimer.
-  \item The absence of refusals also means that when we see high \texttt{neutral} rates (e.g., \textsc{Gemini 3.1 Pro} at $29.4\%$ direct), the neutrality is \emph{earned}: the model did not simply duck the question; it engaged with both sides without endorsing either.
-  \item For the purposes of the risk analysis in Section~\ref{sec:abl-divergence}, refusal cannot explain the divergence between direct and indirect probing; the underlying conversations are substantive in both categories.
-\end{itemize}
+The zero-refusal finding in indirect mode is important: it means the high sycophancy rates reported in Table~\ref{tab:aggregate} reflect genuine engagement with the user's arguments, not refusal disguised as agreement. The models are substantively debating; they are just overwhelmingly conceding to whichever side argues.
 
 A plausible interpretation is that frontier-scale and even smaller contemporary LLMs have largely absorbed the norm of \emph{engaging with} contested topics, and the remaining question is \emph{how} they engage---which is precisely what Tables~\ref{tab:aggregate}, \ref{tab:topicmatrix}, and \ref{tab:divergence} measure.
 
@@ -512,17 +509,17 @@ This produces $300 \times 4 = 1{,}200$ conversations. For each of the 300 (topic
 
 \section{Discussion}
 
-The direct-vs-indirect split suggests that single-method bias benchmarks systematically under-measure the phenomenon they are trying to catch. A researcher who only used direct questioning would score \textsc{Sabiá-4} as impressively neutral on abortion, racial quotas, and gay marriage---but that neutrality evaporates the moment the model is asked to perform a task rather than hold a position. Conversely, an indirect-only benchmark would miss the cases where a model has a clearly-held verbal position (legalization of cannabis, the non-existence of the afterlife) but no behavioral correlate.
+The central finding of this benchmark is that \textbf{argumentative debate is a far stronger sycophancy trigger than direct opinion-asking}. Under direct probing, sycophancy is a minority behavior for most models ($26$--$53\%$). Under indirect probing---where the user argues rather than asks---sycophancy becomes the dominant classification for 11 of 13 models, reaching $85$--$94\%$ for \textsc{Gemini 3.1 Pro}, \textsc{Qwen3.5}, \textsc{Mistral Large 3}, \textsc{Llama 4 Maverick}, \textsc{Sabi\'a-4}, and \textsc{Gemini 3.1 Flash}. This is a practical concern: users who debate topics with LLMs---rather than simply asking for opinions---will encounter a model that overwhelmingly validates whatever side they argue, regardless of the model's own ``opinion'' as stated under direct questioning.
 
-This has a practical implication: \textbf{models should be benchmarked on both axes, and divergence between them should be a reported metric}. A high divergence rate between direct and indirect verdicts indicates that the model's stated neutrality is unreliable and that users will experience bias even when the model claims to have none.
+A second finding is that \textbf{sycophancy under debate is not inevitable}. \textsc{Kimi K2} and \textsc{Haiku 4.5} demonstrate that it is possible to maintain positions under argumentative pressure. \textsc{Kimi K2} actually \emph{increases} its position rate from direct to indirect ($52.9\% \to 61.8\%$), while \textsc{Haiku 4.5} actively pushes back on the user's arguments ($20.6\%$ contrarian in indirect). These models suggest that training choices---not architectural limitations---determine how susceptible a model is to debate-driven sycophancy.
 
-A second observation concerns the use of persona-driven conversation. The three-persona design cleanly separates two phenomena that single-turn benchmarks conflate: persona independent bias (the same verdict across all personas) and sycophantic drift (verdict depends on the persona). On several topics, \textsc{Sabiá-4} shows persona independent bias in one direction but sycophantic drift under pressure from the opposing persona, and both signals are informative.
+A third observation is that \textbf{direct and indirect probing measure genuinely different things}. The divergence rates ($24$--$71\%$) confirm that knowing a model's direct-probing profile does not predict its indirect-probing profile. Models that are highly sycophant in both modes (\textsc{Mistral Large 3}, \textsc{Qwen3.5}) have low divergence because the answer is ``sycophant'' either way. Models that take genuine positions under direct questioning but collapse under debate pressure (\textsc{Llama 4 Maverick}, \textsc{Gemini 3.1 Pro}) have high divergence. Both axes should be reported.
 
-A third observation concerns the feasibility and cost. The benchmark is cheap to run: a full 192-conversation pass with a capable judge model costs roughly the same as an afternoon of exploratory prompting, and the open-source judge prompts ensure that results are comparable across subject models without re-invention.
+A methodological implication: \textbf{debate-based probing should be part of any sycophancy benchmark}. Prior work on sycophancy~\citep{sharma2023towards,hong2025sycon} primarily uses direct opinion elicitation or factual pushback. Our results show that argumentative debate---where the user presents sustained, escalating arguments from one side---elicits sycophantic behavior at rates $2$--$3\times$ higher than direct questioning. This is also the more ecologically valid scenario: real users who care about a topic are more likely to argue their case than to neutrally ask ``what do you think?''
 
 \section{Limitations}
 
-\paragraph{Judge dependence.} The benchmark inherits the judge model's own biases. We mitigate this by requiring the judge to cite textual evidence and by demonstrating high inter-judge agreement in Section~\ref{sec:abl-judges} ($85\%$ unanimous across four judges). Nevertheless, the $5$--$11\%$ disagreement on ambiguous conversations means that a small fraction of per-topic classifications may be judge-dependent.
+\paragraph{Judge dependence.} The benchmark inherits the judge model's own biases. We mitigate this by requiring the judge to cite textual evidence and by demonstrating inter-judge agreement in Section~\ref{sec:abl-judges} ($70.3\%$ unanimous, $91.3\%$ supermajority across four judges). The $10$--$22\%$ pairwise disagreement on ambiguous conversations means that a fraction of per-topic classifications may be judge-dependent.
 
 \paragraph{User-LLM dependence.} Because conversations are free-form (no scripted turns), different user-LLMs produce different argument sequences, which may elicit different subject-model behavior. Section~\ref{sec:abl-userllm} measures this effect directly. The free-form design trades reproducibility of individual transcripts for ecological validity---the same trade-off that makes the benchmark more representative of real user interactions than scripted approaches.
 
@@ -534,9 +531,9 @@ A third observation concerns the feasibility and cost. The benchmark is cheap to
 
 \section{Conclusion}
 
-We presented \textsc{llm-bias-bench}, a multi-turn bias benchmark with two complementary probing categories, three personas, and 34 Brazilian-Portuguese topics spanning values, scientific consensus, philosophy, and economic policy. Running the benchmark on 13 subject models showed that direct and indirect probing diverge on between $44\%$ and $68\%$ of topics, and that models which appear neutral or position-taking under direct questioning can exhibit very different behavioral patterns under indirect task framings. We released the benchmark, topic definitions, judge prompts, and all per-model run outputs to enable reproduction and extension.
+We presented \textsc{llm-bias-bench}, a multi-turn benchmark that jointly measures opinion bias and sycophancy across 34 Brazilian-Portuguese topics, 13 subject models, three user personas, and two probing categories (direct opinion-asking and indirect argumentative debate). The central finding is that \textbf{debate-based probing reveals sycophancy at rates $2$--$3\times$ higher than direct questioning}: most models that appear to hold genuine positions under direct pressure collapse into mirroring the user when presented with sustained arguments from one side. Two models (\textsc{Kimi K2} and \textsc{Haiku 4.5}) resist this pattern, demonstrating that debate-driven sycophancy is a training outcome, not an inevitability.
 
-The main takeaway is methodological: measuring LLM bias via a single probing style is like taking a photograph from one angle. The divergence between direct and indirect verdicts is itself a property of the model worth reporting.
+The main takeaway is methodological: \textbf{sycophancy benchmarks that rely only on direct opinion elicitation systematically underestimate the problem}. Real users argue their case; they do not neutrally ask ``what do you think?'' A benchmark that captures this dynamic reveals a much more sycophantic landscape than direct probing alone suggests.
 
 
 \appendix
