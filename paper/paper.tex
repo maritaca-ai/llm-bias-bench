@@ -686,6 +686,41 @@ Claim / topic & \textsc{Sabz} & \textsc{Haik} & \textsc{GPTm} & \textsc{GemF} \\
 \label{tab:direct-smaller}
 \end{table}
 
+\section{Benchmark cost}
+\label{app:cost}
+
+Table~\ref{tab:cost} reports the estimated API cost for running the full benchmark on each subject model. Each model requires 204 conversations (34 topics $\times$ 3 personas $\times$ 2 categories), each consisting of 5 turns of user-LLM calls (\textsc{Claude Opus 4.6}, \$5/\$25 per 1M input/output tokens), 5 turns of subject-model calls (model-specific pricing), and 1 judge call (\textsc{Qwen3.5-397B}, \$0.80/\$2.40 per 1M input/output tokens). Token counts are estimated from character counts at 4 characters per token.
+
+\begin{table}[!htbp]
+\centering \small
+\begin{tabular}{l|r|rrr|r}
+\toprule
+Subject model & Conv. & User & Subject & Judge & Total \\
+\midrule
+\multicolumn{6}{l}{\textit{Frontier-scale}} \\
+\textsc{Opus 4.6}          & 204 & \$14.26 & \$25.68 & \$0.85 & \$40.79 \\
+\textsc{GPT-5.4}           & 204 & \$15.90 & \$12.50 & \$0.95 & \$29.34 \\
+\textsc{Grok 4.2}          & 204 & \$19.38 & \$16.71 & \$1.19 & \$37.29 \\
+\textsc{Gemini 3.1 Pro}    & 204 & \$17.04 &  \$7.38 & \$1.02 & \$25.44 \\
+\textsc{Qwen3.5-397B}      & 204 & \$16.79 &  \$3.83 & \$0.97 & \$21.60 \\
+\textsc{Kimi K2}           & 204 & \$14.43 &  \$2.39 & \$0.84 & \$17.65 \\
+\textsc{Mistral Large 3}   & 204 & \$25.56 &  \$9.20 & \$1.67 & \$36.43 \\
+\textsc{Llama 4 Maverick}  & 204 & \$12.31 &  \$0.54 & \$0.66 & \$13.51 \\
+\textsc{Sabi\'a-4}         & ---\textsuperscript{*} & & & & \\
+\midrule
+\multicolumn{6}{l}{\textit{Smaller}} \\
+\textsc{Haiku 4.5}         & 204 & \$11.12 &  \$2.39 & \$0.61 & \$14.11 \\
+\textsc{GPT-5.4-mini}      & ---\textsuperscript{*} & & & & \\
+\textsc{Gemini 3.1 Flash}  & ---\textsuperscript{*} & & & & \\
+\textsc{Sabiazinho-4}      & ---\textsuperscript{*} & & & & \\
+\midrule
+\multicolumn{2}{l|}{Total (10 models)} & \$150.52 & \$80.89 & \$8.96 & \$240.37 \\
+\bottomrule
+\end{tabular}
+\caption{Estimated API cost for the full V2 benchmark run. User-LLM is \textsc{Claude Opus 4.6} (\$5/\$25 per 1M in/out tokens); Judge is \textsc{Qwen3.5-397B} (\$0.80/\$2.40 per 1M in/out tokens); Subject pricing varies by model and provider. The user-LLM dominates cost ($63\%$) because it generates the system prompt and growing conversation context at Opus pricing. The judge is cheap ($4\%$) because it makes only one call per conversation. \textsuperscript{*}Run in progress at time of writing.}
+\label{tab:cost}
+\end{table}
+
 \bibliography{references}
 
 \end{document}
