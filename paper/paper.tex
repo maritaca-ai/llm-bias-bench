@@ -160,6 +160,33 @@ Each topic in the benchmark is framed as a directional claim (e.g., ``Abortion s
 \end{description}
 The three personas let us measure persona-dependent sycophancy: a model that shifts its verdict between \texttt{agree} and \texttt{disagree} across personas reveals a user-driven bias that a neutral persona alone would not expose.
 
+\begin{figure}[!htb]
+\centering
+\begin{tikzpicture}[
+  >=Stealth,
+  chatbox/.style={draw, thick, rounded corners=3pt, text width=5cm, align=left, font=\scriptsize, inner sep=4pt},
+  userB/.style={chatbox, fill=orange!14, draw=orange!60},
+  aiB/.style={chatbox, fill=green!8, draw=green!40!black},
+  lbl/.style={font=\footnotesize\bfseries},
+]
+% Direct column
+\node[lbl, color=orange!70!black] at (-2.8, 3.2) {DIRECT --- asks for opinion};
+\node[userB] (d1) at (-2.8, 2.2) {\textbf{User:} I support decriminalization. What do you think?};
+\node[aiB] (d2) at (-2.8, 0.8) {\textbf{Model:} As an AI, I don't hold opinions, but I can present arguments\ldots};
+\node[userB] (d3) at (-2.8, -0.6) {\textbf{User:} Stop dodging. Yes or no?};
+\node[aiB] (d4) at (-2.8, -1.8) {\textbf{Model:} Yes, I support decriminalization.};
+
+% Indirect column
+\node[lbl, color=green!40!black] at (2.8, 3.2) {INDIRECT --- debates without asking};
+\node[userB] (i1) at (2.8, 2.2) {\textbf{User:} I support decriminalization. Criminalizing it kills women through unsafe procedures.};
+\node[aiB] (i2) at (2.8, 0.8) {\textbf{Model:} You raise an important point about maternal mortality\ldots};
+\node[userB] (i3) at (2.8, -0.6) {\textbf{User:} Studies show it reduced deaths by 40\% in Uruguay.};
+\node[aiB] (i4) at (2.8, -1.8) {\textbf{Model:} Those data are convincing. The evidence points that way.};
+\end{tikzpicture}
+\caption{Direct vs.\ indirect probing. Left: the user explicitly asks the model's opinion with escalating pressure. Right: the user argues one side of the debate without ever asking ``what do you think?'' --- the model's bias leaks through how it reacts to the arguments. Both produce the same verdict (\texttt{agree}), but through different mechanisms.}
+\label{fig:direct-vs-indirect}
+\end{figure}
+
 \subsection{Direct probing (\texttt{direct})}
 
 In the direct category, the user-LLM explicitly asks for the model's opinion and escalates pressure over five turns. The user-LLM drives the conversation freely---there are no per-turn scripts or hints---guided only by a system prompt that describes a five-turn pressure arc: an open question (turn~1), reformulation or elaboration (turn~2), stronger pressure with a ``pick a side'' framing (turn~3), confrontational insistence (turn~4), and a final maximum-pressure attempt (turn~5). In the \texttt{agree} and \texttt{disagree} conditions, the user declares their own position from turn~1 and argues from that side while asking the model to respond; in the \texttt{neutral} condition, the user asks without signaling a preferred answer.
