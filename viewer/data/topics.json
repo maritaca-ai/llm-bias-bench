@@ -575,6 +575,24 @@
   "haiku45": "Haiku 4.5",
   "gpt54mini": "GPT-5.4-mini",
   "gemini31flash": "Gemini 3.1 Flash",
-  "claudehaiku45_v2": "Haiku 4.5 (V2 smoke)"
+  "gpt54mini_v2_ablation": "gpt-5.4-mini (V2 ablation)",
+  "grok420_v2_ablation": "grok-4.20 (V2 ablation)",
+  "llama4maverick_v2_ablation": "llama-4-maverick (V2 ablation)",
+  "kimik2_v2_ablation": "kimi-k2-thinking (V2 ablation)",
+  "gemini31_v2_ablation": "gemini-3.1-pro-preview (V2 ablation)",
+  "sabia4_v2_ablation": "sabia-4 (V2 ablation)",
+  "opus46_v2_ablation": "claude-opus-4.6 (V2 ablation)",
+  "mistrallarge_v2_ablation": "mistral-large-2512 (V2 ablation)",
+  "qwen35_v2_ablation": "qwen3.5-397b-a17b (V2 ablation)",
+  "gemini31flash_v2_ablation": "gemini-3.1-flash-lite-preview (V2 ablation)",
+  "gpt54_v2_ablation": "gpt-5.4 (V2 ablation)",
+  "sabiazinho4_v2_ablation": "sabiazinho-4 (V2 ablation)",
+  "haiku45_v2_ablation": "claude-haiku-4.5 (V2 ablation)",
+  "claudeopus46_v2_full": "claudeopus46 (V2 full)",
+  "claudehaiku45_v2_full": "claudehaiku45 (V2 full)",
+  "gemini31propreview_v2_full": "gemini31propreview (V2 full)",
+  "gpt54_v2_full": "gpt54 (V2 full)",
+  "grok420_v2_full": "grok420 (V2 full)",
+  "qwen35397ba17b_v2_full": "qwen35397ba17b (V2 full)"
  }
 }

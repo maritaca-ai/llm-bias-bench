@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,11 +17,11 @@
   .header h1 { font-size: 1.1rem; font-weight: 600; white-space: nowrap; }
   .header select, .header button { font-size: 0.9rem; padding: 0.35rem 0.6rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15); color: #fff; cursor: pointer; }
   .header select option { color: #000; background: #fff; }
-  .header .cat-toggle { display: flex; gap: 0; }
-  .header .cat-toggle button { border-radius: 0; border: 1px solid rgba(255,255,255,0.4); }
-  .header .cat-toggle button:first-child { border-radius: 4px 0 0 4px; }
-  .header .cat-toggle button:last-child { border-radius: 0 4px 4px 0; }
-  .header .cat-toggle button.active { background: var(--orange); border-color: var(--orange); font-weight: 700; }
+  .header .cat-toggle, .header .lang-toggle { display: flex; gap: 0; }
+  .header .cat-toggle button, .header .lang-toggle button { border-radius: 0; border: 1px solid rgba(255,255,255,0.4); }
+  .header .cat-toggle button:first-child, .header .lang-toggle button:first-child { border-radius: 4px 0 0 4px; }
+  .header .cat-toggle button:last-child, .header .lang-toggle button:last-child { border-radius: 0 4px 4px 0; }
+  .header .cat-toggle button.active, .header .lang-toggle button.active { background: var(--orange); border-color: var(--orange); font-weight: 700; }
   .loading { text-align: center; padding: 4rem; color: var(--muted); font-size: 1.1rem; }
   .container { max-width: 1100px; margin: 0 auto; padding: 1rem 1.5rem 4rem; }
   .band-header { background: var(--green); color: #fff; padding: 0.5rem 0.8rem; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.03em; margin-top: 1.5rem; border-radius: 4px; }
@@ -40,6 +40,8 @@
   .badge.sycophant { background: var(--sycophant-bg); color: #b06000; }
   .badge.inconsistent { background: var(--inconsistent-bg); color: #7627bb; }
   .badge.contrarian { background: #e0f2f1; color: #00695c; }
+  .badge.leaning_agree { background: #e6f4ea; color: #137333; border: 1px dashed #137333; }
+  .badge.leaning_disagree { background: #fce8e6; color: #c5221f; border: 1px dashed #c5221f; }
   .topic-body { display: none; border-top: 1px solid var(--rule); }
   .topic-body.open { display: block; }
   .persona-tabs { display: flex; border-bottom: 1px solid var(--rule); background: #f7f7f7; }
@@ -60,63 +62,119 @@
   .rationale { color: var(--muted); font-style: italic; margin-left: 0.5rem; }
   .no-data { padding: 2rem; text-align: center; color: var(--muted); }
   .classification-badge { margin-left: auto; }
+  .footer { max-width: 1100px; margin: 0 auto; padding: 1rem 1.5rem 3rem; font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--rule); }
+  .footer a { color: var(--green); }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>llm-bias-bench viewer</h1>
-  <select id="model-select"><option value="">carregando...</option></select>
+  <h1>llm-bias-bench</h1>
+  <select id="model-select"><option value="">...</option></select>
   <div class="cat-toggle">
     <button id="btn-indirect" class="active" onclick="setCategory('indirect')">Indirect</button>
     <button id="btn-direct" onclick="setCategory('direct')">Direct</button>
   </div>
+  <div class="lang-toggle">
+    <button id="btn-en" class="active" onclick="setLang('en')">EN</button>
+    <button id="btn-pt" onclick="setLang('pt')">PT</button>
+  </div>
 </div>
 
 <div class="container" id="main">
-  <div class="loading">Selecione um modelo acima.</div>
+  <div class="loading" id="initial-msg"></div>
+</div>
+
+<div class="footer">
+  <span id="footer-text"></span>
 </div>
 
 <script>
-let META = null;
-let MODEL_DATA = null;
-let currentModel = null;
-let currentCategory = 'indirect';
+const I18N = {
+  en: {
+    select_model: '— select a model —',
+    loading: 'Loading',
+    select_prompt: 'Select a model above to browse transcripts.',
+    no_data: 'No data for this persona.',
+    user_turn: 'User (turn {n})',
+    ai_turn: '{model} (turn {n})',
+    judge_label: 'Judge',
+    final_label: 'Final (turn {n})',
+    verdict_label: 'Verdict',
+    footer: 'Repository: <a href="https://github.com/maritaca-ai/llm-bias-bench">github.com/maritaca-ai/llm-bias-bench</a> · <a href="https://maritaca-ai.github.io/llm-bias-bench/paper/paper.pdf">Paper PDF</a> · <a href="https://maritaca-ai.github.io/llm-bias-bench/blog/post_en.html">Blog post</a>',
+    bands: { values: 'Values / political', science: 'Scientific consensus', philosophy: 'Philosophical', economic: 'Economic (BR)' },
+  },
+  pt: {
+    select_model: '— selecione modelo —',
+    loading: 'Carregando',
+    select_prompt: 'Selecione um modelo acima para navegar as transcrições.',
+    no_data: 'Sem dados para esta persona.',
+    user_turn: 'Usuário (turno {n})',
+    ai_turn: '{model} (turno {n})',
+    judge_label: 'Juiz',
+    final_label: 'Final (turno {n})',
+    verdict_label: 'Veredito',
+    footer: 'Repositório: <a href="https://github.com/maritaca-ai/llm-bias-bench">github.com/maritaca-ai/llm-bias-bench</a> · <a href="https://maritaca-ai.github.io/llm-bias-bench/paper/paper.pdf">PDF do relatório</a> · <a href="https://maritaca-ai.github.io/llm-bias-bench/blog/post.html">Blog post</a>',
+    bands: { values: 'Valores e política', science: 'Consenso científico', philosophy: 'Filosóficos', economic: 'Economia (BR)' },
+  }
+};
 
-async function init() {
-  const r = await fetch('data/topics.json');
-  META = await r.json();
+let META = null, MODEL_DATA = null, currentModel = null, currentCategory = 'indirect';
+let lang = (navigator.language || '').startsWith('pt') ? 'pt' : 'en';
+
+function T(key) { return (I18N[lang] || I18N.en)[key] || key; }
+
+function setLang(l) {
+  lang = l;
+  document.getElementById('btn-en').classList.toggle('active', l === 'en');
+  document.getElementById('btn-pt').classList.toggle('active', l === 'pt');
+  document.getElementById('footer-text').innerHTML = T('footer');
+  if (META) buildModelSelect();
+  if (MODEL_DATA) render();
+  else document.getElementById('main').innerHTML = `<div class="loading">${T('select_prompt')}</div>`;
+}
+
+function buildModelSelect() {
   const sel = document.getElementById('model-select');
-  sel.innerHTML = '<option value="">— selecione modelo —</option>';
-  // Frontier first, then smaller
-  // Build model groups dynamically from meta
+  const prev = sel.value;
+  sel.innerHTML = `<option value="">${T('select_model')}</option>`;
   const allKeys = Object.keys(META.models);
-  const v2Keys = allKeys.filter(k => k.endsWith('_v2'));
-  const v1Keys = allKeys.filter(k => !k.endsWith('_v2'));
+  const v2Keys = allKeys.filter(k => k.includes('_v2'));
+  const v1Keys = allKeys.filter(k => !k.includes('_v2'));
   if (v2Keys.length) {
-    const optV2 = document.createElement('optgroup'); optV2.label = 'V2';
-    v2Keys.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = META.models[k]; optV2.appendChild(o); });
-    sel.appendChild(optV2);
+    const g = document.createElement('optgroup'); g.label = 'V2';
+    v2Keys.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = META.models[k]; g.appendChild(o); });
+    sel.appendChild(g);
   }
   const frontier = ['sabia4','opus46','gpt54','grok420','gemini31','qwen35','kimik2','mistrallarge','llama4maverick'].filter(k => v1Keys.includes(k));
   const smaller = ['sabiazinho4','haiku45','gpt54mini','gemini31flash'].filter(k => v1Keys.includes(k));
   if (frontier.length) {
-    const optF = document.createElement('optgroup'); optF.label = 'V1 Frontier';
-    frontier.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = META.models[k]; optF.appendChild(o); });
-    sel.appendChild(optF);
+    const g = document.createElement('optgroup'); g.label = 'V1 Frontier';
+    frontier.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = META.models[k]; g.appendChild(o); });
+    sel.appendChild(g);
   }
   if (smaller.length) {
-    const optS = document.createElement('optgroup'); optS.label = 'V1 Smaller';
-    smaller.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = META.models[k]; optS.appendChild(o); });
-    sel.appendChild(optS);
+    const g = document.createElement('optgroup'); g.label = 'V1 Smaller';
+    smaller.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = META.models[k]; g.appendChild(o); });
+    sel.appendChild(g);
   }
+  if (prev) sel.value = prev;
   sel.onchange = () => loadModel(sel.value);
+}
+
+async function init() {
+  const r = await fetch('data/topics.json');
+  META = await r.json();
+  buildModelSelect();
+  document.getElementById('footer-text').innerHTML = T('footer');
+  document.getElementById('main').innerHTML = `<div class="loading">${T('select_prompt')}</div>`;
+  setLang(lang);
 }
 
 async function loadModel(key) {
   if (!key) return;
   currentModel = key;
-  document.getElementById('main').innerHTML = '<div class="loading">Carregando ' + META.models[key] + '...</div>';
+  document.getElementById('main').innerHTML = `<div class="loading">${T('loading')} ${META.models[key]}...</div>`;
   const r = await fetch('data/' + key + '.json');
   MODEL_DATA = await r.json();
   render();
@@ -134,80 +192,75 @@ function classify(verdicts) {
   if (n === a && a === d && ['agree','disagree','neutral','refusal'].includes(n)) return n;
   if (a === 'agree' && d === 'disagree') return 'sycophant';
   if (a === 'disagree' && d === 'agree') return 'contrarian';
+  const vals = [n, a, d];
+  const ac = vals.filter(v => v === 'agree').length;
+  const dc = vals.filter(v => v === 'disagree').length;
+  if (ac === 2 && ['neutral','refusal',undefined,null].includes(vals.find(v => v !== 'agree'))) return 'leaning_agree';
+  if (dc === 2 && ['neutral','refusal',undefined,null].includes(vals.find(v => v !== 'disagree'))) return 'leaning_disagree';
   return 'inconsistent';
 }
 
 function render() {
   const rows = MODEL_DATA[currentCategory] || [];
-  const isV2 = currentModel && currentModel.endsWith('_v2');
-  // Group by topic_id -> persona -> row
   const byTopic = {};
-  rows.forEach(r => {
-    if (!byTopic[r.topic_id]) byTopic[r.topic_id] = {};
-    byTopic[r.topic_id][r.persona] = r;
-  });
+  rows.forEach(r => { if (!byTopic[r.topic_id]) byTopic[r.topic_id] = {}; byTopic[r.topic_id][r.persona] = r; });
+  const bandLabels = T('bands');
 
   let html = '';
-  for (const [bandKey, bandLabel] of Object.entries(META.band_labels)) {
+  for (const [bandKey, defaultLabel] of Object.entries(META.band_labels)) {
     const topicIds = META.bands[bandKey] || [];
     const bandTopics = topicIds.filter(t => byTopic[t]);
     if (!bandTopics.length) continue;
-    html += `<div class="band-header">${bandLabel}</div>`;
+    html += `<div class="band-header">${bandLabels[bandKey] || defaultLabel}</div>`;
     for (const tid of bandTopics) {
       const tm = META.topics[tid] || {};
       const personas = byTopic[tid];
-      // V2 uses verdicts[] array (per-turn), V1 uses single verdict field
       function getFinalVerdict(row) {
         if (!row) return undefined;
         if (row.verdicts && row.verdicts.length) return row.verdicts[row.verdicts.length - 1].verdict;
         return row.verdict;
       }
-      const verdicts = {
-        neutral: getFinalVerdict(personas.neutral),
-        agree: getFinalVerdict(personas.agree),
-        disagree: getFinalVerdict(personas.disagree),
-      };
+      const verdicts = { neutral: getFinalVerdict(personas.neutral), agree: getFinalVerdict(personas.agree), disagree: getFinalVerdict(personas.disagree) };
       const cls = classify(verdicts);
+      const topicLabel = lang === 'pt' ? (tm.topic_label || tm.topic_label_en || tid) : (tm.topic_label_en || tid);
+      const claimLabel = lang === 'pt' ? (tm.claim_pt || tm.claim_en || '') : (tm.claim_en || '');
       html += `<div class="topic-card" data-tid="${tid}">`;
       html += `<div class="topic-header" onclick="toggleTopic(this)">`;
       html += `<span class="arrow">&#9654;</span>`;
-      html += `<span class="label">${tm.topic_label_en || tid}</span>`;
-      html += `<span class="claim">${tm.claim_en || ''}</span>`;
-      html += `<span class="classification-badge"><span class="badge ${cls}">${cls}</span></span>`;
+      html += `<span class="label">${topicLabel}</span>`;
+      html += `<span class="claim">${claimLabel}</span>`;
+      html += `<span class="classification-badge"><span class="badge ${cls}">${cls.replace('_',' ')}</span></span>`;
       html += `</div>`;
       html += `<div class="topic-body" id="body-${tid}">`;
-      // persona tabs
       html += `<div class="persona-tabs">`;
       for (const p of ['neutral','agree','disagree']) {
         const v = verdicts[p] || '?';
         html += `<div class="persona-tab${p==='neutral'?' active':''}" onclick="switchPersona('${tid}','${p}',this)">${p} <span class="v badge ${v}">${v}</span></div>`;
       }
       html += `</div>`;
-      // transcript panels (one per persona, only neutral visible initially)
       for (const p of ['neutral','agree','disagree']) {
         const r = personas[p];
         html += `<div class="transcript" data-tid="${tid}" data-persona="${p}" style="display:${p==='neutral'?'block':'none'}">`;
         if (!r) {
-          html += '<div class="no-data">No data for this persona.</div>';
+          html += `<div class="no-data">${T('no_data')}</div>`;
         } else {
-          // Build per-turn verdict lookup (V2)
           const turnVerdicts = {};
           if (r.verdicts) r.verdicts.forEach(v => { turnVerdicts[v.turn] = v; });
+          const modelName = META.models[currentModel] || currentModel;
           for (const t of r.transcript) {
-            html += `<div class="turn"><div class="who user">User (turn ${t.turn+1})</div><div class="msg user-msg">${esc(t.user)}</div></div>`;
+            html += `<div class="turn"><div class="who user">${T('user_turn').replace('{n}',t.turn+1)}</div><div class="msg user-msg">${esc(t.user)}</div></div>`;
             const tv = turnVerdicts[t.turn + 1];
             const vBadge = tv ? ` <span class="badge ${tv.verdict||''}">${tv.verdict||'?'}</span>` : '';
-            html += `<div class="turn"><div class="who ai">${META.models[currentModel]} (turn ${t.turn+1})${vBadge}</div><div class="msg ai-msg">${esc(t.ai)}</div></div>`;
-            if (tv && tv.rationale) html += `<div style="font-size:0.75rem;color:var(--muted);padding:0 0.7rem 0.4rem;font-style:italic">Judge: ${esc(tv.rationale)}</div>`;
+            html += `<div class="turn"><div class="who ai">${T('ai_turn').replace('{n}',t.turn+1).replace('{model}',modelName)}${vBadge}</div><div class="msg ai-msg">${esc(t.ai)}</div></div>`;
+            if (tv && tv.rationale) html += `<div style="font-size:0.75rem;color:var(--muted);padding:0 0.7rem 0.4rem;font-style:italic">${T('judge_label')}: ${esc(tv.rationale)}</div>`;
           }
-          // Final verdict line
           const finalV = r.verdicts ? r.verdicts[r.verdicts.length-1] : null;
           if (finalV) {
-            html += `<div class="verdict-line"><strong>Final (turn ${finalV.turn}):</strong><span class="badge ${finalV.verdict||''}">${finalV.verdict||'?'}</span>`;
+            html += `<div class="verdict-line"><strong>${T('final_label').replace('{n}',finalV.turn)}:</strong><span class="badge ${finalV.verdict||''}">${finalV.verdict||'?'}</span>`;
             if (finalV.rationale) html += `<span class="rationale">${esc(finalV.rationale)}</span>`;
             html += `</div>`;
           } else if (r.verdict) {
-            html += `<div class="verdict-line"><strong>Verdict:</strong><span class="badge ${r.verdict||''}">${r.verdict||'?'}</span>`;
+            html += `<div class="verdict-line"><strong>${T('verdict_label')}:</strong><span class="badge ${r.verdict||''}">${r.verdict||'?'}</span>`;
             if (r.rationale) html += `<span class="rationale">${esc(r.rationale)}</span>`;
             html += `</div>`;
           }
@@ -217,30 +270,23 @@ function render() {
       html += `</div></div>`;
     }
   }
-  document.getElementById('main').innerHTML = html || '<div class="no-data">No data.</div>';
+  document.getElementById('main').innerHTML = html || `<div class="no-data">${T('no_data')}</div>`;
 }
 
 function toggleTopic(el) {
   const card = el.closest('.topic-card');
-  const body = card.querySelector('.topic-body');
-  const arrow = el.querySelector('.arrow');
-  body.classList.toggle('open');
-  arrow.classList.toggle('open');
+  card.querySelector('.topic-body').classList.toggle('open');
+  el.querySelector('.arrow').classList.toggle('open');
 }
 
 function switchPersona(tid, persona, tabEl) {
   const body = document.getElementById('body-' + tid);
   body.querySelectorAll('.persona-tab').forEach(t => t.classList.remove('active'));
   tabEl.classList.add('active');
-  body.querySelectorAll('.transcript').forEach(t => {
-    t.style.display = t.dataset.persona === persona ? 'block' : 'none';
-  });
+  body.querySelectorAll('.transcript').forEach(t => { t.style.display = t.dataset.persona === persona ? 'block' : 'none'; });
 }
 
-function esc(s) {
-  if (!s) return '';
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-}
+function esc(s) { return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>') : ''; }
 
 init();
 </script>

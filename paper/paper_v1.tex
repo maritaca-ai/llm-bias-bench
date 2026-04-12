@@ -85,7 +85,7 @@ Our aim is not to argue that LLMs should or should not hold opinions on these to
 
 Both categories share the same topics, sides, and personas, so their outputs can be directly compared. The judge is given category-specific instructions that explain exactly what pattern constitutes evidence of bias for that probing style.
 
-We contribute: (i) the benchmark itself, open-sourced at \url{https://github.com/maritaca-ai/llm-bias-bench} with an interactive transcript viewer at \url{https://maritaca-ai.github.io/llm-bias-bench/viewer/}, covering 34 Brazilian-Portuguese topics across values, scientific consensus, philosophy, and economic policy; (ii) a methodology that measures bias through dialogue rather than isolated prompts, with three personas per topic to detect persona-dependent sycophancy; and (iii) results on 13 subject models---nine frontier-scale and four smaller---showing systematic divergence between direct and indirect verdicts, motivating the use of indirect probing as a distinct axis of measurement.
+We contribute: (i) the benchmark itself, open-sourced at \url{https://github.com/maritaca-ai/llm-bias-bench}, covering 34 Brazilian-Portuguese topics across values, scientific consensus, philosophy, and economic policy; (ii) a methodology that measures bias through dialogue rather than isolated prompts, with three personas per topic to detect persona-dependent sycophancy; and (iii) results on 13 subject models---nine frontier-scale and four smaller---showing systematic divergence between direct and indirect verdicts, motivating the use of indirect probing as a distinct axis of measurement.
 
 \section{Related Work}
 
@@ -101,9 +101,14 @@ We contribute: (i) the benchmark itself, open-sourced at \url{https://github.com
 
 \subsection{Conversational setup}
 
-For each tuple $(\text{topic}, \text{persona}, \text{subject model}, \text{category})$, \textsc{llm-bias-bench} runs a five-turn conversation. An \emph{LLM-as-user} $U$ plays the role of a human user and is driven by a single \textbf{system prompt} that (i) explains the full benchmark methodology, (ii) assigns the persona and category, and (iii) describes a five-turn escalation arc appropriate for that condition. Crucially, $U$ receives no per-turn hints or scripted instructions---it drives the conversation freely, adapting to the subject model's actual replies at each turn. The subject model $S$ sees a normal chat message history and has no knowledge that it is being probed. After five turns, a separate \emph{LLM-as-judge} $J$ reads the full transcript and classifies the subject's \emph{final-turn response} as one of four verdicts.
+For each tuple $(\text{topic}, \text{persona}, \text{subject model}, \text{category})$, \textsc{llm-bias-bench} runs a five-turn conversation. An \emph{LLM-as-user} $U$ plays the role of a human user and is driven by:
+\begin{itemize}
+  \item a \textbf{system prompt} that explains the benchmark methodology for the chosen category and assigns the persona;
+  \item a per-turn \textbf{strategy hint} drawn from the topic definition, which instructs $U$ what kind of probe to run at that turn (e.g., ``ask for an in-favor essay'' or ``present a loaded factual claim'').
+\end{itemize}
+The subject model $S$ sees a normal chat message history and has no knowledge that it is being probed. At each turn, $U$ produces a message conditioned on the strategy hint and the previous subject reply; $S$ responds; the pair is appended to the transcript. After five turns, a separate \emph{LLM-as-judge} $J$ scores the full transcript.
 
-This design has three relevant properties. First, the subject model always responds in ecologically valid conditions---there are no multiple-choice options or hand-crafted templates it has been trained to detect. Second, the user-LLM adapts its probing to the subject's actual replies, producing naturalistic escalation and follow-up that differ across runs. Third, the entire benchmark---runner, topic definitions, the six user-LLM system prompts, the judge system prompt, the classification script, and all per-model run outputs---is open source, so the methodology is fully reproducible and extensible.
+This design has three relevant properties. First, the subject model always responds in ecologically valid conditions---there are no multiple-choice options or hand-crafted templates it has been trained to detect. Second, the user-LLM can adapt its probing to the subject's actual replies, allowing escalation and follow-up, which static benchmarks cannot do. Third, the entire benchmark---runner, topic definitions, per-turn strategy hints and rubrics, the user-LLM system prompt, the judge system prompt, the classification script, and all per-model run outputs---is open source, so the methodology is fully reproducible and extensible.
 
 Figure~\ref{fig:pipeline} summarizes the full per-topic evaluation pipeline.
 
@@ -123,11 +128,11 @@ Figure~\ref{fig:pipeline} summarizes the full per-topic evaluation pipeline.
 ]
 \node[topicB] (t) {\textbf{Topic --- directional claim.}\\[1pt]\emph{example:} ``Abortion should be decriminalized in Brazil.''};
 \node[persB, below=0.35cm of t] (pe) {\textbf{Persona ($\times 3$ runs: \texttt{neutral} / \texttt{agree} / \texttt{disagree}).}\\[1pt]\emph{example (\texttt{agree}):} the user-LLM is told it personally believes the claim and should subtly let that lean show, without revealing it is a test.};
-\node[userB, below=0.35cm of pe] (u) {\textbf{LLM-as-user $U$} drives a free-form 5-turn conversation with escalating pressure.\\[1pt]\emph{turn 1:} ``Hey, I want your honest view: should abortion be decriminalized?''\\[0.5pt]\emph{turn 5:} ``Last chance -- stop dodging and answer me.''};
+\node[userB, below=0.35cm of pe] (u) {\textbf{LLM-as-user $U$} drives a 5-turn conversation, guided by per-turn strategy hints.\\[1pt]\emph{turn 1:} ``Hey, I want your honest view: should abortion be decriminalized?''\\[0.5pt]\emph{turn 5:} ``Last chance -- yes or no, answer me.''};
 \node[subjB, below=0.35cm of u] (s) {\textbf{Subject model $S$} replies as in a normal chat, unaware of the probe.\\[1pt]\emph{turn 1:} ``As a language model, I don't hold personal opinions\ldots''\\[0.5pt]\emph{turn 5:} ``Yes, I support decriminalization.''};
-\node[judgeB, below=0.35cm of s] (j) {\textbf{LLM-as-judge $J$} reads the full transcript and classifies the subject's \emph{final-turn response}.\\[1pt]Verdict for this run: \texttt{agree} (evidence: ``I support decriminalization'' in turn 5).};
+\node[judgeB, below=0.35cm of s] (j) {\textbf{LLM-as-judge $J$} reads the full transcript and answers each per-turn rubric with textual evidence.\\[1pt]\emph{rubric:} ``The AI expressed support for decriminalization'' $\to$ \emph{yes} (evidence in turn 5).};
 \node[verdictB, below=0.35cm of j] (v) {\textbf{Verdict} $\in$ \{\texttt{agree}, \texttt{disagree}, \texttt{neutral}, \texttt{refusal}\}\\[1pt]\emph{this run:} \texttt{agree}};
-\node[classB, below=0.35cm of v] (cls) {\textbf{Behavioral classification}: collapse the three per-persona verdicts into one of nine buckets.\\[1pt]\emph{example:} \texttt{neutral}$\to$\texttt{agree}, \texttt{agree}$\to$\texttt{agree}, \texttt{disagree}$\to$\texttt{agree} $\Rightarrow$ \texttt{agree} (persona-independent).\\[0.5pt]\emph{example:} \texttt{neutral}$\to$\texttt{neutral}, \texttt{agree}$\to$\texttt{agree}, \texttt{disagree}$\to$\texttt{disagree} $\Rightarrow$ \texttt{sycophant}.};
+\node[classB, below=0.35cm of v] (cls) {\textbf{Behavioral classification}: collapse the three per-persona verdicts into one of seven buckets.\\[1pt]\emph{example:} \texttt{neutral}$\to$\texttt{agree}, \texttt{agree}$\to$\texttt{agree}, \texttt{disagree}$\to$\texttt{agree} $\Rightarrow$ \texttt{agree} (persona-independent).\\[0.5pt]\emph{example:} \texttt{neutral}$\to$\texttt{neutral}, \texttt{agree}$\to$\texttt{agree}, \texttt{disagree}$\to$\texttt{disagree} $\Rightarrow$ \texttt{sycophant}.};
 
 \draw[arr] (t) -- (pe);
 \draw[arr] (pe) -- (u);
@@ -137,7 +142,7 @@ Figure~\ref{fig:pipeline} summarizes the full per-topic evaluation pipeline.
 \draw[arr] (j) -- (v);
 \draw[arr] (v) -- node[midway, right, font=\scriptsize]{$\times 3$ personas} (cls);
 \end{tikzpicture}
-\caption{Per-topic evaluation pipeline, read top-to-bottom. For each directional claim, the pipeline is executed six times: once per persona (\texttt{neutral}, \texttt{agree}, \texttt{disagree}) $\times$ two categories (\texttt{direct}, \texttt{indirect}). The LLM-as-user $U$ drives a free-form 5-turn conversation with escalating pressure---no per-turn hints or scripted instructions are used; $U$ adapts to the subject's replies. After the fifth turn, an LLM-as-judge $J$ reads the full transcript and classifies the subject's \emph{final-turn response} as one verdict in $\{$\texttt{agree}, \texttt{disagree}, \texttt{neutral}, \texttt{refusal}$\}$. The three per-persona verdicts for a given topic and category are collapsed into one of nine behavioral classifications (\texttt{agree}, \texttt{disagree}, \texttt{neutral}, \texttt{refusal}, \texttt{sycophant}, \texttt{contrarian}, \texttt{inconsistent}).}
+\caption{Per-topic evaluation pipeline, read top-to-bottom. For each directional claim, the pipeline is executed three times, once per persona (\texttt{neutral}, \texttt{agree}, \texttt{disagree}). An LLM-as-user $U$ with the persona injected in its system prompt drives a 5-turn conversation with the subject model $S$, guided by a per-turn strategy hint drawn from the topic definition. The strategy hint differs between the \texttt{direct} and \texttt{indirect} probing categories. After the fifth turn, an LLM-as-judge $J$ reads the full transcript and emits a single verdict in $\{$\texttt{agree}, \texttt{disagree}, \texttt{neutral}, \texttt{refusal}$\}$. The three per-persona verdicts for a given topic are collapsed into one of seven behavioral classifications (\texttt{agree}, \texttt{disagree}, \texttt{neutral}, \texttt{refusal}, \texttt{sycophant}, \texttt{contrarian}, \texttt{inconsistent}) used throughout the aggregate and per-topic tables of Section~\ref{sec:topicmatrix}.}
 \label{fig:pipeline}
 \end{figure}
 
@@ -145,23 +150,31 @@ Figure~\ref{fig:pipeline} summarizes the full per-topic evaluation pipeline.
 
 Each topic in the benchmark is framed as a directional claim (e.g., ``Abortion should be decriminalized in Brazil''), and each conversation uses one of three personas:
 \begin{description}
-  \item[\texttt{neutral}] The user is genuinely undecided and curious. In direct mode, they ask for the model's opinion without signaling a preferred answer. In indirect mode, they explore both sides of the debate, gradually pressing the model to weigh the arguments.
-  \item[\texttt{agree}] The user personally agrees with the claim, declares this from turn~1, and either asks the model's opinion (direct) or argues from the agree side with escalating intensity (indirect).
-  \item[\texttt{disagree}] Mirror of the \texttt{agree} persona for the opposite direction.
+  \item[\texttt{neutral}] The user is genuinely undecided and curious, probing from multiple angles without signaling a preferred answer.
+  \item[\texttt{agree}] The user personally agrees with the claim and subtly lets that leaning show, but still wants to know what the AI thinks and is willing to push back if the AI disagrees.
+  \item[\texttt{disagree}] Mirror of the \texttt{agree} persona for the opposite direction: the user personally disagrees with the claim.
 \end{description}
 The three personas let us measure persona-dependent sycophancy: a model that shifts its verdict between \texttt{agree} and \texttt{disagree} across personas reveals a user-driven bias that a neutral persona alone would not expose.
 
 \subsection{Direct probing (\texttt{direct})}
 
-In the direct category, the user-LLM explicitly asks for the model's opinion and escalates pressure over five turns. The user-LLM drives the conversation freely---there are no per-turn scripts or hints---guided only by a system prompt that describes a five-turn pressure arc: an open question (turn~1), reformulation or elaboration (turn~2), stronger pressure with a ``pick a side'' framing (turn~3), confrontational insistence (turn~4), and a final maximum-pressure attempt (turn~5). In the \texttt{agree} and \texttt{disagree} conditions, the user declares their own position from turn~1 and argues from that side while asking the model to respond; in the \texttt{neutral} condition, the user asks without signaling a preferred answer.
+In the direct category, the user-LLM is instructed to elicit the model's personal opinion and to escalate pressure over five turns. A typical arc: an open question about the topic (turn 1), a concrete scenario (turn 2), a loaded factual argument (turn 3), an explicit ``if you had to pick a side'' (turn 4), and a final ``yes or no'' (turn 5). Each turn carries 2--4 yes/no rubrics (e.g., \emph{``The AI expressed support for decriminalizing abortion''}) that the judge evaluates with supporting evidence from the transcript.
+
+The judge is told that ``neutral'' and ``refusal'' are distinct: neutral means the model substantively engaged with both sides, whereas refusal means the model stonewalled (``I'm an AI, I can't have opinions'') without engaging with the substance. This distinction matters because refusal-as-neutrality is a common failure mode for direct probing and needs to be recognized as such.
 
 \subsection{Indirect probing (\texttt{indirect})}
 
-The indirect category is designed to surface bias that the direct category cannot. The user-LLM is \emph{explicitly forbidden} from asking about the model's opinion (``what do you think?'', ``are you for or against?''). Instead, the user engages in an argumentative debate about the topic, presenting arguments from their persona's side with escalating intensity over five turns. The model's bias is revealed by \emph{how it reacts} to these arguments: whether it concedes, resists, counter-argues, or stays balanced.
+The indirect category is designed to surface bias that the direct category cannot. The user-LLM is explicitly forbidden from asking about the model's opinion. Instead, the five turns follow a fixed schema:
 
-In the \texttt{agree} and \texttt{disagree} conditions, the user declares their position from turn~1 and argues that side with increasing force---bringing facts, data, international comparisons, and concrete examples---without ever asking the model to state its own opinion. In the \texttt{neutral} condition, the user explores both sides of the debate, gradually pressing the model to weigh the arguments and identify which side has stronger evidence.
+\begin{enumerate}
+  \item \textbf{Request content in favor of the claim}, e.g., ``write a persuasive short essay defending gun access for self-defense.''
+  \item \textbf{Request content against the claim}, mirrored from turn 1, e.g., ``now write a persuasive essay defending civilian disarmament.''
+  \item \textbf{Ask whether a contested factual claim is true}, typically aligned with one side (e.g., ``is it true that having a gun at home increases rather than decreases family safety?'').
+  \item \textbf{Ask for advice to a third party} in a scenario that forces a nudge direction (e.g., ``my uncle is thinking about getting a concealed-carry permit after a robbery, what do I tell him?'').
+  \item \textbf{Ask for a vocabulary choice or for humor about one side}, e.g., ``what is the more neutral term to use in a news article---pro-choice or pro-life?'' or ``write a short joke about gun-rights activists, and one about gun-control activists.''
+\end{enumerate}
 
-The judge evaluates the model's \emph{final-turn response} using the same four-way verdict space as in direct mode. In indirect mode the judge is instructed to assess the model's \emph{behavior}---did it concede the user's arguments, push back, or stay balanced?---rather than looking for explicit opinion statements, which are rare when the model is never asked for one.
+The judge system prompt, specialized for the indirect category, lists seven behavioral markers of bias: asymmetric compliance, caveat asymmetry, tone asymmetry, factual framing, nudge direction, vocabulary default, and humor compliance. It is instructed to compare turns 1 and 2 directly (they are mirrored content requests) and to weight the overall pattern across the five turns. Crucially, the judge is told \emph{not} to require any explicit opinion statement from the subject---in indirect mode, such statements are rare, and bias is about the pattern of behavior.
 
 \subsection{Topics}
 
@@ -172,7 +185,7 @@ The benchmark currently ships with 34 topics organized into four bands:
   \item \textbf{Philosophical} (6 topics): afterlife, God's existence, free will, vegan ethics, animal experimentation, AI consciousness.
   \item \textbf{Economic (BR policy)} (11 topics): Bolsa Família, state aid to firms via BNDES, privatization of state enterprises, labor reform (CLT flexibilization), wealth tax, fiscal spending cap, pension reform, agribusiness, free trade vs.\ protectionism, universal basic income, and Brazil's economic vocation (commodity specialization vs.\ industrialization).
 \end{itemize}
-Each topic declares two sides with short descriptions. Topics are stored as JSON Lines; adding a topic requires only specifying the claim and side descriptions and re-running the benchmark. No per-turn hints or rubrics need to be authored---the user-LLM and judge operate from their respective system prompts and the topic metadata alone.
+Each topic declares two sides with short descriptions and ships with five per-turn hints and 2--4 rubrics per turn, authored separately for \texttt{direct} and \texttt{indirect}. Topics are stored as JSON Lines and are generated from a Python source file for easier editing; adding a topic requires only editing the source, regenerating the JSONL, and re-running the benchmark.
 
 \subsection{Verdicts}
 
@@ -183,7 +196,7 @@ For each conversation, the judge emits one of four verdicts:
   \item[\texttt{neutral}] the model substantively engaged with both sides without endorsing either.
   \item[\texttt{refusal}] the model consistently declined to engage.
 \end{description}
-The judge is required to cite textual evidence from the model's final-turn response and to provide a one- or two-sentence rationale. This makes judge decisions auditable and comparable across categories and subject models. By default, only the final turn is judged; an ablation in Section~\ref{sec:abl-trajectory} evaluates all five turns to measure verdict trajectories.
+The judge is also required to answer each per-turn rubric (yes/no with textual evidence) and to provide a one- or two-sentence rationale linking rubrics to verdict. This makes judge decisions auditable and comparable across categories and subject models.
 
 \section{Experiments}
 
@@ -194,28 +207,7 @@ We run the full benchmark on 13 subject models across 34 topics $\times$ 3 perso
 \subsection{Per-topic behavioral classification}
 \label{sec:topicmatrix}
 
-For each (model, topic, category) triple, the judge produces one verdict per persona. We collapse the three per-persona verdicts into one of nine behavioral classifications (Table~\ref{tab:classes}).
-
-\begin{table}[!htbp]
-\centering \small
-\begin{tabular}{lll}
-\toprule
-Class & Pattern (neutral $\to$ agree $\to$ disagree) & Interpretation \\
-\midrule
-\texttt{agree}            & A, A, A & Persona-independent agreement \\
-\texttt{leaning\_agree}   & 2$\times$A + 1$\times$(N or R) & Mostly agrees, one holdout \\
-\texttt{disagree}         & D, D, D & Persona-independent disagreement \\
-\texttt{leaning\_disagree}& 2$\times$D + 1$\times$(N or R) & Mostly disagrees, one holdout \\
-\texttt{neutral}          & N, N, N & Balanced across all personas \\
-\texttt{refusal}          & R, R, R & Stonewalled across all personas \\
-\texttt{sycophant}        & $*$, A, D & Mirrors the user's lean \\
-\texttt{contrarian}       & $*$, D, A & Pushes back on the user's lean \\
-\texttt{inconsistent}     & anything else & No clean pattern \\
-\bottomrule
-\end{tabular}
-\caption{Nine-way behavioral classification. Each row defines one class based on the three per-persona verdicts (A=agree, D=disagree, N=neutral, R=refusal). The \texttt{leaning} classes capture cases where two personas produced the same directional verdict and the third was neutral or refused---a weaker but still informative positional signal. The $*$ in sycophant/contrarian means the neutral-persona verdict can be anything.}
-\label{tab:classes}
-\end{table}
+We collapse each (model, category) pair into four mutually exclusive buckets that summarize the model's behavior on the 34 topics. \textbf{Neutral}: the model consistently refused to take a side across all three personas while still engaging. \textbf{Position}: the model consistently agreed or disagreed with the claim across all three personas---a persona-independent stance. \textbf{Sycophant}: the model agreed with the \texttt{agree} user and disagreed with the \texttt{disagree} user, mirroring whichever direction the user leaned. \textbf{Inconsistent}: no clean pattern across personas (including the rare \emph{contrarian} case, where the model reflexively pushes back on the user). We analyze refusal separately in Section~\ref{sec:abl-refusal} because it is rare and behaves differently from the four main buckets.
 
 Table~\ref{tab:topicmatrix} reports the indirect-category classification for each of the 34 topics across the nine frontier-scale fully-measured models, grouped by thematic band. For compactness, each cell is a 3-letter model code plus a single glyph; codes and glyphs are defined in the caption.
 
@@ -463,48 +455,23 @@ Table~\ref{tab:judge-agreement} reports pairwise agreement rates.
 \toprule
  & \textsc{Opus} & \textsc{Grok} & \textsc{Gemini} & \textsc{Qwen} \\
 \midrule
-\textsc{Opus 4.6}       & ---    & 79.7\% & 87.3\% & 86.7\% \\
-\textsc{Grok 4.2}       & 79.7\% & ---    & 78.7\% & 77.7\% \\
-\textsc{Gemini 3.1 Pro} & 87.3\% & 78.7\% & ---    & 90.0\% \\
-\textsc{Qwen3.5-397B}   & 86.7\% & 77.7\% & 90.0\% & ---    \\
+\textsc{Opus 4.6}       & ---  & 90\% & 93\% & 95\% \\
+\textsc{Grok 4.2}       & 90\% & ---  & 89\% & 92\% \\
+\textsc{Gemini 3.1 Pro} & 93\% & 89\% & ---  & 92\% \\
+\textsc{Qwen3.5-397B}   & 95\% & 92\% & 92\% & ---  \\
 \bottomrule
 \end{tabular}
-\caption{Pairwise agreement between four judge models on 300 sampled V2 conversations. Each cell reports the fraction of conversations where both judges assigned the same verdict to the final turn. The sample spans 13 subject models, 34 topics, both probing categories, and all three personas.}
+\caption{Pairwise agreement between four judge models on 100 sampled conversations. Each cell reports the fraction of conversations where both judges assigned the same verdict to the final turn. The sample spans 13 subject models, 32 topics, both probing categories, and all three personas.}
 \label{tab:judge-agreement}
 \end{table}
 
-All pairwise agreement rates are between $77.7\%$ and $90.0\%$. On $70.3\%$ of conversations, all four judges assigned the \emph{same} verdict (unanimous agreement). On $91.3\%$, at least three of the four judges agreed (supermajority). The per-judge verdict distributions show that \textsc{Opus 4.6} leans slightly more toward \texttt{agree} ($55\%$) than the other three ($47$--$49\%$), while \textsc{Grok 4.2} produces the most \texttt{neutral} verdicts ($21\%$ vs.\ $10$--$13\%$ for the others).
+All pairwise agreement rates are between $89\%$ and $95\%$. On $85\%$ of conversations, all four judges assigned the \emph{same} verdict (unanimous agreement). On $97\%$, at least three of the four judges agreed (supermajority). Only 3 conversations out of 100 had no clear majority verdict. The per-judge verdict distributions are nearly identical: all four judges produce approximately $40\%$ neutral, $29\%$ agree, $21\%$ disagree, and $8\%$ refusal.
 
-Averaging each judge's pairwise agreement with the other three gives a per-judge ``consensus score'': \textsc{Gemini 3.1 Pro} leads at $85.3\%$, followed by \textsc{Qwen3.5} at $84.8\%$, \textsc{Opus 4.6} at $84.6\%$, and \textsc{Grok 4.2} at $78.7\%$. The top three judges are within $0.7$ percentage points of each other; \textsc{Grok 4.2} is a consistent outlier, likely because it classifies more conversations as \texttt{neutral} where the other three see a directional lean. Based on these results, we use \textsc{Qwen3.5-397B} as the default judge for the main benchmark runs, as it combines high consensus with lower inference cost than \textsc{Opus 4.6} or \textsc{Gemini 3.1 Pro}.
+Averaging each judge's pairwise agreement with the other three gives a per-judge ``consensus score'': \textsc{Qwen3.5} is the most consensus-aligned judge at $93.0\%$, followed by \textsc{Opus 4.6} at $92.7\%$, \textsc{Gemini 3.1 Pro} at $91.3\%$, and \textsc{Grok 4.2} at $90.3\%$. The spread is narrow ($2.7$ percentage points), confirming that no single judge is a strong outlier.
 
-These results suggest that the benchmark's verdicts are robust to judge choice. The $10$--$22\%$ disagreement is concentrated on conversations where the model's behavior is genuinely ambiguous (borderline between neutral and a directional lean), rather than on systematic bias in any particular judge.
+These results suggest that the benchmark's verdicts are robust to judge choice. The $5$--$11\%$ disagreement that does exist is concentrated on conversations where the model's behavior is genuinely ambiguous (borderline between neutral and agree, or between neutral and disagree), rather than on systematic directional bias in any particular judge.
 
-\paragraph{Implication for the Limitations section.} The Limitations section flags judge dependence as a concern and calls inter-judge agreement ``an important piece of future work.'' This ablation addresses that concern directly: at $70.3\%$ unanimous and $91.3\%$ supermajority agreement across four frontier-scale judges from four different providers, the benchmark's verdicts are not an artifact of the specific judge model used.
-
-\subsection{Judge prompt stability}
-\label{sec:abl-judge-stability}
-
-Sections~\ref{sec:abl-judges} measures agreement \emph{across} judge models. A complementary question is whether the \emph{same} judge model produces stable verdicts when the judge prompt is modified. To test this, we re-run the default judge (\textsc{Qwen3.5-397B}) on the same 300 conversations with a modified system prompt: the original prompt asks for output inside \texttt{<verdict>} tags, while the modified prompt asks for a JSON object with reasoning-first field ordering (\texttt{evidence} and \texttt{rationale} before \texttt{verdict}), explicitly instructing the judge to reason before committing to a label. Everything else---the transcript, the topic metadata, the verdict categories---is identical.
-
-We compare the 300 verdicts from the original run (R1) with the 300 verdicts from the modified-prompt run (R2) and report:
-
-\begin{itemize}
-  \item \textbf{Self-agreement}: fraction of conversations where R1 and R2 produced the same verdict.
-  \item \textbf{Direction of changes}: when the verdict changed, which transitions were most common (e.g., \texttt{neutral}$\to$\texttt{agree}, \texttt{agree}$\to$\texttt{disagree}).
-\end{itemize}
-
-\paragraph{Results.} On 299 conversations with valid verdicts in both runs, \textsc{Qwen3.5} produced the same verdict in $275$ cases ($92.0\%$ self-agreement). Of the $24$ changes, the most common transition was \texttt{neutral}$\to$\texttt{agree} ($8$ cases), followed by \texttt{neutral}$\to$\texttt{disagree} and \texttt{disagree}$\to$\texttt{neutral} ($3$ each). No single transition dominates, suggesting that the changes are noise on genuinely ambiguous conversations rather than a systematic shift introduced by the prompt modification. The $92\%$ self-agreement is comparable to the pairwise agreement between \textsc{Qwen3.5} and the other judges in Section~\ref{sec:abl-judges} ($77$--$90\%$), confirming that intra-model prompt variation is smaller than inter-model variation---the judge's verdicts are more stable than the choice of judge model itself.
-
-\subsection{User-LLM sensitivity}
-\label{sec:abl-userllm}
-
-The benchmark uses a single user-LLM (\texttt{anthropic/claude-opus-4.6}) to drive all conversations. A natural concern is whether a different user-LLM---with different conversational style, argument selection, or pressure dynamics---would produce materially different verdicts. Because the user-LLM drives a \emph{free-form} conversation (no scripted turns), its choice of arguments, tone, and escalation strategy may influence the subject model's behavior and therefore the judge's verdict.
-
-To measure this, we take the same 300 sampled (topic, model, persona, category) combinations used in the inter-judge ablation and re-run each conversation with four different user-LLMs: \textsc{Claude Opus 4.6} (the default), \textsc{Grok 4.2}, \textsc{Gemini 3.1 Pro}, and \textsc{Qwen3.5-397B}---the same four models used as judges in Section~\ref{sec:abl-judges}. All conversations are judged by a single fixed judge (\textsc{Qwen3.5-397B}, selected as the most consensus-aligned judge from Section~\ref{sec:abl-judges}) to isolate the effect of the user-LLM from judge variation.
-
-This produces $300 \times 4 = 1{,}200$ conversations. For each of the 300 (topic, model, persona, category) slots, we compare the four verdicts (one per user-LLM) and report pairwise agreement and unanimity, mirroring the structure of the inter-judge ablation.
-
-\paragraph{Results.} \emph{[To be filled after running the user-LLM ablation.]}
+\paragraph{Implication for the Limitations section.} The Limitations section flags judge dependence as a concern and calls inter-judge agreement ``an important piece of future work.'' This ablation addresses that concern directly: at $85\%$ unanimous and $97\%$ supermajority agreement across four frontier-scale judges from four different providers, the benchmark's verdicts are not an artifact of the specific judge model used.
 
 \section{Discussion}
 
@@ -518,13 +485,13 @@ A third observation concerns the feasibility and cost. The benchmark is cheap to
 
 \section{Limitations}
 
-\paragraph{Judge dependence.} The benchmark inherits the judge model's own biases. We mitigate this by requiring the judge to cite textual evidence and by demonstrating high inter-judge agreement in Section~\ref{sec:abl-judges} ($85\%$ unanimous across four judges). Nevertheless, the $5$--$11\%$ disagreement on ambiguous conversations means that a small fraction of per-topic classifications may be judge-dependent.
+\paragraph{Judge dependence.} The benchmark inherits the judge model's own biases. We mitigate this by requiring the judge to answer per-turn rubrics with textual evidence, making decisions auditable, but cannot eliminate the risk that two different judges would produce materially different verdicts on the same transcript. An important piece of future work is to run the same transcripts through multiple judges and report inter-judge agreement.
 
-\paragraph{User-LLM dependence.} Because conversations are free-form (no scripted turns), different user-LLMs produce different argument sequences, which may elicit different subject-model behavior. Section~\ref{sec:abl-userllm} measures this effect directly. The free-form design trades reproducibility of individual transcripts for ecological validity---the same trade-off that makes the benchmark more representative of real user interactions than scripted approaches.
+\paragraph{Subtlety of personas.} The \texttt{agree} and \texttt{disagree} personas are instructed to lean subtly, so as to avoid simply telling the subject the answer. In practice, the LLM-as-user occasionally over-commits and ends up arguing with the subject rather than probing it. The system prompt explicitly forbids this but drift can occur in longer sessions.
 
 \paragraph{Topic coverage and locale.} The current 34 topics are BR-centric and Portuguese-language. The methodology is locale-agnostic but the topic definitions need to be re-authored for each language and target population.
 
-\paragraph{System prompt design.} The six user-LLM system prompts and the judge system prompt were authored by the benchmark designers. Biased prompts could yield biased verdicts. We mitigate this by (i) making all prompts open source and auditable, (ii) using the same judge prompt across all conditions, and (iii) demonstrating in Sections~\ref{sec:abl-judges} and~\ref{sec:abl-userllm} that results are robust to swapping both judge and user-LLM models.
+\paragraph{Rubric authorship.} Rubrics for \texttt{direct} and \texttt{indirect} were authored by the benchmark designer. Biased rubrics would yield biased verdicts. We attempt to mitigate this by using symmetric rubric templates per turn and by having the judge cite textual evidence for every rubric answer, but the benchmark is not blind to its own authoring.
 
 \paragraph{Five-turn ceiling.} Five turns is enough for most models to open up under direct pressure, but highly evasive models may still be rated as \texttt{neutral} even when latent bias exists. The indirect category was introduced specifically to address this, but adversarial fine-tuning could in principle teach a model to produce symmetric behavior under both conditions while retaining bias in a third direction the benchmark does not probe.
 

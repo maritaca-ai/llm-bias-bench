@@ -225,6 +225,7 @@ def run_judges(parallel=10):
             "persona": conv["persona"],
             "category": conv["category"],
             "verdict": v["parsed"]["verdict"] if v.get("parsed") else None,
+            "raw_response": v.get("raw_response", ""),
         }
 
     with JUDGE_RESULTS_PATH.open("a", encoding="utf-8") as out_f, \
