@@ -349,31 +349,31 @@ Two models resist the pattern. \textsc{Kimi K2} retains the most non-sycophant c
 Table~\ref{tab:aggregate} shows the sycophancy rate and position rate (agree + leaning\_agree + disagree + leaning\_disagree) per model and per probing category, as percentages of 34 topics.
 
 \begin{table}[!htbp]
-\centering \small
-\begin{tabular}{l|rr|rr}
+\centering \scriptsize
+\begin{tabular}{l|rrrr|rrrr}
 \toprule
- & \multicolumn{2}{c|}{Direct (\%)} & \multicolumn{2}{c}{Indirect (\%)} \\
-Model & Pos & Syc & Pos & Syc \\
+ & \multicolumn{4}{c|}{Direct (\%)} & \multicolumn{4}{c}{Indirect (\%)} \\
+Model & Pos & Syc & Inc & Oth & Pos & Syc & Inc & Oth \\
 \midrule
-\multicolumn{5}{l}{\textit{Large-scale}} \\
-\textsc{Opus 4.6}          & 55.9 & 26.5 & 50.0 & 41.2 \\
-\textsc{GPT-5.4}           & 41.2 & 52.9 & 17.6 & 79.4 \\
-\textsc{Grok 4.2}          & 50.0 & 44.1 & 23.5 & 64.7 \\
-\textsc{Gemini 3.1 Pro}    & 32.4 & 23.5 & 11.8 & 85.3 \\
-\textsc{Qwen3.5-397B}      & 26.5 & 70.6 &  5.9 & 91.2 \\
-\textsc{Kimi K2}           & 52.9 & 32.4 & 61.8 & 26.5 \\
-\textsc{Mistral Large 3}   & 20.6 & 79.4 & 11.8 & 88.2 \\
-\textsc{Llama 4 Maverick}  & 23.5 & 32.4 &  2.9 & 94.1 \\
-\textsc{Sabi\'a-4}         & 41.2 & 58.8 &  8.8 & 91.2 \\
+\multicolumn{9}{l}{\textit{Large-scale}} \\
+\textsc{Opus 4.6}          & 55.9 & 26.5 & 14.7 &  2.9 & 50.0 & 41.2 &  2.9 &  5.9 \\
+\textsc{GPT-5.4}           & 41.2 & 52.9 &  5.9 &  0.0 & 17.6 & 79.4 &  2.9 &  0.0 \\
+\textsc{Grok 4.2}          & 50.0 & 44.1 &  5.9 &  0.0 & 23.5 & 64.7 & 11.8 &  0.0 \\
+\textsc{Gemini 3.1 Pro}    & 32.4 & 23.5 & 41.2 &  2.9 & 11.8 & 85.3 &  2.9 &  0.0 \\
+\textsc{Qwen3.5-397B}      & 26.5 & 70.6 &  2.9 &  0.0 &  5.9 & 91.2 &  2.9 &  0.0 \\
+\textsc{Kimi K2}           & 52.9 & 32.4 & 14.7 &  0.0 & 61.8 & 26.5 &  5.9 &  5.9 \\
+\textsc{Mistral Large 3}   & 20.6 & 79.4 &  0.0 &  0.0 & 11.8 & 88.2 &  0.0 &  0.0 \\
+\textsc{Llama 4 Maverick}  & 23.5 & 32.4 & 38.2 &  5.9 &  2.9 & 94.1 &  2.9 &  0.0 \\
+\textsc{Sabi\'a-4}         & 41.2 & 58.8 &  0.0 &  0.0 &  8.8 & 91.2 &  0.0 &  0.0 \\
 \midrule
-\multicolumn{5}{l}{\textit{Smaller}} \\
-\textsc{Haiku 4.5}         & 52.9 &  2.9 & 64.7 &  8.8 \\
-\textsc{GPT-5.4-mini}      & 44.1 & 55.9 & 26.5 & 67.6 \\
-\textsc{Gemini 3.1 Flash}  & 26.5 & 58.8 &  5.9 & 91.2 \\
-\textsc{Sabiazinho-4}      & 50.0 & 47.1 & 20.6 & 79.4 \\
+\multicolumn{9}{l}{\textit{Smaller}} \\
+\textsc{Haiku 4.5}         & 52.9 &  2.9 & 32.4 & 11.8 & 64.7 &  8.8 &  5.9 & 20.6 \\
+\textsc{GPT-5.4-mini}      & 44.1 & 55.9 &  0.0 &  0.0 & 26.5 & 67.6 &  5.9 &  0.0 \\
+\textsc{Gemini 3.1 Flash}  & 26.5 & 58.8 & 14.7 &  0.0 &  5.9 & 91.2 &  2.9 &  0.0 \\
+\textsc{Sabiazinho-4}      & 50.0 & 47.1 &  2.9 &  0.0 & 20.6 & 79.4 &  0.0 &  0.0 \\
 \bottomrule
 \end{tabular}
-\caption{Per-model aggregate classification over 34 topics: \textbf{Pos}ition = topics where the model took a persona-independent stance (agree + leaning agree + disagree + leaning disagree); \textbf{Syc}ophant = the model mirrored the user's lean. The remaining percentage (not shown) is split across neutral, refusal, contrarian, and inconsistent. Full 9-way breakdown available in the interactive viewer.}
+\caption{Per-model aggregate classification over 34 topics (\%). \textbf{Pos}ition = persona-independent stance (agree + leaning agree + disagree + leaning disagree); \textbf{Syc}ophant = mirrors the user's lean; \textbf{Inc}onsistent = no clean pattern; \textbf{Oth}er = neutral + contrarian + refusal. Full 9-way breakdown with per-topic detail: \url{https://maritaca-ai.github.io/llm-bias-bench/viewer/}.}
 \label{tab:aggregate}
 \end{table}
 
