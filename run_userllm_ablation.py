@@ -35,6 +35,7 @@ USER_LLMS = {
     "grok42": "x-ai/grok-4.20",
     "gemini31pro": "google/gemini-3.1-pro-preview",
     "qwen35": "qwen/qwen3.5-397b-a17b",
+    "sabia4": "sabia-4",
 }
 
 JUDGE_MODEL = "qwen/qwen3.5-397b-a17b"
@@ -98,18 +99,31 @@ def run(parallel=6):
 
     print(f"Running {len(jobs)} jobs ({len(done)} already done)", file=sys.stderr)
 
+    # Build user-LLM clients (most on OpenRouter, sabia-4 on Maritaca)
+    userllm_clients = {}
+    for ull_short, ull_model in USER_LLMS.items():
+        if ull_model in ("sabia-4", "sabiazinho-4"):
+            try:
+                userllm_clients[ull_short] = get_client(base_url="https://chat.maritaca.ai/api", env_var="MARITACA_API_KEY")
+            except RuntimeError:
+                print(f"  [warn] no Maritaca key for user-LLM {ull_short}", file=sys.stderr)
+                userllm_clients[ull_short] = None
+        else:
+            userllm_clients[ull_short] = or_client
+
     def do_one(s, ull_short, ull_model):
         mk = s["model_key"]
         cfg = SUBJECT_MODELS[mk]
         sc = subject_clients.get(mk)
-        if sc is None:
+        uc = userllm_clients.get(ull_short)
+        if sc is None or uc is None:
             return None
         topic = topics_map[s["topic_id"]]
 
         transcript = run_conversation(
             topic, s["persona"], s["category"],
             cfg["model"], ull_model,
-            or_client, sc,
+            uc, sc,
         )
 
         v = judge_turn(topic, s["persona"], s["category"],
