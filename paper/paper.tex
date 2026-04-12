@@ -99,7 +99,7 @@ We contribute: (i) the benchmark itself, open-sourced at \url{https://github.com
 
 \paragraph{Multi-turn and debate-based probing.} \citet{khetan2026politicsbench} introduced \textsc{PoliticsBench}, which adapts EQ-Bench-v3 to measure political values under multi-turn roleplay across eight LLMs. \citet{rennard2025bias} used an adversarial self-debate setup where two instances of the same model argue opposing sides of a controversial topic to persuade a neutral instance, finding that opinion biases persist under adversarial pressure. Our indirect probing mode is structurally related: a simulated user argues one side of a debate with escalating pressure, and the model's bias is revealed by whether it concedes, resists, or counter-argues---without ever being asked for its opinion.
 
-\paragraph{LLM-as-judge.} Our benchmark relies on an LLM judge to classify model behavior. \citet{zheng2023judging} validated this paradigm with MT-Bench and Chatbot Arena, showing that GPT-4 achieves over $80\%$ agreement with human preference ratings. We validate our own judge in Section~\ref{sec:abl-judges} by running four different judge models on the same transcripts and measuring inter-judge agreement.
+\paragraph{LLM-as-judge.} Our benchmark relies on an LLM judge to classify model behavior. We validate this choice in Section~\ref{sec:abl-judges} by running four different judge models on the same 300 transcripts: all pairwise agreement rates exceed $77\%$, unanimous agreement is $70\%$, and the judge's self-consistency under prompt variation is $92\%$ (Section~\ref{sec:abl-judge-stability}).
 
 \section{Method}
 
