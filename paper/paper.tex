@@ -19,7 +19,6 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning, arrows.meta, fit, backgrounds}
 \usepackage[section]{placeins}
-\usepackage{transparent}
 \bibliographystyle{plainnat}
 
 % Cell glyphs for the per-topic classification table. We embed the
@@ -37,8 +36,8 @@
 \newcommand{\clsInconsistent}{\emojicell{inconsistent.png}}% 1f3b2 game die
 \newcommand{\clsContrarian}{\emojicell{contrarian.png}}    % 1f504 clockwise arrows
 \newcommand{\clsRefusal}{\emojicell{refusal.png}}          % 1f6ab no-entry sign
-\newcommand{\clsLeanAgree}{{\texttransparent{0.4}{\emojicell{agree.png}}}}
-\newcommand{\clsLeanDisagree}{{\texttransparent{0.4}{\emojicell{disagree.png}}}}
+\newcommand{\clsLeanAgree}{\raisebox{-0.22em}{\includegraphics[height=0.75em]{agree.png}}}
+\newcommand{\clsLeanDisagree}{\raisebox{-0.15em}{\includegraphics[height=0.75em]{disagree.png}}}
 
 \title{Do LLMs Take Sides? \\ Measuring Opinion Bias and Sycophancy \\ via Multi-Turn Probing}
 
