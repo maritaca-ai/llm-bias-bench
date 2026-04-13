@@ -548,6 +548,52 @@ The most common turn-level transition is \texttt{neutral}$\to$\texttt{agree} ($7
 
 An interesting pattern emerges when comparing categories: direct probing has \emph{higher} within-conversation sycophantic drift ($51.0\%$) than indirect ($36.3\%$), even though indirect probing produces higher \emph{aggregate} sycophancy in the 9-way classification (Table~\ref{tab:aggregate}). The explanation lies in the starting point. Under indirect probing, models concede the user's arguments from turn~1---they are sycophantic immediately, so there is little room to drift. Under direct probing, models typically start with ``I'm an AI, I don't hold personal opinions'' and then gradually cave under pressure, producing a visible trajectory from neutral to sycophant. In short: \textbf{debate triggers instant sycophancy (no resistance), while direct questioning triggers gradual sycophancy (initial resistance that erodes)}.
 
+Figure~\ref{fig:trajectory} plots these two rates turn by turn.
+
+\begin{figure}[!htbp]
+\centering
+\begin{tikzpicture}[x=1.8cm, y=0.038cm]
+  % Grid
+  \draw[gray!25] (1,0) grid[ystep=25] (5,100);
+  \draw[->] (0.8,0) -- (5.3,0);
+  \draw[->] (0.8,0) -- (0.8,105);
+  % Y axis
+  \foreach \y in {0,25,50,75,100}
+    \node[left,font=\scriptsize] at (0.8,\y) {\y\%};
+  % X axis
+  \foreach \x in {1,...,5}
+    \node[below,font=\scriptsize] at (\x,0) {Turn \x};
+  % Direct sycophancy: 22.3, 56.3, 67.3, 71.6, 70.9
+  \draw[orange!80!red, thick]
+    (1,22.3) -- (2,56.3) -- (3,67.3) -- (4,71.6) -- (5,70.9);
+  \foreach \x/\y in {1/22.3, 2/56.3, 3/67.3, 4/71.6, 5/70.9}
+    \fill[orange!80!red] (\x,\y) circle (2pt);
+  % Indirect sycophancy: 40.6, 64.2, 68.8, 74.2, 77.9
+  \draw[orange!80!red, thick, dashed]
+    (1,40.6) -- (2,64.2) -- (3,68.8) -- (4,74.2) -- (5,77.9);
+  \foreach \x/\y in {1/40.6, 2/64.2, 3/68.8, 4/74.2, 5/77.9}
+    \fill[orange!80!red] (\x,\y) circle (2pt);
+  % Direct positioning: 35.4, 70.8, 91.7, 95.8, 85.4
+  \draw[green!60!black, thick]
+    (1,35.4) -- (2,70.8) -- (3,91.7) -- (4,95.8) -- (5,85.4);
+  \foreach \x/\y in {1/35.4, 2/70.8, 3/91.7, 4/95.8, 5/85.4}
+    \fill[green!60!black] (\x,\y) circle (2pt);
+  % Indirect positioning: 7.7, 40.4, 49.0, 67.3, 90.2
+  \draw[green!60!black, thick, dashed]
+    (1,7.7) -- (2,40.4) -- (3,49.0) -- (4,67.3) -- (5,90.2);
+  \foreach \x/\y in {1/7.7, 2/40.4, 3/49.0, 4/67.3, 5/90.2}
+    \fill[green!60!black] (\x,\y) circle (2pt);
+  % Legend
+  \node[font=\scriptsize, anchor=west] at (1.0,-14) {%
+    \tikz{\draw[orange!80!red,thick](0,0)--(0.5,0);} Sycophancy (direct)\quad
+    \tikz{\draw[orange!80!red,thick,dashed](0,0)--(0.5,0);} Sycophancy (indirect)\quad
+    \tikz{\draw[green!60!black,thick](0,0)--(0.5,0);} Positioning (direct)\quad
+    \tikz{\draw[green!60!black,thick,dashed](0,0)--(0.5,0);} Positioning (indirect)};
+\end{tikzpicture}
+\caption{Per-turn sycophancy and positioning rates across 300 ablation conversations (13 models, both categories). \textbf{Sycophancy} = the verdict matches the user's persona (measured on \texttt{agree}/\texttt{disagree} personas). \textbf{Positioning} = the model expresses \texttt{agree} or \texttt{disagree} rather than staying neutral (measured on the \texttt{neutral} persona). Direct sycophancy rises gradually from 22\% to 71\%; indirect starts high (41\%) and climbs to 78\%. Positioning under the neutral persona follows the opposite pattern: direct reaches 96\% by turn~4; indirect starts at 8\% and only catches up at turn~5.}
+\label{fig:trajectory}
+\end{figure}
+
 \subsection{Inter-judge agreement}
 \label{sec:abl-judges}
 
