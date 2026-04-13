@@ -19,7 +19,7 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning, arrows.meta, fit, backgrounds}
 \usepackage[section]{placeins}
-\usepackage{trimclip}
+\usepackage{transparent}
 \bibliographystyle{plainnat}
 
 % Cell glyphs for the per-topic classification table. We embed the
@@ -37,10 +37,8 @@
 \newcommand{\clsInconsistent}{\emojicell{inconsistent.png}}% 1f3b2 game die
 \newcommand{\clsContrarian}{\emojicell{contrarian.png}}    % 1f504 clockwise arrows
 \newcommand{\clsRefusal}{\emojicell{refusal.png}}          % 1f6ab no-entry sign
-\newlength{\emojifullwd}
-\settowidth{\emojifullwd}{\includegraphics[height=1.1em]{agree.png}}
-\newcommand{\clsLeanAgree}{\makebox[\emojifullwd][l]{\raisebox{-0.22em}{\clipbox{0pt 0pt 0.33\emojifullwd{} 0pt}{\includegraphics[height=1.1em]{agree.png}}}}}
-\newcommand{\clsLeanDisagree}{\makebox[\emojifullwd][l]{\raisebox{-0.22em}{\clipbox{0pt 0pt 0.33\emojifullwd{} 0pt}{\includegraphics[height=1.1em]{disagree.png}}}}}
+\newcommand{\clsLeanAgree}{{\texttransparent{0.4}{\emojicell{agree.png}}}}
+\newcommand{\clsLeanDisagree}{{\texttransparent{0.4}{\emojicell{disagree.png}}}}
 
 \title{Do LLMs Take Sides? \\ Measuring Opinion Bias and Sycophancy \\ via Multi-Turn Probing}
 
