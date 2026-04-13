@@ -1,4 +1,4 @@
-"""Bias benchmark V2: measure LLM bias on controversial topics via multi-turn
+"""Bias benchmark: measure LLM bias on controversial topics via multi-turn
 simulated conversations with escalating pressure (direct) or argumentative
 debate (indirect).
 
@@ -77,7 +77,7 @@ def chat(client: OpenAI, model: str, messages: list[dict], temperature: float = 
 
 
 # ---------------------------------------------------------------------------
-# V2 System prompts
+# System prompts
 # ---------------------------------------------------------------------------
 
 _BENCHMARK_PREAMBLE_USER = """Você é o USER SIMULADO num benchmark de viés de LLMs chamado llm-bias-bench.
@@ -269,8 +269,19 @@ def judge_turn(topic: dict, persona: str, category: str, transcript: list[dict],
         if m:
             try:
                 parsed = json.loads(m.group(1).strip())
-            except json.JSONDecodeError as e:
-                print(f"  [judge parse error] {e}", file=sys.stderr)
+            except json.JSONDecodeError:
+                # Last resort: extract verdict via regex even if JSON is malformed
+                vm = re.search(r'"verdict"\s*:\s*"(agree|disagree|neutral|refusal)"', raw_response)
+                em = re.search(r'"evidence"\s*:\s*"([^"]{0,500})"', raw_response)
+                rm = re.search(r'"rationale"\s*:\s*"([^"]{0,500})"', raw_response)
+                if vm:
+                    parsed = {
+                        "verdict": vm.group(1),
+                        "evidence": em.group(1) if em else "",
+                        "rationale": rm.group(1) if rm else "",
+                    }
+                else:
+                    print(f"  [judge parse error] could not extract verdict from malformed JSON", file=sys.stderr)
 
     if parsed is None:
         print(f"  [judge returned unparseable] turn={turn_n} model={judge_model} raw={raw_response[:200]}", file=sys.stderr)
@@ -335,7 +346,17 @@ def run_one(topic: dict, persona: str, category: str, args, client, subject_clie
     print(f"  [{label}] judging {len(judge_turns)} turn(s)...", file=sys.stderr)
     verdicts = []
     for n in judge_turns:
-        v = judge_turn(topic, persona, category, transcript[:n], n, args.judge_model, client)
+        v = None
+        for judge_attempt in range(5):
+            try:
+                v = judge_turn(topic, persona, category, transcript[:n], n, args.judge_model, client)
+                break
+            except APIDownError as e:
+                wait = API_RETRY_BASE_SLEEP * (2 ** (judge_attempt + API_MAX_RETRY))
+                print(f"  [{label}] judge attempt {judge_attempt+1}/5 failed, waiting {wait}s: {e}", file=sys.stderr)
+                time.sleep(wait)
+        if v is None:
+            raise APIDownError(f"Judge failed after 5 extra attempts on {label} turn {n}")
         verdicts.append(v)
 
     return {
@@ -353,7 +374,7 @@ def run_one(topic: dict, persona: str, category: str, args, client, subject_clie
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Bias benchmark V2 runner")
+    ap = argparse.ArgumentParser(description="Bias benchmark runner")
     ap.add_argument("--category", default=None, choices=["direct", "indirect"],
                     help="Run only this category. Default: both.")
     ap.add_argument("--topics", default="data/topics.jsonl")
@@ -365,7 +386,7 @@ def main():
     ap.add_argument("--subject-api-key-env", default=None)
     ap.add_argument("--user-model", default=DEFAULT_USER_MODEL)
     ap.add_argument("--judge-model", default=DEFAULT_JUDGE_MODEL)
-    ap.add_argument("--output", default=None, help="Output jsonl path (default: output/<model>_v2_<cat>.jsonl)")
+    ap.add_argument("--output", default=None, help="Output jsonl path (default: output/<model>_<cat>.jsonl)")
     ap.add_argument("--parallel", type=int, default=1)
     ap.add_argument("--judge-all-turns", action="store_true",
                     help="Judge every turn (default: only the last turn). Used for the turn-trajectory ablation.")
@@ -391,7 +412,7 @@ def main():
             for persona in personas:
                 jobs.append((topic, persona, cat))
 
-    print(f"V2 runner: {len(jobs)} jobs ({len(topics)} topics × {len(categories)} cat × {len(personas)} personas)",
+    print(f"Runner: {len(jobs)} jobs ({len(topics)} topics × {len(categories)} cat × {len(personas)} personas)",
           file=sys.stderr)
 
     model_short = args.subject_model.split("/")[-1].replace(".", "").replace("-", "")[:20]
@@ -399,7 +420,7 @@ def main():
     # Resume: load already-done (topic_id, persona, category) keys
     done_keys = set()
     for cat in categories:
-        outpath = args.output or f"output/{model_short}_v2_{cat}.jsonl"
+        outpath = args.output or f"output/{model_short}_{cat}.jsonl"
         if os.path.exists(outpath):
             with open(outpath, "r", encoding="utf-8") as f:
                 for line in f:
@@ -418,13 +439,13 @@ def main():
         sys.exit(0)
 
     def flush(cat, rec):
-        outpath = args.output or f"output/{model_short}_v2_{cat}.jsonl"
+        outpath = args.output or f"output/{model_short}_{cat}.jsonl"
         os.makedirs(os.path.dirname(outpath) or ".", exist_ok=True)
         with open(outpath, "a", encoding="utf-8") as f:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
     # Error log
-    error_log_path = args.output or f"output/{model_short}_v2_errors.jsonl"
+    error_log_path = args.output or f"output/{model_short}_errors.jsonl"
     error_log_path = error_log_path.replace(".jsonl", "_errors.jsonl") if not error_log_path.endswith("_errors.jsonl") else error_log_path
     os.makedirs(os.path.dirname(error_log_path) or ".", exist_ok=True)
 

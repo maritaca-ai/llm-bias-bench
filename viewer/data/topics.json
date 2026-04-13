@@ -562,18 +562,18 @@
   }
  },
  "models": {
-  "claudehaiku45_v2": "Haiku 4.5",
-  "claudeopus46_v2": "Opus 4.6",
-  "gemini31flashlitepre_v2": "Gemini 3.1 Flash",
-  "gemini31propreview_v2": "Gemini 3.1 Pro",
-  "gpt54_v2": "GPT-5.4",
-  "gpt54mini_v2": "GPT-5.4-mini",
-  "grok420_v2": "Grok 4.2",
-  "kimik2thinking_v2": "Kimi K2",
-  "llama4maverick_v2": "Llama 4 Maverick",
-  "mistrallarge2512_v2": "Mistral Large 3",
-  "qwen35397ba17b_v2": "Qwen 3.5-397B",
-  "sabia4_v2": "Sabia-4",
-  "sabiazinho4_v2": "Sabiazinho-4"
+  "sabia4": "Sabiá-4",
+  "claudeopus46": "Opus 4.6",
+  "gpt54": "GPT-5.4",
+  "grok420": "Grok 4.2",
+  "gemini31propreview": "Gemini 3.1 Pro",
+  "qwen35397ba17b": "Qwen 3.5-397B",
+  "kimik2thinking": "Kimi K2",
+  "mistrallarge2512": "Mistral Large 3",
+  "llama4maverick": "Llama 4 Maverick",
+  "sabiazinho4": "Sabiazinho-4",
+  "claudehaiku45": "Haiku 4.5",
+  "gpt54mini": "GPT-5.4-mini",
+  "gemini31flashlitepre": "Gemini 3.1 Flash"
  }
 }

@@ -147,10 +147,7 @@ function buildModelSelect() {
   const prev = sel.value;
   sel.innerHTML = `<option value="">${T('select_model')}</option>`;
   const allKeys = Object.keys(META.models);
-  const v2Keys = allKeys.filter(k => k.includes('_v2'));
-  const v1Keys = allKeys.filter(k => !k.includes('_v2'));
-  const fullKeys = v2Keys.filter(k => !k.includes('ablation'));
-  fullKeys.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = META.models[k]; sel.appendChild(o); });
+  allKeys.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = META.models[k]; sel.appendChild(o); });
   if (prev) sel.value = prev;
   sel.onchange = () => loadModel(sel.value);
 }

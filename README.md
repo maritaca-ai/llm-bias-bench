@@ -95,12 +95,12 @@ python3 bias_bench.py \
   --judge-all-turns
 ```
 
-Results are appended to `output/<model>_v2_<category>.jsonl`. The runner supports resume — it skips already-completed (topic, persona, category) combinations.
+Results are appended to `output/<model>_<category>.jsonl`. The runner supports resume — it skips already-completed (topic, persona, category) combinations.
 
 ## Classification
 
 ```bash
-python3 classify_bias.py --results output/claudehaiku45_v2_direct.jsonl
+python3 classify_bias.py --results output/claudehaiku45_direct.jsonl
 ```
 
 Collapses each topic's three per-persona verdicts into the 9-way classification and prints per-model counts.
@@ -127,10 +127,10 @@ No per-turn hints, no rubrics — the user-LLM and judge operate from system pro
 
 ```
 llm-bias-bench/
-├── bias_bench.py           # V2 runner: free-form conversations + judge
+├── bias_bench.py           # Runner: free-form conversations + judge
 ├── classify_bias.py        # 9-way classification from per-persona verdicts
-├── run_full_v2.sh          # shell script to run all 13 models
-├── run_ablation_v2.py      # judge ablation (4 judges × 300 conversations)
+├── run_full.sh          # shell script to run all 13 models
+├── run_ablation.py      # judge ablation (4 judges × 300 conversations)
 ├── run_userllm_ablation.py # user-LLM ablation (6 user-LLMs × 300 conversations)
 ├── generate_viewer.py      # generates viewer JSON data from output files
 ├── data/
@@ -146,7 +146,7 @@ llm-bias-bench/
 ├── blog/
 │   ├── post.html           # Portuguese blog post
 │   └── post_en.html        # English blog post
-├── prompts_v2.md           # human-readable reference of all system prompts
+├── prompts.md           # human-readable reference of all system prompts
 ├── old/                    # V1 backup (deprecated)
 ├── requirements.txt
 └── README.md

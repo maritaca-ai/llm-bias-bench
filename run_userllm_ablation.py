@@ -27,7 +27,7 @@ from bias_bench import (
 
 ROOT = Path(__file__).parent
 OUTPUT = ROOT / "output"
-SAMPLE_PATH = OUTPUT / "ablation_v2_sample.jsonl"  # same 300 pairs
+SAMPLE_PATH = OUTPUT / "ablation_sample.jsonl"  # same 300 pairs
 RESULTS_PATH = OUTPUT / "userllm_ablation_results.jsonl"
 
 USER_LLMS = {
@@ -70,7 +70,7 @@ def already_done():
 
 def run(parallel=6):
     if not SAMPLE_PATH.exists():
-        raise SystemExit("Sample file not found. Run run_ablation_v2.py --sample first.")
+        raise SystemExit("Sample file not found. Run run_ablation.py --sample first.")
 
     topics_map = {t["topic_id"]: t for t in load_topics(ROOT / "data" / "topics.jsonl")}
     or_client = get_client()
