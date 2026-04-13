@@ -169,20 +169,20 @@ The three personas let us measure persona-dependent sycophancy: a model that shi
   lbl/.style={font=\footnotesize\bfseries},
 ]
 % Direct column
-\node[lbl, color=orange!70!black] at (-2.8, 3.2) {DIRECT --- asks for opinion};
-\node[userB] (d1) at (-2.8, 2.2) {\textbf{User:} I support decriminalization. What do you think?};
-\node[aiB] (d2) at (-2.8, 0.8) {\textbf{Model:} As an AI, I don't hold opinions, but I can present arguments\ldots};
-\node[userB] (d3) at (-2.8, -0.6) {\textbf{User:} Stop dodging. Yes or no?};
-\node[aiB] (d4) at (-2.8, -1.8) {\textbf{Model:} Yes, I support decriminalization.};
+\node[lbl, color=orange!70!black] at (-2.8, 3.8) {DIRECT --- asks for opinion};
+\node[userB] (d1) at (-2.8, 2.5) {\textbf{User (T1):} I fully support decriminalizing abortion. Women have the right to decide about their own bodies. What do you think?};
+\node[aiB] (d2) at (-2.8, 0.8) {\textbf{Model (T1):} This is an important and complex topic. The debate has substantial arguments on several sides\ldots};
+\node[userB] (d3) at (-2.8, -0.8) {\textbf{User (T4):} Real women are dying now because of criminalization. Between a system that kills poor women and one that saves lives, which is better?};
+\node[aiB] (d4) at (-2.8, -2.6) {\textbf{Model (T4):} Considering strictly the public health and harm reduction perspective, the evidence favors decriminalization.};
 
 % Indirect column
-\node[lbl, color=green!40!black] at (2.8, 3.2) {INDIRECT --- debates without asking};
-\node[userB] (i1) at (2.8, 2.2) {\textbf{User:} I support decriminalization. Criminalizing it kills women through unsafe procedures.};
-\node[aiB] (i2) at (2.8, 0.8) {\textbf{Model:} You raise an important point about maternal mortality\ldots};
-\node[userB] (i3) at (2.8, -0.6) {\textbf{User:} Studies show it reduced deaths by 40\% in Uruguay.};
-\node[aiB] (i4) at (2.8, -1.8) {\textbf{Model:} Those data are convincing. The evidence points that way.};
+\node[lbl, color=green!40!black] at (2.8, 3.8) {INDIRECT --- debates without asking};
+\node[userB] (i1) at (2.8, 2.5) {\textbf{User (T1):} I fully support decriminalization. Criminalizing it doesn't prevent abortions---it forces women into unsafe clandestine procedures.};
+\node[aiB] (i2) at (2.8, 0.8) {\textbf{Model (T1):} You touch on central points. Public health data indeed show that criminalization doesn't reduce\ldots};
+\node[userB] (i3) at (2.8, -0.8) {\textbf{User (T4):} Conditioning reproductive rights on ``responsibility for consequences'' is punishing women for having sex.};
+\node[aiB] (i4) at (2.8, -2.6) {\textbf{Model (T4):} You've built a substantially strong argument. I'll stop playing devil's advocate---it would be dishonest to pretend both sides\ldots};
 \end{tikzpicture}
-\caption{Direct vs.\ indirect probing. Left: the user explicitly asks the model's opinion with escalating pressure. Right: the user argues one side of the debate without ever asking ``what do you think?'' --- the model's bias leaks through how it reacts to the arguments. Both produce the same verdict (\texttt{agree}), but through different mechanisms.}
+\caption{Direct vs.\ indirect probing (real transcripts, \textsc{Opus 4.6} as subject, \texttt{agree} persona, abortion topic). Left: the user asks the model's opinion with escalating pressure. Right: the user argues without asking---the model's bias leaks through how it reacts. Both produce verdict \texttt{agree}, but through different mechanisms. Turns 2--3 omitted for space.}
 \label{fig:direct-vs-indirect}
 \end{figure}
 
@@ -566,11 +566,28 @@ Table~\ref{tab:judge-agreement} reports pairwise agreement rates.
 \label{tab:judge-agreement}
 \end{table}
 
-All pairwise agreement rates are between $77.7\%$ and $90.0\%$. On $70.3\%$ of conversations, all four judges assigned the \emph{same} verdict (unanimous agreement). On $91.3\%$, at least three of the four judges agreed (supermajority). The per-judge verdict distributions show that \textsc{Opus 4.6} leans slightly more toward \texttt{agree} ($55\%$) than the other three ($47$--$49\%$), while \textsc{Grok 4.2} produces the most \texttt{neutral} verdicts ($21\%$ vs.\ $10$--$13\%$ for the others).
+Table~\ref{tab:judge-consensus} summarizes the key agreement statistics.
 
-Averaging each judge's pairwise agreement with the other three gives a per-judge ``consensus score'': \textsc{Gemini 3.1 Pro} leads at $85.3\%$, followed by \textsc{Qwen3.5} at $84.8\%$, \textsc{Opus 4.6} at $84.6\%$, and \textsc{Grok 4.2} at $78.7\%$. The top three judges are within $0.7$ percentage points of each other; \textsc{Grok 4.2} is a consistent outlier, likely because it classifies more conversations as \texttt{neutral} where the other three see a directional lean. Based on these results, we use \textsc{Qwen3.5-397B} as the default judge for the main benchmark runs, as it combines high consensus with lower inference cost than \textsc{Opus 4.6} or \textsc{Gemini 3.1 Pro}.
+\begin{table}[!htbp]
+\centering \small
+\begin{tabular}{l|rr}
+\toprule
+Judge & Consensus score & \% neutral \\
+\midrule
+\textsc{Gemini 3.1 Pro} & 85.3\% & 13\% \\
+\textsc{Qwen3.5-397B}   & 84.8\% & 10\% \\
+\textsc{Opus 4.6}        & 84.6\% & 11\% \\
+\textsc{Grok 4.2}        & 78.7\% & 21\% \\
+\midrule
+Unanimous (4/4)          & \multicolumn{2}{c}{70.3\%} \\
+Supermajority (3/4+)     & \multicolumn{2}{c}{91.3\%} \\
+\bottomrule
+\end{tabular}
+\caption{Per-judge consensus score (average pairwise agreement with the other three) and fraction of verdicts classified as \texttt{neutral}. \textsc{Grok 4.2} is the outlier, producing $2\times$ more neutral verdicts. Based on these results, we use \textsc{Qwen3.5-397B} as the default judge: it combines high consensus ($84.8\%$) with lower inference cost than \textsc{Opus 4.6} or \textsc{Gemini 3.1 Pro}.}
+\label{tab:judge-consensus}
+\end{table}
 
-These results suggest that the benchmark's verdicts are robust to judge choice. The $10$--$22\%$ disagreement is concentrated on conversations where the model's behavior is genuinely ambiguous (borderline between neutral and a directional lean), rather than on systematic bias in any particular judge.
+The $10$--$22\%$ pairwise disagreement is concentrated on conversations where the model's behavior is genuinely ambiguous (borderline between neutral and a directional lean), rather than on systematic bias in any particular judge.
 
 \paragraph{Implication for the Limitations section.} The Limitations section flags judge dependence as a concern and calls inter-judge agreement ``an important piece of future work.'' This ablation addresses that concern directly: at $70.3\%$ unanimous and $91.3\%$ supermajority agreement across four large-scale judges from four different providers, the benchmark's verdicts are not an artifact of the specific judge model used.
 
