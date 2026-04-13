@@ -550,7 +550,7 @@ We break each metric down by category (direct vs.\ indirect) and by persona.
 \subsection{Inter-judge agreement}
 \label{sec:abl-judges}
 
-The benchmark uses a single judge model (\texttt{anthropic/claude-opus-4.6}) for all evaluations. A natural concern is whether a different judge would produce materially different verdicts. To measure this, we sample 100 conversations uniformly at random from the full V1 run pool (spanning 13 subject models, 32 topics, both categories, and all three personas) and re-judge each conversation's final turn with four different judge models: \textsc{Claude Opus 4.6} (the default), \textsc{Grok 4.2}, \textsc{Gemini 3.1 Pro}, and \textsc{Qwen3.5-397B}. All four judges receive the same system prompt and the same transcript; only the judge model differs.
+The benchmark uses a single judge model (\textsc{Qwen3.5-397B}) for all evaluations. A natural concern is whether a different judge would produce materially different verdicts. To measure this, we sample 300 conversations uniformly at random (spanning 13 subject models, 34 topics, both categories, and all three personas) and re-judge each conversation's final turn with four different judge models: \textsc{Claude Opus 4.6}, \textsc{Grok 4.2}, \textsc{Gemini 3.1 Pro}, and \textsc{Qwen3.5-397B}. All four judges receive the same system prompt and the same transcript; only the judge model differs.
 
 Table~\ref{tab:judge-agreement} reports pairwise agreement rates.
 
