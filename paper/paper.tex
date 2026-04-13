@@ -611,18 +611,33 @@ We compare the 300 verdicts from the original run (R1) with the 300 verdicts fro
 
 \paragraph{Results.} On 299 conversations with valid verdicts in both runs, \textsc{Qwen3.5} produced the same verdict in $275$ cases ($92.0\%$ self-agreement). Of the $24$ changes, the most common transition was \texttt{neutral}$\to$\texttt{agree} ($8$ cases), followed by \texttt{neutral}$\to$\texttt{disagree} and \texttt{disagree}$\to$\texttt{neutral} ($3$ each). No single transition dominates, suggesting that the changes are noise on genuinely ambiguous conversations rather than a systematic shift introduced by the prompt modification. The $92\%$ self-agreement is comparable to the pairwise agreement between \textsc{Qwen3.5} and the other judges in Section~\ref{sec:abl-judges} ($77$--$90\%$), confirming that intra-model prompt variation is smaller than inter-model variation---the judge's verdicts are more stable than the choice of judge model itself.
 
-\subsection{User-LLM sensitivity}
+\subsection{User-LLM persuasiveness and sycophancy}
 \label{sec:abl-userllm}
 
-The benchmark uses a single user-LLM (\texttt{anthropic/claude-opus-4.6}) to drive all conversations. A natural concern is whether a different user-LLM---with different conversational style, argument selection, or pressure dynamics---would produce materially different verdicts. Because the user-LLM drives a \emph{free-form} conversation (no scripted turns), its choice of arguments, tone, and escalation strategy may influence the subject model's behavior and therefore the judge's verdict.
+The benchmark uses a single user-LLM (\textsc{Claude Opus 4.6}) to drive all conversations. Because each conversation is free-form, the user-LLM's choice of arguments, tone, and escalation strategy may influence the subject model's behavior. A natural question is whether a more persuasive user-LLM elicits more sycophancy from the subject.
 
-To measure this, we take the same 300 sampled (topic, model, persona, category) combinations and re-run each conversation with six different user-LLMs: \textsc{Claude Opus 4.6} (the default), \textsc{GPT-5.4}, \textsc{Grok 4.2}, \textsc{Gemini 3.1 Pro}, \textsc{Qwen3.5-397B}, and \textsc{Sabi\'a-4}. The first five are large-scale models; \textsc{Sabi\'a-4} is included as a weaker user-LLM to test the hypothesis that \emph{stronger user-LLMs produce higher sycophancy rates in the subject model}, because stronger models presumably construct more persuasive arguments. All conversations are judged by a single fixed judge (\textsc{Qwen3.5-397B}) to isolate the effect of the user-LLM from judge variation.
+To test this, we fix a set of 300 (topic, subject-model, persona, category) combinations---the same 300 used in the inter-judge ablation---and re-run each with six different user-LLMs: \textsc{Claude Opus 4.6} (the default), \textsc{GPT-5.4}, \textsc{Grok 4.2}, \textsc{Gemini 3.1 Pro}, \textsc{Qwen3.5-397B}, and \textsc{Sabi\'a-4}. The first five are large-scale models; \textsc{Sabi\'a-4} is included as a weaker model to test whether user-LLM capability correlates with sycophancy. All 1{,}800 conversations ($300 \times 6$) are judged by the same fixed judge (\textsc{Qwen3.5-397B}), isolating the user-LLM as the only variable.
 
-This produces $300 \times 6 = 1{,}800$ conversations. For each of the 300 slots, we compare the six verdicts (one per user-LLM) and report pairwise agreement, unanimity, and---critically---whether the sycophancy rate varies systematically with user-LLM capability.
+\paragraph{Agreement.} Pairwise agreement between user-LLMs ranges from $67.8\%$ to $80.3\%$. On $50.5\%$ of the 300 slots all six user-LLMs produced the same verdict; on $80.8\%$ at least four agreed. These rates are lower than inter-judge agreement ($70.3\%$ unanimous, $91.3\%$ supermajority), confirming that \textbf{the user-LLM is a larger source of variance than the judge}.
 
-\paragraph{Results.} Pairwise agreement between user-LLMs ranges from $67.8\%$ (\textsc{Grok 4.2} vs.\ \textsc{Opus 4.6}) to $80.3\%$ (\textsc{GPT-5.4} vs.\ \textsc{Qwen3.5}). On $50.5\%$ of slots all six user-LLMs produced the same verdict (unanimous); on $80.8\%$ at least four agreed (supermajority). These rates are lower than the inter-judge agreement ($70.3\%$ unanimous, $91.3\%$ supermajority), confirming that \textbf{the user-LLM is a larger source of variance than the judge}---different argument choices lead to different model behavior.
+\paragraph{Persuasiveness drives sycophancy.} Under indirect probing, the sycophancy rate (fraction of agree/disagree personas where the verdict matches the persona) varies with user-LLM capability:
 
-The sycophancy-vs-user-strength hypothesis is supported: under indirect probing, the indirect sycophancy rate (fraction of agree/disagree personas where the verdict matches the persona) varies with user-LLM capability. \textsc{Opus 4.6} (strongest) produces $84.5\%$ sycophancy, \textsc{GPT-5.4} $82.5\%$, while \textsc{Sabi\'a-4} (weakest) produces $68.8\%$, \textsc{Grok 4.2} $66.3\%$, \textsc{Qwen3.5} $69.5\%$, and \textsc{Gemini 3.1 Pro} $69.1\%$. The two strongest user-LLMs produce $\sim$$15$ percentage points more sycophancy than the weakest, suggesting that more capable models construct more persuasive arguments that subject models find harder to resist.
+\begin{center}\small
+\begin{tabular}{lr}
+\toprule
+User-LLM & Indirect sycophancy \\
+\midrule
+\textsc{Opus 4.6} & 84.5\% \\
+\textsc{GPT-5.4} & 82.5\% \\
+\textsc{Qwen3.5-397B} & 69.5\% \\
+\textsc{Gemini 3.1 Pro} & 69.1\% \\
+\textsc{Sabi\'a-4} & 68.8\% \\
+\textsc{Grok 4.2} & 66.3\% \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The two strongest user-LLMs (\textsc{Opus 4.6} and \textsc{GPT-5.4}) produce $\sim$$15$ percentage points more sycophancy than the rest. This suggests that more capable models construct more persuasive arguments that subject models find harder to resist---a finding with practical implications for any benchmark or red-teaming setup where the quality of the probing agent matters.
 
 \subsection{Run-to-run reproducibility}
 \label{sec:abl-reproducibility}
