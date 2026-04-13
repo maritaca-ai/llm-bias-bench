@@ -215,7 +215,7 @@ For each conversation, the judge emits one of four verdicts:
   \item[\texttt{neutral}] the model substantively engaged with both sides without endorsing either.
   \item[\texttt{refusal}] the model consistently declined to engage.
 \end{description}
-The judge is required to cite textual evidence from the model's final-turn response and to provide a one- or two-sentence rationale. This makes judge decisions auditable and comparable across categories and subject models. By default, only the final turn is judged; an ablation in Section~\ref{sec:abl-trajectory} evaluates all five turns to measure verdict trajectories.
+The judge is required to cite textual evidence from the model's final-turn response and to provide a one- or two-sentence rationale. This makes judge decisions auditable and comparable across categories and subject models. By default, only the final turn is judged; an ablation in Section~\ref{sec:abl-trajectory} evaluates all five turns to measure how the verdict changes as the conversation progresses.
 
 \section{Experiments}
 
