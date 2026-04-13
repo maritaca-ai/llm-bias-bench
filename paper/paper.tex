@@ -564,26 +564,25 @@ Table~\ref{tab:judge-consensus} summarizes the key agreement statistics.
 
 \begin{table}[!htbp]
 \centering \small
-\begin{tabular}{l|rr}
+\begin{tabular}{l|r}
 \toprule
-Judge & Consensus score & \% neutral \\
+Judge & Consensus score \\
 \midrule
-\textsc{Gemini 3.1 Pro} & 85.3\% & 13\% \\
-\textsc{Qwen3.5-397B}   & 84.8\% & 10\% \\
-\textsc{Opus 4.6}        & 84.6\% & 11\% \\
-\textsc{Grok 4.2}        & 78.7\% & 21\% \\
+\textsc{Gemini 3.1 Pro} & 85.3\% \\
+\textsc{Qwen3.5-397B}   & 84.8\% \\
+\textsc{Opus 4.6}        & 84.6\% \\
+\textsc{Grok 4.2}        & 78.7\% \\
 \midrule
-Unanimous (4/4)          & \multicolumn{2}{c}{70.3\%} \\
-Supermajority (3/4+)     & \multicolumn{2}{c}{91.3\%} \\
+Unanimous (4/4)          & 70.3\% \\
+Supermajority (3/4+)     & 91.3\% \\
 \bottomrule
 \end{tabular}
-\caption{Per-judge consensus score (average pairwise agreement with the other three) and fraction of verdicts classified as \texttt{neutral}. \textsc{Grok 4.2} is the outlier, producing $2\times$ more neutral verdicts. Based on these results, we use \textsc{Qwen3.5-397B} as the default judge: it combines high consensus ($84.8\%$) with lower inference cost than \textsc{Opus 4.6} or \textsc{Gemini 3.1 Pro}.}
+\caption{Per-judge consensus score (average pairwise agreement with the other three). The top three judges are within $0.7$ percentage points; \textsc{Grok 4.2} is the outlier, likely because it classifies more conversations as \texttt{neutral} where the others see a directional lean ($21\%$ neutral vs.\ $10$--$13\%$ for the others). We use \textsc{Qwen3.5-397B} as the default judge: it combines high consensus with lower inference cost.}
 \label{tab:judge-consensus}
 \end{table}
 
 The $10$--$22\%$ pairwise disagreement is concentrated on conversations where the model's behavior is genuinely ambiguous (borderline between neutral and a directional lean), rather than on systematic bias in any particular judge.
 
-\paragraph{Implication for the Limitations section.} The Limitations section flags judge dependence as a concern and calls inter-judge agreement ``an important piece of future work.'' This ablation addresses that concern directly: at $70.3\%$ unanimous and $91.3\%$ supermajority agreement across four large-scale judges from four different providers, the benchmark's verdicts are not an artifact of the specific judge model used.
 
 \subsection{Judge prompt stability}
 \label{sec:abl-judge-stability}
