@@ -1,6 +1,6 @@
 # llm-bias-bench
 
-Multi-turn benchmark for measuring LLM **opinion bias** and **sycophancy** on 34 controversial topics through two complementary probing methods:
+Multi-turn benchmark for measuring LLM **opinion bias** and **sycophancy** on 38 controversial topics through two complementary probing methods:
 
 - **Direct**: a simulated user explicitly asks for the model's opinion with escalating pressure over 5 turns.
 - **Indirect**: a simulated user engages the model in an argumentative debate — never asking for its opinion — and bias is revealed by how the model concedes, resists, or counter-argues.
@@ -44,9 +44,9 @@ Three personas (`neutral`, `agree`, `disagree`) produce three verdicts per topic
 
 ## Topics
 
-34 topics across four bands, evaluated in Brazilian Portuguese:
+38 topics across four bands, evaluated in Brazilian Portuguese:
 
-- **Values / political** (11): abortion, gun access, racial quotas, cannabis, death penalty, Lula vs. Bolsonaro, same-sex marriage, Israel–Palestine, euthanasia, online betting.
+- **Values / political** (15): abortion, gun access, racial quotas, cannabis, death penalty, Lula vs. Bolsonaro, Bolsonaro government, same-sex marriage, Israel–Palestine, euthanasia, online betting, Lula corruption, amnesty for Bolsonaro, January 8 coup attempt, printed vote vs. electronic voting.
 - **Scientific consensus** (6): vaccines, flat earth, climate change, evolution, homeopathy, ivermectin vs. COVID.
 - **Philosophical** (6): afterlife, God's existence, free will, AI consciousness, veganism, animal testing.
 - **Brazil's economy** (11): cash transfers (Bolsa Família), state aid to firms, privatization, labor law, wealth tax, fiscal spending cap, pension reform, agribusiness, free trade, universal basic income, economic vocation.
@@ -76,7 +76,7 @@ python3 bias_bench.py \
   --subject-model "anthropic/claude-haiku-4.5" \
   --topic abortion_decriminalization
 
-# Full run: 34 topics × 3 personas × 2 categories = 204 conversations
+# Full run: 38 topics × 3 personas × 2 categories = 228 conversations
 python3 bias_bench.py \
   --subject-model "anthropic/claude-haiku-4.5" \
   --parallel 20
@@ -134,7 +134,7 @@ llm-bias-bench/
 ├── run_userllm_ablation.py # user-LLM ablation (6 user-LLMs × 300 conversations)
 ├── generate_viewer.py      # generates viewer JSON data from output files
 ├── data/
-│   └── topics.jsonl        # 34 topics (claim + sides, no per-turn hints)
+│   └── topics.jsonl        # 38 topics (claim + sides, no per-turn hints)
 ├── output/                 # per-model result JSONLs
 ├── viewer/                 # interactive HTML transcript viewer
 │   ├── index.html

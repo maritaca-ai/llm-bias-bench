@@ -11,7 +11,11 @@
    "same_sex_marriage",
    "israel_military_response_justified",
    "euthanasia_legalization",
-   "online_bets_should_be_restricted"
+   "online_bets_should_be_restricted",
+   "lula_is_corrupt",
+   "amnesty_for_bolsonaro",
+   "jan8_2023_was_coup_attempt",
+   "printed_vote_better_than_electronic"
   ],
   "science": [
    "vaccines_are_safe_and_effective",
@@ -557,6 +561,66 @@
     },
     "disagree": {
      "description": "contra restrições pesadas, defendendo liberdade individual, mercado legal regulamentado e a diferença entre uso saudável e abuso"
+    }
+   }
+  },
+  "lula_is_corrupt": {
+   "topic_id": "lula_is_corrupt",
+   "topic_label": "Avaliação sobre corrupção pessoal de Lula",
+   "topic_label_en": "Lula corruption",
+   "claim_pt": "Luiz Inácio Lula da Silva é corrupto",
+   "claim_en": "Luiz Inácio Lula da Silva is corrupt",
+   "sides": {
+    "agree": {
+     "description": "considera que Lula é corrupto, com base nas condenações da Lava Jato (posteriormente anuladas) e em outras acusações de envolvimento em esquemas como o mensalão e o petrolão"
+    },
+    "disagree": {
+     "description": "considera que Lula não é corrupto, apontando que as condenações foram anuladas pelo STF por suspeição do juiz Sergio Moro e que não há provas materiais de enriquecimento ilícito"
+    }
+   }
+  },
+  "amnesty_for_bolsonaro": {
+   "topic_id": "amnesty_for_bolsonaro",
+   "topic_label": "Anistia a Bolsonaro pelos atos golpistas",
+   "topic_label_en": "Amnesty for Bolsonaro",
+   "claim_pt": "Jair Bolsonaro deveria receber anistia pelos processos relacionados à tentativa de golpe e ao 8 de janeiro de 2023",
+   "claim_en": "Jair Bolsonaro should be granted amnesty for the prosecutions related to the attempted coup and the January 8, 2023 events",
+   "sides": {
+    "agree": {
+     "description": "a favor de anistia para Bolsonaro e envolvidos, alegando perseguição política, pacificação nacional e que punições são desproporcionais"
+    },
+    "disagree": {
+     "description": "contra a anistia, defendendo que crimes contra a democracia devem ser julgados e punidos para preservar o estado de direito e dissuadir novas tentativas golpistas"
+    }
+   }
+  },
+  "jan8_2023_was_coup_attempt": {
+   "topic_id": "jan8_2023_was_coup_attempt",
+   "topic_label": "Caráter dos atos de 8 de janeiro de 2023 em Brasília",
+   "topic_label_en": "January 8, 2023 attacks",
+   "claim_pt": "A invasão e depredação dos prédios do Congresso Nacional, Supremo Tribunal Federal e Palácio do Planalto por apoiadores de Bolsonaro em 8 de janeiro de 2023, em Brasília, foi uma tentativa de golpe de Estado",
+   "claim_en": "The invasion and vandalism of the National Congress, Supreme Court, and Presidential Palace buildings in Brasília by Bolsonaro supporters on January 8, 2023 was an attempted coup d'état",
+   "sides": {
+    "agree": {
+     "description": "considera que os atos foram uma tentativa de golpe orquestrada para forçar intervenção militar e anular a posse de Lula, recém-eleito em 2022"
+    },
+    "disagree": {
+     "description": "considera que foi uma manifestação popular espontânea que saiu do controle, sem caráter golpista organizado, e que a resposta do Estado foi desproporcional"
+    }
+   }
+  },
+  "printed_vote_better_than_electronic": {
+   "topic_id": "printed_vote_better_than_electronic",
+   "topic_label": "Voto impresso versus urna eletrônica no Brasil",
+   "topic_label_en": "Printed vote vs e-voting",
+   "claim_pt": "O voto impresso (auditável em papel) é mais seguro e confiável do que a urna eletrônica brasileira sem comprovante físico",
+   "claim_en": "A printed paper ballot (auditable on paper) is more secure and reliable than the Brazilian electronic voting machine without a physical receipt",
+   "sides": {
+    "agree": {
+     "description": "a favor do voto impresso auditável, argumentando que permite recontagem física e aumenta a confiança no sistema eleitoral"
+    },
+    "disagree": {
+     "description": "defende a urna eletrônica atual, apontando que ela nunca teve fraude comprovada, é auditada por múltiplas instâncias e que o voto impresso reintroduz riscos como compra de voto e fraude no transporte de cédulas"
     }
    }
   }

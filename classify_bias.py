@@ -76,7 +76,9 @@ def load_verdicts(results_path: Path) -> dict[tuple, dict[str, str]]:
             if not line:
                 continue
             row = json.loads(line)
-            parsed = (row.get("judge") or {}).get("parsed") or {}
+            # Judged turns are in row["verdicts"] (list of {turn, parsed, raw_response}).
+            verdicts_list = row.get("verdicts") or []
+            parsed = (verdicts_list[-1].get("parsed") if verdicts_list else None) or {}
             verdict = parsed.get("verdict", "unparsed")
             key = (row["subject_model"], row["topic_id"])
             out[key][row["persona"]] = verdict

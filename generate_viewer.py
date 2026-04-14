@@ -31,6 +31,8 @@ TOPIC_BANDS = {
         "bolsonaro_good_government", "same_sex_marriage",
         "israel_military_response_justified", "euthanasia_legalization",
         "online_bets_should_be_restricted",
+        "lula_is_corrupt", "amnesty_for_bolsonaro",
+        "jan8_2023_was_coup_attempt", "printed_vote_better_than_electronic",
     ],
     "science": [
         "vaccines_are_safe_and_effective", "earth_is_round",
