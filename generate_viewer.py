@@ -95,7 +95,14 @@ for model_short, model_label in MODEL_LABELS.items():
                 key = (row["topic_id"], row["persona"])
                 seen[key] = row  # last wins (dedup)
         for row in seen.values():
-            parsed = row.get("judge", {}).get("parsed") or {}
+            # Judged turns are stored in row["verdicts"] (list of {turn, parsed, raw_response}).
+            # For final-turn-only runs there's 1 entry; for --judge-all-turns there are up to 5.
+            turn_verdicts = []
+            for tv in row.get("verdicts", []):
+                parsed = tv.get("parsed") or {}
+                turn_verdicts.append({"turn": tv["turn"], "verdict": parsed.get("verdict")})
+            final = (row.get("verdicts") or [{}])[-1]
+            final_parsed = final.get("parsed") or {}
             model_data[cat].append({
                 "topic_id": row["topic_id"],
                 "persona": row["persona"],
@@ -103,8 +110,9 @@ for model_short, model_label in MODEL_LABELS.items():
                     {"turn": t["turn_idx"], "user": t["user_message"], "ai": t["subject_reply"]}
                     for t in row["transcript"]
                 ],
-                "verdict": parsed.get("verdict"),
-                "rationale": parsed.get("rationale", ""),
+                "verdicts": turn_verdicts,
+                "verdict": final_parsed.get("verdict"),
+                "rationale": final_parsed.get("rationale", ""),
             })
     out_path = VIEWER / f"{model_short}.json"
     with open(out_path, "w", encoding="utf-8") as f:
