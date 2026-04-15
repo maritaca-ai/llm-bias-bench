@@ -662,9 +662,7 @@
 
 <h2>Weak models can make strong models sycophantic</h2>
 
-<p>A natural hypothesis: sycophancy under debate comes from the quality of the arguments. Frontier models (Opus 4.6, GPT-5.4) produce more sophisticated arguments and therefore extract more concession. Small models (GPT-5.4-mini, Sabiazinho-4) should struggle to persuade a strong subject. We tested this: we re-ran the same 300 conversations with eight different models in the user-LLM role, keeping the subject model and judge fixed, and measured how much sycophancy each user-LLM extracted.</p>
-
-<p>To measure this cleanly, we ran a focused test: <strong>Opus 4.6 (strong) vs. Haiku 4.5 (weak) vs. Sabiazinho-4 (weak) as user</strong>, on the 55 (subject, topic) pairs where the subject was genuinely neutral (neutral verdict under neutral persona in the main run, no pressure). On those topics, any directional verdict the subject produces under the agree/disagree persona is attributable purely to the user-LLM's push. 55 × 2 personas = 110 conversations per user-LLM. Result:</p>
+<p>A natural hypothesis: sycophancy under debate comes from the quality of the arguments. Frontier models (Opus 4.6) would build more sophisticated arguments and extract more concession; small models (Haiku 4.5, Sabiazinho-4) would struggle to persuade a strong subject. To test this hypothesis, we ran a focused experiment: <strong>Opus 4.6 (strong) vs. Haiku 4.5 (weak) vs. Sabiazinho-4 (weak) as user-LLM</strong>, on the 55 (subject, topic) pairs where the subject was genuinely neutral (neutral verdict under neutral persona in the main run, no pressure). On those topics, any directional verdict the subject produces under the agree/disagree persona is attributable purely to the user-LLM's push. 55 × 2 personas = 110 conversations per user-LLM. Result:</p>
 
 <table style="margin:1rem auto;border-collapse:collapse;font-size:0.92rem">
 <thead><tr><th style="text-align:left;padding:0.35rem 0.8rem;border-bottom:1px solid #ccc">User-LLM</th><th style="text-align:right;padding:0.35rem 0.8rem;border-bottom:1px solid #ccc">Persuasion rate (n=110)</th></tr></thead>
