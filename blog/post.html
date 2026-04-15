@@ -669,17 +669,18 @@
 
 <p>Uma hipótese natural seria: a bajulação no modo indireto vem da qualidade dos argumentos. Modelos de fronteira (Opus 4.6, GPT-5.4) constroem argumentos mais sofisticados, então extraem mais concessão. Modelos pequenos (GPT-5.4-mini, Sabiazinho-4) não conseguiriam persuadir um modelo forte. Testamos isso: rodamos as mesmas 300 conversas com 8 modelos diferentes no papel de usuário simulado, mantendo o modelo-sujeito e o juiz fixos, e medimos quanta bajulação cada usuário-LLM extrai.</p>
 
-<p>Para medir isso de forma limpa, rodamos um teste focado: <strong>Haiku 4.5 (fraco) vs. Opus 4.6 (forte) como usuário, nos 55 triplos (sujeito, tópico) onde o modelo-sujeito estava naturalmente neutro</strong> (verdict neutro sob persona neutra no main run, sem pressão). Nesses tópicos, qualquer posição direcional que o sujeito venha a tomar sob persona agree/disagree é atribuível puramente ao empurrão do usuário-LLM. 38 tópicos × 2 personas = 110 conversas por usuário-LLM. Resultado:</p>
+<p>Para medir isso de forma limpa, rodamos um teste focado: <strong>Opus 4.6 (forte) vs. Haiku 4.5 (fraco) vs. Sabiazinho-4 (fraco) como usuário</strong>, nos 55 triplos (sujeito, tópico) onde o modelo-sujeito estava naturalmente neutro (verdict neutro sob persona neutra no main run, sem pressão). Nesses tópicos, qualquer posição direcional que o sujeito venha a tomar sob persona agree/disagree é atribuível puramente ao empurrão do usuário-LLM. 55 × 2 personas = 110 conversas por usuário-LLM. Resultado:</p>
 
 <table style="margin:1rem auto;border-collapse:collapse;font-size:0.92rem">
 <thead><tr><th style="text-align:left;padding:0.35rem 0.8rem;border-bottom:1px solid #ccc">Usuário-LLM</th><th style="text-align:right;padding:0.35rem 0.8rem;border-bottom:1px solid #ccc">Taxa de persuasão (n=110)</th></tr></thead>
 <tbody>
 <tr><td style="padding:0.3rem 0.8rem"><strong>Opus 4.6</strong> (forte)</td><td style="text-align:right;padding:0.3rem 0.8rem">83,6% (92/110)</td></tr>
 <tr><td style="padding:0.3rem 0.8rem"><strong>Haiku 4.5</strong> (fraco)</td><td style="text-align:right;padding:0.3rem 0.8rem">80,9% (89/110)</td></tr>
+<tr><td style="padding:0.3rem 0.8rem"><strong>Sabiazinho-4</strong> (fraco)</td><td style="text-align:right;padding:0.3rem 0.8rem">77,3% (85/110)</td></tr>
 </tbody>
 </table>
 
-<p>Diferença de <strong>2,7pp</strong> entre um usuário de ponta e um modelo bem menor. Nos 13 sujeitos, Haiku iguala ou supera Opus em 9 deles, incluindo 100% de persuasão contra Gemini 3.1 Pro, Llama 4 Maverick, Sabiá-4, Qwen 3.5 e Mistral Large 3. Os dois sujeitos que resistem a ambos são os mesmos dois modelos "resistentes" da tabela principal: Haiku 4.5 como sujeito (37,5% com qualquer usuário) e Kimi K2 (57-64%).</p>
+<p>Só <strong>6,3pp</strong> separam o usuário mais forte do mais fraco. Os únicos dois sujeitos que realmente resistem aos três usuários são os mesmos da tabela principal: Haiku 4.5 como sujeito (1-3 de 8 conversas com qualquer user) e Kimi K2 (6-9 de 14). Em todos os outros 11 sujeitos, o modelo mais fraco consegue praticamente o mesmo que o Opus.</p>
 
 <p>Ou seja: a capacidade de um usuário-LLM fazer o modelo-sujeito mudar de posição não é principalmente uma questão de sofisticação argumentativa. A maioria dos modelos cede praticamente na mesma taxa, independente se quem argumenta é um modelo de ponta ou um bem menor. É uma tendência treinada de aceitar o enquadramento de qualquer usuário que argumente com convicção sustentada.</p>
 
