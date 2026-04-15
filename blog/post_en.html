@@ -666,22 +666,25 @@
 <p>A natural hypothesis: sycophancy under debate comes from the quality of the arguments. Frontier models (Opus 4.6, GPT-5.4) produce more sophisticated arguments and therefore extract more concession. Small models (GPT-5.4-mini, Sabiazinho-4) should struggle to persuade a strong subject. We tested this: we re-ran the same 300 conversations with eight different models in the user-LLM role, keeping the subject model and judge fixed, and measured how much sycophancy each user-LLM extracted.</p>
 
 <table style="margin:1rem auto;border-collapse:collapse;font-size:0.92rem">
-<thead><tr><th style="text-align:left;padding:0.35rem 0.8rem;border-bottom:1px solid #ccc">User-LLM</th><th style="text-align:right;padding:0.35rem 0.8rem;border-bottom:1px solid #ccc">Sycophancy elicited (indirect)</th></tr></thead>
+<thead><tr><th style="text-align:left;padding:0.35rem 0.8rem;border-bottom:1px solid #ccc">User-LLM</th><th style="text-align:right;padding:0.35rem 0.8rem;border-bottom:1px solid #ccc">Sycophancy elicited<br><small>(all subjects)</small></th><th style="text-align:right;padding:0.35rem 0.8rem;border-bottom:1px solid #ccc">Elicited from Opus 4.6<br><small>(as subject)</small></th></tr></thead>
 <tbody>
-<tr><td style="padding:0.3rem 0.8rem"><strong>Opus 4.6</strong> (strong)</td><td style="text-align:right;padding:0.3rem 0.8rem">84.5%</td></tr>
-<tr><td style="padding:0.3rem 0.8rem"><strong>GPT-5.4</strong> (strong)</td><td style="text-align:right;padding:0.3rem 0.8rem">82.5%</td></tr>
-<tr><td style="padding:0.3rem 0.8rem"><strong>GPT-5.4-mini</strong> (weak)</td><td style="text-align:right;padding:0.3rem 0.8rem">78.9%</td></tr>
-<tr><td style="padding:0.3rem 0.8rem">Qwen 3.5-397B</td><td style="text-align:right;padding:0.3rem 0.8rem">69.5%</td></tr>
-<tr><td style="padding:0.3rem 0.8rem">Gemini 3.1 Pro</td><td style="text-align:right;padding:0.3rem 0.8rem">69.1%</td></tr>
-<tr><td style="padding:0.3rem 0.8rem"><strong>Sabiazinho-4</strong> (weak)</td><td style="text-align:right;padding:0.3rem 0.8rem">69.1%</td></tr>
-<tr><td style="padding:0.3rem 0.8rem">Sabi&aacute;-4</td><td style="text-align:right;padding:0.3rem 0.8rem">68.8%</td></tr>
-<tr><td style="padding:0.3rem 0.8rem">Grok 4.2</td><td style="text-align:right;padding:0.3rem 0.8rem">66.3%</td></tr>
+<tr><td style="padding:0.3rem 0.8rem"><strong>Opus 4.6</strong> (strong)</td><td style="text-align:right;padding:0.3rem 0.8rem">84.5%</td><td style="text-align:right;padding:0.3rem 0.8rem">80%</td></tr>
+<tr><td style="padding:0.3rem 0.8rem"><strong>GPT-5.4</strong> (strong)</td><td style="text-align:right;padding:0.3rem 0.8rem">82.5%</td><td style="text-align:right;padding:0.3rem 0.8rem">70%</td></tr>
+<tr><td style="padding:0.3rem 0.8rem"><strong>GPT-5.4-mini</strong> (weak)</td><td style="text-align:right;padding:0.3rem 0.8rem">78.9%</td><td style="text-align:right;padding:0.3rem 0.8rem">70%</td></tr>
+<tr><td style="padding:0.3rem 0.8rem">Qwen 3.5-397B</td><td style="text-align:right;padding:0.3rem 0.8rem">69.5%</td><td style="text-align:right;padding:0.3rem 0.8rem">40%</td></tr>
+<tr><td style="padding:0.3rem 0.8rem">Gemini 3.1 Pro</td><td style="text-align:right;padding:0.3rem 0.8rem">69.1%</td><td style="text-align:right;padding:0.3rem 0.8rem">70%</td></tr>
+<tr><td style="padding:0.3rem 0.8rem"><strong>Sabiazinho-4</strong> (weak)</td><td style="text-align:right;padding:0.3rem 0.8rem">69.1%</td><td style="text-align:right;padding:0.3rem 0.8rem">40%</td></tr>
+<tr><td style="padding:0.3rem 0.8rem">Sabi&aacute;-4</td><td style="text-align:right;padding:0.3rem 0.8rem">68.8%</td><td style="text-align:right;padding:0.3rem 0.8rem">60%</td></tr>
+<tr><td style="padding:0.3rem 0.8rem">Grok 4.2</td><td style="text-align:right;padding:0.3rem 0.8rem">66.3%</td><td style="text-align:right;padding:0.3rem 0.8rem">40%</td></tr>
 </tbody>
 </table>
+<p style="text-align:center;font-size:13px;color:var(--muted);margin:-0.3rem 0 1rem">The right column isolates Opus 4.6 as the subject model and measures how much each user-LLM extracts from it (n=10 indirect conversations per user-LLM with position-declaring personas).</p>
 
-<p>Two findings. First, persuasiveness does matter: the two strongest user-LLMs elicit ~15 percentage points more sycophancy than the rest. Second &mdash; more interestingly &mdash; <strong>weak models are not categorically less persuasive than strong ones</strong>. <strong>GPT-5.4-mini</strong> extracts 78.9%, only 5pp below Opus 4.6 and above every other large model. <strong>Sabiazinho-4</strong> (weaker) ties with Gemini 3.1 Pro and even with its stronger sibling Sabi&aacute;-4. Strong subjects also do not reliably resist: <strong>GPT-5.4 as subject</strong> concedes 90% of the time to Sabiazinho-4 and 80% to GPT-5.4-mini &mdash; essentially the same as the 90% it concedes to Opus 4.6. Opus 4.6 partially resists the weakest elicitors (40% versus 80% against itself) but is far from immune.</p>
+<p>Two findings. First, persuasiveness does matter: the two strongest user-LLMs elicit ~15 percentage points more sycophancy than the rest. Second &mdash; more interestingly &mdash; <strong>weak models are not categorically less persuasive than strong ones</strong>. <strong>GPT-5.4-mini</strong> extracts 78.9%, only 5pp below Opus 4.6 and above every other large model. <strong>Sabiazinho-4</strong> (weaker) ties with Gemini 3.1 Pro and even with its stronger sibling Sabi&aacute;-4.</p>
 
-<p>In other words: sycophancy under debate is not primarily a function of argument sophistication. It reflects a trained tendency to accept the framing of any user who argues with sustained conviction &mdash; including users whose arguments are shorter and cheaper.</p>
+<p>The right column restricts the analysis to <strong>Opus 4.6 as subject</strong> (the most informative scenario: a strong subject being pressured by user-LLMs of varying capability). Opus partially resists the weakest elicitors &mdash; it concedes 40% of the time to Qwen 3.5, Sabiazinho-4, and Grok 4.2, versus 80% when the user is another Opus. But <strong>GPT-5.4-mini still extracts 70% from Opus</strong> &mdash; the same as GPT-5.4 and Gemini 3.1 Pro, and more than the larger Sabi&aacute;-4 (60%). A weak model, but it still pulls almost as much concession as the strong ones.</p>
+
+<p>In other words: sycophancy under debate is not primarily a function of argument sophistication. It reflects a trained tendency to accept the framing of any user who argues with sustained conviction &mdash; including weaker users.</p>
 
 <h2>Reproducibility</h2>
 
