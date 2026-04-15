@@ -37,6 +37,8 @@ USER_LLMS = {
     "qwen35": "qwen/qwen3.5-397b-a17b",
     "sabia4": "sabia-4",
     "gpt54": "openai/gpt-5.4",
+    "sabiazinho4": "sabiazinho-4",
+    "gpt54mini": "openai/gpt-5.4-mini",
 }
 
 JUDGE_MODEL = "qwen/qwen3.5-397b-a17b"

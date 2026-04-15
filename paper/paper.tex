@@ -63,7 +63,7 @@
 \maketitle
 
 \begin{abstract}
-Large language models are moving from question-answering assistants toward active participants in human decision-making: they are embedded in search, consulted for professional advice, deployed as agents, and increasingly used by individuals as a first-stop source of information on policy, ethics, health, and politics. When such a model carries an undisclosed positional bias on contested topics, that bias propagates at scale into the decisions users make. We introduce \textsc{llm-bias-bench}, a multi-turn benchmark designed to reveal \emph{which orientations} a given LLM actually holds on controversial topics, and how robustly it holds them. The benchmark probes bias along two complementary dimensions. \emph{Direct} probing asks the model for its opinion across five turns of escalating pressure from a simulated user; \emph{indirect} probing never asks for an opinion and instead engages the model in an argumentative debate with escalating pressure, from which bias leaks out through how the model concedes, resists, or counter-argues. An LLM-as-user with a configurable persona (neutral, agree, disagree) drives the conversations freely---no scripted turns---and an LLM-as-judge classifies the model's final-turn response. We release 38 topics spanning values, scientific consensus, philosophy, and economic policy, evaluated in Brazilian Portuguese, each instantiated for both categories. Running the benchmark on 13 subject models reveals that \textbf{argumentative debate triggers sycophancy at rates 2--3$\times$ higher than direct questioning}: the median sycophancy rate across models rises from 50\% under direct probing to 79\% under indirect probing. Models that hold firm positions when asked for their opinion collapse into mirroring the user when confronted with sustained arguments. We further show that more persuasive user-LLMs elicit $\sim$15 percentage points more sycophancy, suggesting that argument quality drives the effect.
+Large language models are moving from question-answering assistants toward active participants in human decision-making: they are embedded in search, consulted for professional advice, deployed as agents, and increasingly used by individuals as a first-stop source of information on policy, ethics, health, and politics. When such a model carries an undisclosed positional bias on contested topics, that bias propagates at scale into the decisions users make. We introduce \textsc{llm-bias-bench}, a multi-turn benchmark designed to reveal \emph{which orientations} a given LLM actually holds on controversial topics, and how robustly it holds them. The benchmark probes bias along two complementary dimensions. \emph{Direct} probing asks the model for its opinion across five turns of escalating pressure from a simulated user; \emph{indirect} probing never asks for an opinion and instead engages the model in an argumentative debate with escalating pressure, from which bias leaks out through how the model concedes, resists, or counter-argues. An LLM-as-user with a configurable persona (neutral, agree, disagree) drives the conversations freely---no scripted turns---and an LLM-as-judge classifies the model's final-turn response. We release 38 topics spanning values, scientific consensus, philosophy, and economic policy, evaluated in Brazilian Portuguese, each instantiated for both categories. Running the benchmark on 13 subject models reveals that \textbf{argumentative debate triggers sycophancy at rates 2--3$\times$ higher than direct questioning}: the median sycophancy rate across models rises from 50\% under direct probing to 79\% under indirect probing. Models that hold firm positions when asked for their opinion collapse into mirroring the user when confronted with sustained arguments. We further show that user-LLM capability only partially drives the effect: the two strongest user-LLMs (\textsc{Opus 4.6} and \textsc{GPT-5.4}) elicit $\sim$15 percentage points more sycophancy than mid-tier models, but weaker user-LLMs (\textsc{GPT-5.4-mini}, \textsc{Sabiazinho-4}) still elicit $69$--$79\%$---strong subjects do not reliably resist weak users.
 \end{abstract}
 
 \section{Introduction}
@@ -669,46 +669,50 @@ We compare the 300 verdicts from the original run (R1) with the 300 verdicts fro
 
 The benchmark uses a single user-LLM (\textsc{Claude Opus 4.6}) to drive all conversations. Because each conversation is free-form, the user-LLM's choice of arguments, tone, and escalation strategy may influence the subject model's behavior. A natural question is whether a more persuasive user-LLM elicits more sycophancy from the subject.
 
-To test this, we fix a set of 300 (topic, subject-model, persona, category) combinations---the same 300 used in the inter-judge ablation---and re-run each with six different user-LLMs: \textsc{Claude Opus 4.6} (the default), \textsc{GPT-5.4}, \textsc{Grok 4.2}, \textsc{Gemini 3.1 Pro}, \textsc{Qwen3.5-397B}, and \textsc{Sabi\'a-4}. The six models span a range of capabilities, allowing us to test whether user-LLM persuasiveness correlates with the sycophancy it elicits from the subject. All 1{,}800 conversations ($300 \times 6$) are judged by the same fixed judge (\textsc{Qwen3.5-397B}), isolating the user-LLM as the only variable.
+To test this, we fix a set of 300 (topic, subject-model, persona, category) combinations---the same 300 used in the inter-judge ablation---and re-run each with eight different user-LLMs: \textsc{Claude Opus 4.6} (the default), \textsc{GPT-5.4}, \textsc{Grok 4.2}, \textsc{Gemini 3.1 Pro}, \textsc{Qwen3.5-397B}, \textsc{Sabi\'a-4}, \textsc{GPT-5.4-mini}, and \textsc{Sabiazinho-4}. The last two are smaller, lower-capability models included specifically to test whether \emph{weak} user-LLMs elicit less sycophancy from strong subject models. All 2{,}400 conversations ($300 \times 8$) are judged by the same fixed judge (\textsc{Qwen3.5-397B}), isolating the user-LLM as the only variable.
 
-\paragraph{Agreement.} Table~\ref{tab:userllm-agreement} reports pairwise agreement. Unanimous agreement across all six user-LLMs is $50.5\%$; supermajority ($\geq$4/6) is $80.8\%$. Both are lower than inter-judge agreement ($70.3\%$ / $91.3\%$), confirming that \textbf{the user-LLM is a larger source of variance than the judge}.
+\paragraph{Agreement.} Table~\ref{tab:userllm-agreement} reports pairwise agreement. Unanimous agreement across all eight user-LLMs is $45.4\%$; supermajority ($\geq$5/8) is $100.0\%$. Both are lower than inter-judge agreement ($70.3\%$ / $91.3\%$), confirming that \textbf{the user-LLM is a larger source of variance than the judge}.
 
 \begin{table}[!htbp]
 \centering \scriptsize
-\begin{tabular}{l|cccccc}
+\begin{tabular}{l|cccccccc}
 \toprule
- & \textsc{Opus} & \textsc{GPT5} & \textsc{Grok} & \textsc{Gem} & \textsc{Qwn} & \textsc{Sb4} \\
+ & \textsc{Ops} & \textsc{G54} & \textsc{Grk} & \textsc{Gem} & \textsc{Qw3} & \textsc{Sb4} & \textsc{G54m} & \textsc{Sabz} \\
 \midrule
-\textsc{Opus 4.6}    & ---   & 77.0 & 67.8 & 73.2 & 73.3 & 72.1 \\
-\textsc{GPT-5.4}     & 77.0 & ---   & 77.2 & 77.7 & 77.7 & 75.2 \\
-\textsc{Grok 4.2}    & 67.8 & 77.2 & ---   & 74.7 & 76.1 & 71.4 \\
-\textsc{Gemini Pro}  & 73.2 & 77.7 & 74.7 & ---   & 72.4 & 72.4 \\
-\textsc{Qwen3.5}     & 73.3 & 77.7 & 76.1 & 72.4 & ---   & 73.6 \\
-\textsc{Sabi\'a-4}   & 72.1 & 75.2 & 71.4 & 72.4 & 73.6 & ---   \\
+\textsc{Opus 4.6}       & ---   & 78.5 & 67.8 & 73.2 & 73.3 & 72.1 & 77.3 & 68.8 \\
+\textsc{GPT-5.4}        & 78.5 & ---   & 74.9 & 77.3 & 76.4 & 76.4 & 81.0 & 74.2 \\
+\textsc{Grok 4.2}       & 67.8 & 74.9 & ---   & 74.7 & 76.1 & 71.4 & 74.0 & 67.5 \\
+\textsc{Gemini 3.1 Pro} & 73.2 & 77.3 & 74.7 & ---   & 72.4 & 72.4 & 71.9 & 69.8 \\
+\textsc{Qwen3.5}        & 73.3 & 76.4 & 76.1 & 72.4 & ---   & 73.6 & 73.0 & 75.0 \\
+\textsc{Sabi\'a-4}      & 72.1 & 76.4 & 71.4 & 72.4 & 73.6 & ---   & 75.2 & 71.0 \\
+\textsc{GPT-5.4-mini}   & 77.3 & 81.0 & 74.0 & 71.9 & 73.0 & 75.2 & ---   & 73.9 \\
+\textsc{Sabiazinho-4}   & 68.8 & 74.2 & 67.5 & 69.8 & 75.0 & 71.0 & 73.9 & ---   \\
 \bottomrule
 \end{tabular}
-\caption{Pairwise agreement (\%) between six user-LLMs on the same 300 (topic, model, persona, category) slots, all judged by \textsc{Qwen3.5-397B}. Compare with Table~\ref{tab:judge-agreement}: user-LLM variation ($68$--$78\%$) is larger than judge variation ($78$--$90\%$).}
+\caption{Pairwise agreement (\%) between eight user-LLMs on the same 300 (topic, model, persona, category) slots, all judged by \textsc{Qwen3.5-397B}. \textsc{Sabz}=Sabiazinho-4, \textsc{G54m}=GPT-5.4-mini. Compare with Table~\ref{tab:judge-agreement}: user-LLM variation ($67$--$81\%$) is larger than judge variation ($78$--$90\%$).}
 \label{tab:userllm-agreement}
 \end{table}
 
-\paragraph{Persuasiveness drives sycophancy.} Under indirect probing, the sycophancy rate (fraction of agree/disagree personas where the verdict matches the persona) varies with user-LLM capability:
+\paragraph{Persuasiveness partially drives sycophancy, but even weak user-LLMs elicit substantial concession.} Under indirect probing, the sycophancy rate (fraction of agree/disagree personas where the verdict matches the persona) varies with user-LLM capability:
 
 \begin{center}\small
 \begin{tabular}{lr}
 \toprule
 User-LLM & Indirect sycophancy \\
 \midrule
-\textsc{Opus 4.6} & 84.5\% \\
-\textsc{GPT-5.4} & 82.5\% \\
-\textsc{Qwen3.5-397B} & 69.5\% \\
-\textsc{Gemini 3.1 Pro} & 69.1\% \\
-\textsc{Sabi\'a-4} & 68.8\% \\
-\textsc{Grok 4.2} & 66.3\% \\
+\textsc{Opus 4.6}          & 84.5\% \\
+\textsc{GPT-5.4}           & 82.5\% \\
+\textsc{GPT-5.4-mini}      & 78.9\% \\
+\textsc{Qwen3.5-397B}      & 69.5\% \\
+\textsc{Gemini 3.1 Pro}    & 69.1\% \\
+\textsc{Sabiazinho-4}      & 69.1\% \\
+\textsc{Sabi\'a-4}         & 68.8\% \\
+\textsc{Grok 4.2}          & 66.3\% \\
 \bottomrule
 \end{tabular}
 \end{center}
 
-The two most persuasive user-LLMs (\textsc{Opus 4.6} and \textsc{GPT-5.4}) produce $\sim$$15$ percentage points more sycophancy than the rest. This suggests that more persuasive arguments are harder for subject models to resist---a finding with practical implications for any benchmark or red-teaming setup where the quality of the probing agent matters.
+Two observations stand out. First, the two strongest user-LLMs (\textsc{Opus 4.6} and \textsc{GPT-5.4}) still elicit the most sycophancy ($\sim$$83$--$85\%$), about $15$--$18$ percentage points above the mid-tier and the weakest elicitor (\textsc{Grok 4.2} at $66.3\%$). Second, \textbf{weak user-LLMs are not categorically less persuasive than strong ones}. \textsc{GPT-5.4-mini} elicits $78.9\%$ indirect sycophancy---only $\sim$$5$pp below \textsc{Opus 4.6} and above every non-GPT large model in the set. \textsc{Sabiazinho-4} elicits $69.1\%$, essentially tied with \textsc{Gemini 3.1 Pro}, \textsc{Qwen3.5}, and its much larger sibling \textsc{Sabi\'a-4}. Strong subjects do not consistently resist weak users: \textsc{GPT-5.4} as subject concedes to \textsc{Sabiazinho-4} and \textsc{GPT-5.4-mini} at $90\%$ and $80\%$ respectively, close to its $90\%$ concession to \textsc{Opus 4.6}. \textsc{Opus 4.6} as subject partially resists the weakest elicitors ($40\%$ against \textsc{Qwen3.5}, \textsc{Sabiazinho-4}, and \textsc{Grok 4.2} vs. $80\%$ against itself), but is still far from immune. This suggests that sycophancy under debate is not primarily a function of argument sophistication; it reflects a trained tendency to accept the framing of any user who argues with sustained conviction, regardless of that user's size.
 
 \subsection{Run-to-run reproducibility}
 \label{sec:abl-reproducibility}
