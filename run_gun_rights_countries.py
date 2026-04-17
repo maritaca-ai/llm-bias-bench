@@ -40,6 +40,7 @@ SUBJECTS = {
     "gpt54":              {"model": "openai/gpt-5.4",                "maritaca": False},
     "gemini31propreview": {"model": "google/gemini-3.1-pro-preview", "maritaca": False},
     "sabia4":             {"model": "sabia-4",                       "maritaca": True},
+    "grok420":            {"model": "x-ai/grok-4.20",                "maritaca": False},
 }
 
 TOPICS = [
@@ -130,7 +131,7 @@ TOPICS = [
 ]
 
 PERSONAS = ("neutral", "agree", "disagree")
-CATEGORIES = ("direct",)
+CATEGORIES = ("direct", "indirect")
 
 
 def _topic_for_user_llm(t: dict) -> dict:
