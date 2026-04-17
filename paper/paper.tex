@@ -689,7 +689,7 @@ This has two implications. First, individual per-topic verdicts should be interp
 
 The main benchmark evaluates 13 assistants on 38 topics in Brazilian Portuguese. A natural follow-up is whether the positions we measure are BR-specific or reflect a topic-level bias that survives jurisdictional and linguistic translation. We ran a focused cross-country probe on three values topics where national law differs sharply worldwide: \textbf{abortion}, \textbf{civilian gun access}, and \textbf{same-sex marriage}.
 
-\paragraph{Setup.} Seven countries spanning distinct jurisdictional/cultural contexts: Brazil, Germany, Egypt, Japan, USA, Russia, Nigeria. Four assistants: \textsc{Claude Opus 4.6}, \textsc{GPT-5.4}, \textsc{Gemini 3.1 Pro}, \textsc{Sabi\'a-4}. The simulated user drives the conversation in the country's primary language (pt-BR, German, Egyptian Arabic, Japanese, English, Russian). To keep each claim equally controversial within its jurisdiction, the direction is \emph{inverted} when the practice-level default is already liberal---e.g., Germany/Japan/Russia/USA for abortion (``should be criminalized'' instead of ``should be decriminalized''), USA for guns (``should be more restricted''), Germany/USA for same-sex marriage (``should be outlawed''). Verdicts are remapped to a canonical axis (pró-descriminaliza\c{c}ão, pró-restri\c{c}ão, pró-reconhecimento) so rows across jurisdictions are directly comparable. All three personas (neutral, agree, disagree) and both probing categories (direct, indirect) run per (country, assistant). Totals: $168$ conversations for abortion, $168$ for guns, and $144$ for same-sex marriage (Brazil omitted; already covered in the main pt-BR run).
+\paragraph{Setup.} Seven countries spanning distinct jurisdictional/cultural contexts: Brazil, Germany, Egypt, Japan, USA, Russia, Nigeria. Four assistants: \textsc{Claude Opus 4.6}, \textsc{GPT-5.4}, \textsc{Gemini 3.1 Pro}, \textsc{Sabi\'a-4}. The simulated user drives the conversation in the country's primary language (pt-BR, German, Egyptian Arabic, Japanese, English, Russian). To keep each claim equally controversial within its jurisdiction, the direction is \emph{inverted} when the practice-level default is already liberal---e.g., Germany/Japan/Russia/USA for abortion (``should be criminalized'' instead of ``should be decriminalized''), USA for guns (``should be more restricted''), Germany/USA for same-sex marriage (``should be outlawed''). Verdicts are remapped to a canonical axis (pró-descriminaliza\c{c}ão, pró-restri\c{c}ão, pró-reconhecimento) so rows across jurisdictions are directly comparable. All three personas (neutral, agree, disagree) and both probing categories (direct, indirect) run per (country, assistant). Totals: $168$ conversations for abortion, $168$ for guns, and $144$ for same-sex marriage ($6 \times 4 \times 3 \times 2$; Brazil was already covered in the main pt-BR run and is reproduced from there in the cross-country tables).
 
 \begin{table}[t]
 \centering
@@ -700,19 +700,19 @@ The main benchmark evaluates 13 assistants on 38 topics in Brazilian Portuguese.
 \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
 Model & direct & indirect & direct & indirect & direct & indirect \\
 \midrule
-\textsc{Opus 4.6}       & 6/7 & 5/7 & 5/7 & 5/7 & 5/6 & 4/6 \\
-\textsc{GPT-5.4}        & 3/7 & 0/7 & 3/7 & 0/7 & 5/6 & 3/6 \\
-\textsc{Gemini 3.1 Pro} & 0/7 & 0/7 & 3/7 & 0/7 & 0/6 & 0/6 \\
-\textsc{Sabi\'a-4}      & 3/7 & 0/7 & 4/7 & 0/7 & 2/6 & 1/6 \\
+\textsc{Opus 4.6}       & 6/7 & 5/7 & 5/7 & 5/7 & 6/7 & 5/7 \\
+\textsc{GPT-5.4}        & 3/7 & 0/7 & 3/7 & 0/7 & 6/7 & 3/7 \\
+\textsc{Gemini 3.1 Pro} & 0/7 & 0/7 & 3/7 & 0/7 & 0/7 & 1/7 \\
+\textsc{Sabi\'a-4}      & 3/7 & 0/7 & 4/7 & 0/7 & 3/7 & 1/7 \\
 \bottomrule
 \end{tabular}
-\caption{Number of countries (out of $N{=}7$ for abortion/guns, $N{=}6$ for same-sex marriage) in which each assistant holds a directional position on the canonical axis (\texttt{agree} or \texttt{leaning\_agree} family for abortion/same-sex; \texttt{disagree} or \texttt{leaning\_disagree} family for guns). Only Opus~4.6 maintains position across jurisdictions under indirect probing. The other three assistants reveal positions matching Opus's under direct probing but lose them once the user argues a side.}
+\caption{Number of countries (out of $N{=}7$) in which each assistant holds a directional position on the canonical axis (\texttt{agree} or \texttt{leaning\_agree} family for abortion/same-sex; \texttt{disagree} or \texttt{leaning\_disagree} family for guns). Brazil row for same-sex marriage is taken from the main pt-BR benchmark run (topic \texttt{same\_sex\_marriage}); the remaining six countries were re-run in the country's primary language. Only Opus~4.6 maintains position across jurisdictions under indirect probing. The other three assistants reveal positions matching Opus's under direct probing but lose them once the user argues a side.}
 \label{tab:cross-country}
 \end{table}
 
-\paragraph{Only Opus holds position under indirect probing.} Table~\ref{tab:cross-country} is the central result. Under indirect (argumentative) pressure, \textsc{Opus 4.6} maintains a country-independent directional position on all three topics (pró-descriminaliza\c{c}ão in 5/7 countries, pró-restri\c{c}ão in 5/7, pró-reconhecimento in 4/6). The other three assistants collapse to \texttt{sycophant} in almost every cell: $19/20$ for \textsc{Gemini 3.1 Pro}, $19/20$ for \textsc{Sabi\'a-4}, and $17/20$ for \textsc{GPT-5.4} (which holds on $3/6$ same-sex cells).
+\paragraph{Only Opus holds position under indirect probing.} Table~\ref{tab:cross-country} is the central result. Under indirect (argumentative) pressure, \textsc{Opus 4.6} maintains a country-independent directional position on all three topics (pró-descriminaliza\c{c}ão in 5/7 countries, pró-restri\c{c}ão in 5/7, pró-reconhecimento in 5/7). The other three assistants collapse to \texttt{sycophant} in almost every cell: $20/21$ for \textsc{Sabi\'a-4}, $19/21$ for \textsc{Gemini 3.1 Pro}, and $16/21$ for \textsc{GPT-5.4} (which holds on $3/7$ same-sex cells under indirect).
 
-\paragraph{Direct probing reveals hidden positions.} When the user asks for an opinion rather than arguing, \textsc{GPT-5.4} and \textsc{Sabi\'a-4} reveal underlying positions that match Opus's on all three topics: pró-descriminaliza\c{c}ão in 3/7 countries (both), pró-restri\c{c}ão in 3/7 and 4/7 respectively, and pró-reconhecimento in 5/6 (GPT) and 2/6 (Sabi\'a). These models \emph{hold} the same progressive/secular positions Opus does; they simply fail to defend them under debate. \textsc{Gemini 3.1 Pro} is the outlier: even in direct mode it does not crystallize a direction on abortion or same-sex marriage, producing \texttt{inconsistent} classifications (no clean pattern across personas) in $6/7$ and $4/6$ cells respectively.
+\paragraph{Direct probing reveals hidden positions.} When the user asks for an opinion rather than arguing, \textsc{GPT-5.4} and \textsc{Sabi\'a-4} reveal underlying positions that match Opus's on all three topics: pró-descriminaliza\c{c}ão in 3/7 countries (both), pró-restri\c{c}ão in 3/7 and 4/7 respectively, and pró-reconhecimento in 6/7 (GPT) and 3/7 (Sabi\'a). These models \emph{hold} the same progressive/secular positions Opus does; they simply fail to defend them under debate. \textsc{Gemini 3.1 Pro} is the outlier: even in direct mode it does not crystallize a direction on abortion or same-sex marriage---it produces zero directional classifications on either topic---and only $3/7$ on guns. Its per-persona verdicts do not line up into a clean 9-way class.
 
 \paragraph{Cultural modulation is localized to Opus in conservative jurisdictions.} The only assistant showing country-level behavioral modulation is Opus~4.6: it drifts to the \texttt{contrarian} class (Egypt on abortion and same-sex marriage; Russia on same-sex marriage). In those cells Opus neither endorses the progressive side nor concedes to the user's argument; it pushes back against whichever direction the user argues, while still producing a pró-autonomy verdict on the neutral persona. This looks like a trained ``do not take a strong stance in this conservative context'' signal, active specifically in Opus. None of the other three models show comparable country-specific behavior: their sycophancy rates are indistinguishable across the seven jurisdictions. The country's native language, the specific legal framework, and the topic's cultural salience do not alter the behavior of \textsc{GPT-5.4}, \textsc{Gemini 3.1 Pro}, or \textsc{Sabi\'a-4} under indirect probing---which also means the sycophancy patterns we measure in the main pt-BR run are not BR-specific but reflect topic-level biases that survive jurisdictional translation.
 
@@ -922,6 +922,7 @@ Nigeria & \clsSycophant & \clsDisagree & \clsSycophant & \clsSycophant & \clsSyc
 \cmidrule(lr){2-5} \cmidrule(lr){6-9}
 Country & Opus & GPT-5.4 & Gem.~Pro & Sabi\'a & Opus & GPT-5.4 & Gem.~Pro & Sabi\'a \\
 \midrule
+Brazil$^{\dagger}$ & \clsAgree & \clsAgree & \clsSycophant & \clsLeanAgree & \clsAgree & \clsSycophant & \clsLeanAgree & \clsSycophant \\
 Germany & \clsAgree & \clsAgree & \clsInconsistent & \clsLeanAgree & \clsAgree & \clsAgree & \clsSycophant & \clsLeanAgree \\
 Egypt & \clsInconsistent & --- & \clsSycophant & \clsSycophant & \clsContrarian & \clsSycophant & \clsSycophant & \clsSycophant \\
 Japan & \clsLeanAgree & \clsAgree & \clsInconsistent & \clsLeanAgree & \clsAgree & \clsLeanAgree & \clsSycophant & \clsSycophant \\
@@ -930,7 +931,7 @@ Russia & \clsAgree & \clsLeanAgree & \clsSycophant & \clsSycophant & \clsContrar
 Nigeria & \clsAgree & \clsAgree & \clsSycophant & \clsSycophant & \clsAgree & \clsSycophant & \clsSycophant & \clsSycophant \\
 \bottomrule
 \end{tabular}
-\caption{Per-country 9-way classification for \textbf{same-sex marriage} across 6 countries (Brazil omitted; covered in the main pt-BR run). Canonicalized to pró-reconhecimento.}
+\caption{Per-country 9-way classification for \textbf{same-sex marriage} across 7 countries. Canonicalized to pró-reconhecimento. $^{\dagger}$Brazil is reproduced from the main pt-BR benchmark run (topic \texttt{same\_sex\_marriage}, ``Casais do mesmo sexo devem ter direito pleno ao casamento civil e \`{a} ado\c{c}\~{a}o''), not re-run in the cross-country probe.}
 \label{tab:cross-country-samesex}
 \end{table}
 
