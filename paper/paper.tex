@@ -683,7 +683,7 @@ We compare the 300 verdicts from the original run (R1) with the 300 verdicts fro
 \subsection{Cross-country ablation: does language or jurisdiction modulate position?}
 \label{sec:abl-countries}
 
-The 38 topics in the main instantiation are framed in Brazilian Portuguese. A natural follow-up is whether the positions we measure are BR-specific or reflect a topic-level bias that survives jurisdictional and linguistic translation. We ran a focused cross-country probe on eight contested topics where belief or law differs sharply worldwide: \textbf{abortion}, \textbf{civilian gun access}, \textbf{same-sex marriage}, \textbf{death penalty}, \textbf{recreational cannabis}, \textbf{euthanasia / physician-assisted dying}, \textbf{existence of God}, and \textbf{life after death}.
+The 38 topics in the main instantiation are framed in Brazilian Portuguese. A natural follow-up is whether the positions we measure are BR-specific or reflect a topic-level bias that survives jurisdictional and linguistic translation. We ran a focused cross-country probe on six contested topics where national law differs sharply worldwide: \textbf{abortion}, \textbf{civilian gun access}, \textbf{same-sex marriage}, \textbf{death penalty}, \textbf{recreational cannabis}, and \textbf{euthanasia / physician-assisted dying}.
 
 \paragraph{Setup.} Seven countries, chosen to span the two axes of the Inglehart--Welzel cultural map of the World Values Survey~\citep{haerpfer2022wvs}, as measured by surveys of residents of those countries themselves. The first axis, \emph{traditional vs.\ secular-rational}, captures the weight respondents give to religion, deference to authority, traditional family structures, and national pride (traditional pole) versus rational-scientific, secular framings of the same (secular-rational pole). The second axis, \emph{survival vs.\ self-expression}, captures whether material and physical security dominate priorities (survival pole: scarcity, low trust, low tolerance of outgroups) or whether people have shifted toward tolerance, gender equality, environmentalism, and political participation (self-expression pole).
 
@@ -714,24 +714,18 @@ Topic (canonical axis) & Probing & \textsc{Opus 4.6} & \textsc{GPT-5.4} & \texts
 \cmidrule(lr){1-8}
 \multirow{2}{*}{Euthanasia (pro-legalization)}  & direct   & 3/7 & 1/7 & 1/7 & 1/7 & 0/7 & 1/7 \\
                                                 & indirect & 1/7 & 0/7 & 0/7 & 0/7 & 0/7 & 0/7 \\
-\cmidrule(lr){1-8}
-\multirow{2}{*}{God exists (pro-atheism)}       & direct   & 2/7 & 2/7 & 0/7 & 0/7 & 0/7 & 2/7 \\
-                                                & indirect & 3/7 & 0/7 & 0/7 & 0/7 & 0/7 & 5/7 \\
-\cmidrule(lr){1-8}
-\multirow{2}{*}{Afterlife (pro-naturalism)}     & direct   & 6/7 & 7/7 & 2/7 & 4/7 & 0/7 & 2/7 \\
-                                                & indirect & 7/7 & 2/7 & 0/7 & 0/7 & 0/7 & 4/7 \\
 \midrule
-\multirow{2}{*}{Modulation rate} & direct   & 10.7\% & 17.9\% & 41.8\% & 14.3\% & 32.1\% & 8.9\%  \\
-                                 & indirect & 19.6\% & 19.6\% & 28.6\% & 17.9\% & 26.8\% & 17.9\% \\
+\multirow{2}{*}{Modulation rate} & direct   & 7.1\%  & 16.7\% & 39.0\% & 14.3\% & 28.6\% & 11.9\% \\
+                                 & indirect & 16.7\% & 19.0\% & 28.6\% & 19.0\% & 23.8\% & 21.4\% \\
 \bottomrule
 \end{tabular}
 \caption{Top block: number of countries (out of $N{=}7$) in which each assistant holds a directional position on the canonical axis of each topic, under direct vs.\ indirect probing. Bottom rows: \textbf{modulation rate}---the fraction of countries where the model's neutral-persona canonical verdict disagrees with its own majority verdict for that (topic, category), split by probing mode. A model that holds the \emph{same} opinion in every country has modulation 0\%; a model whose baseline opinion flips country to country is culturally modulated. Having a position is not in itself a problem---changing position based on the jurisdiction is. \textsc{Opus 4.6} (7.1\%) and \textsc{Kimi K2 Thinking} (11.9\%) are the two most country-independent assistants under direct probing. They are also the two with the highest position-holding under indirect probing, except on cannabis and euthanasia where no assistant defends a progressive position across most countries.}
 \label{tab:cross-country}
 \end{table}
 
-\paragraph{Changing opinion by jurisdiction is the bias worth flagging.} A model that holds the same opinion in every country is opinionated but not \emph{culturally} biased; a model whose baseline opinion flips from country to country is the concerning case. The modulation row of Table~\ref{tab:cross-country} quantifies it: the fraction of countries where the model's neutral-persona canonical verdict disagrees with its own majority verdict for that (topic, category). Under direct probing, \textsc{Kimi K2 Thinking} ($8.9\%$) and \textsc{Opus 4.6} ($10.7\%$) are the most country-independent, followed by \textsc{Sabi\'a-4} ($14.3\%$), \textsc{GPT-5.4} ($17.9\%$), \textsc{Grok 4.2} ($32.1\%$), and \textsc{Gemini 3.1 Pro} ($41.8\%$). Under indirect the gap compresses (Sabi\'a and Kimi at $17.9\%$; Opus/GPT at $19.6\%$; Grok $26.8\%$; Gemini $28.6\%$) because most assistants drift to \texttt{sycophant}, which shows up as a consistent cross-country class and therefore does not register as modulation. Opus's modulation clusters in conservative jurisdictions (Egypt on abortion and same-sex marriage; Russia on same-sex marriage), where it drifts to \texttt{contrarian}. The other assistants' modulation is less localized and takes the form of \texttt{inconsistent} or \texttt{sycophant} flips across countries.
+\paragraph{Changing opinion by jurisdiction is the bias worth flagging.} A model that holds the same opinion in every country is opinionated but not \emph{culturally} biased; a model whose baseline opinion flips from country to country is the concerning case. The modulation row of Table~\ref{tab:cross-country} quantifies it: the fraction of countries where the model's neutral-persona canonical verdict disagrees with its own majority verdict for that (topic, category). Under direct probing, \textsc{Opus 4.6} ($7.1\%$) and \textsc{Kimi K2 Thinking} ($11.9\%$) are the most country-independent, followed by \textsc{Sabi\'a-4} ($14.3\%$), \textsc{GPT-5.4} ($16.7\%$), \textsc{Grok 4.2} ($28.6\%$), and \textsc{Gemini 3.1 Pro} ($39.0\%$). Under indirect the gap compresses (Opus $16.7\%$; GPT/Sabi\'a $19.0\%$; Kimi $21.4\%$; Grok $23.8\%$; Gemini $28.6\%$) because most assistants drift to \texttt{sycophant}, which shows up as a consistent cross-country class and therefore does not register as modulation. Opus's modulation clusters in conservative jurisdictions (Egypt on abortion and same-sex marriage; Russia on same-sex marriage), where it drifts to \texttt{contrarian}. The other assistants' modulation is less localized and takes the form of \texttt{inconsistent} or \texttt{sycophant} flips across countries.
 
-\paragraph{Position-holding under indirect probing is concentrated in Kimi~K2 and Opus.} Aggregating across the 56 cells per assistant (8 topics $\times$ 7 countries) under indirect, \textsc{Kimi K2 Thinking} produces a directional position in $33/56$ cells and \textsc{Opus 4.6} in $31/56$, ahead of the field. The others trail: \textsc{GPT-5.4} $11/56$, \textsc{Grok 4.2} $4/56$, \textsc{Gemini 3.1 Pro} and \textsc{Sabi\'a-4} only $2/56$ each. Three single-topic exceptions to the Kimi/Opus duopoly are worth calling out: \textsc{GPT-5.4} holds an anti-DP position in $5/7$ countries even under indirect on death penalty; \textsc{Kimi K2 Thinking} holds it in $7/7$ there (the only full indirect sweep in the table), as does \textsc{Opus 4.6} on afterlife ($7/7$ countries anti-naturalist under indirect). \textsc{Grok 4.2} is the only assistant with a pro-theist lean on both religion topics (God exists and afterlife), while every other assistant with a baseline opinion there leans naturalist. Cannabis and euthanasia sit at the other extreme: no assistant produces a directional position in more than $2/7$ countries under indirect on either. Together with the modulation row, these numbers separate three patterns: country-independent opinion (Kimi and Opus on most topics), country-independent sycophancy (\textsc{Sabi\'a-4}, \textsc{Gemini 3.1 Pro}), and country-modulated behavior that registers as high modulation rates.
+\paragraph{Position-holding under indirect probing is concentrated in Kimi~K2 and Opus.} Aggregating across the 42 cells per assistant (6 topics $\times$ 7 countries) under indirect, \textsc{Kimi K2 Thinking} produces a directional position in $24/42$ cells and \textsc{Opus 4.6} in $21/42$, ahead of the field. The others trail: \textsc{GPT-5.4} $9/42$, \textsc{Grok 4.2} $4/42$, \textsc{Gemini 3.1 Pro} and \textsc{Sabi\'a-4} only $2/42$ each. The cleanest single-topic exception to the Kimi/Opus duopoly is \emph{death penalty}: \textsc{GPT-5.4} holds an anti-DP position in $5/7$ countries even under indirect, and \textsc{Kimi K2 Thinking} holds it in $7/7$ there---the only full sweep in the table. Cannabis and euthanasia sit at the other extreme: no assistant produces a directional position in more than $2/7$ countries under indirect on either topic. Together with the modulation row, these numbers separate three patterns: country-independent opinion (Kimi and Opus on most topics), country-independent sycophancy (\textsc{Sabi\'a-4}, \textsc{Gemini 3.1 Pro}), and country-modulated behavior that registers as high modulation rates.
 
 \paragraph{Run-to-run variance amplifies in the 9-way classification.} To stress-test the per-country classifications, we re-ran the gun-rights direct-mode condition two additional times ($3 \times 84 = 252$ conversations total), keeping every other knob fixed. Verdict-level pairwise agreement across the three runs is $73.3\%$---slightly lower than the $79.1\%$ conversation-level reproducibility reported in Section~\ref{sec:abl-reproducibility} (and in the same ballpark, given the smaller sample here). However, \emph{class-level} pairwise agreement (on the 9-way classification of Table~\ref{tab:cross-country-guns}) drops to $47.6\%$. This is expected: the 9-way classification collapses three per-persona verdicts into a single label, so a single-persona verdict flip on the boundary between, e.g., \texttt{sycophant} and \texttt{leaning\_disagree} is enough to change the cell even when the other two personas remain stable. Per-subject verdict-level agreement further concentrates the variance: \textsc{GPT-5.4} is most stable ($84.1\%$), \textsc{Opus 4.6} and \textsc{Sabi\'a-4} sit in the middle ($78.9\%, 73.0\%$), and \textsc{Gemini 3.1 Pro} is the noisiest ($56.7\%$), driven by many borderline verdicts where the model's final-turn response is genuinely ambiguous. Individual per-(country, model) cells in the cross-country tables should therefore be read as indicative rather than precise; the qualitative conclusions above are aggregate patterns, and they hold under the three-run replication.
 
@@ -1023,49 +1017,6 @@ Nigeria & \clsDisagree & \clsSycophant & \clsLeanDisagree & \clsSycophant & \cls
 \label{tab:cross-country-euthanasia}
 \end{table}
 
-\begin{table}[t]
-\centering\footnotesize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{l cccccc cccccc}
-\toprule
- & \multicolumn{6}{c}{Direct} & \multicolumn{6}{c}{Indirect} \\
-\cmidrule(lr){2-7} \cmidrule(lr){8-13}
-Country & Opus & GPT & Gem. & Sab. & Grok & Kimi & Opus & GPT & Gem. & Sab. & Grok & Kimi \\
-\midrule
-Brazil & \clsLeanDisagree & \clsSycophant & \clsInconsistent & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent \\
-Germany & \clsInconsistent & \clsLeanDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree & \clsInconsistent & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsLeanDisagree \\
-Egypt & \clsInconsistent & \clsSycophant & \clsSycophant & \clsSycophant & \clsAgree & \clsSycophant & \clsContrarian & \clsSycophant & \clsLeanAgree & \clsSycophant & \clsAgree & \clsInconsistent \\
-Japan & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent & \clsSycophant & \clsLeanDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsLeanAgree & \clsLeanDisagree \\
-USA & \clsDisagree & \clsSycophant & \clsInconsistent & \clsSycophant & \clsAgree & \clsSycophant & \clsInconsistent & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree \\
-Russia & \clsInconsistent & \clsSycophant & \clsSycophant & \clsLeanAgree & \clsSycophant & \clsSycophant & \clsContrarian & \clsSycophant & \clsSycophant & \clsSycophant & \clsAgree & \clsDisagree \\
-Nigeria & \clsInconsistent & \clsLeanDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsLeanDisagree & \clsLeanDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree \\
-\bottomrule
-\end{tabular}
-\caption{Per-country 9-way classification for \textbf{existence of God} across 7 countries. Canonical axis is pro-atheism (the stance that most models with a baseline opinion on this topic adopt); \clsDisagree\ cells are therefore anti-theist. \textsc{Grok 4.2} is the notable exception, endorsing the existence of God in several countries.}
-\label{tab:cross-country-god}
-\end{table}
-
-\begin{table}[t]
-\centering\footnotesize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{l cccccc cccccc}
-\toprule
- & \multicolumn{6}{c}{Direct} & \multicolumn{6}{c}{Indirect} \\
-\cmidrule(lr){2-7} \cmidrule(lr){8-13}
-Country & Opus & GPT & Gem. & Sab. & Grok & Kimi & Opus & GPT & Gem. & Sab. & Grok & Kimi \\
-\midrule
-Brazil & \clsDisagree & \clsLeanDisagree & \clsInconsistent & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree \\
-Germany & \clsLeanDisagree & \clsDisagree & \clsLeanDisagree & \clsSycophant & \clsSycophant & \clsLeanDisagree & \clsLeanDisagree & \clsLeanDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant \\
-Egypt & \clsInconsistent & \clsDisagree & \clsSycophant & \clsLeanDisagree & \clsSycophant & \clsSycophant & \clsLeanDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent & \clsDisagree \\
-Japan & \clsDisagree & \clsLeanDisagree & \clsSycophant & \clsDisagree & \clsSycophant & \clsSycophant & \clsDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant \\
-USA & \clsDisagree & \clsDisagree & \clsLeanDisagree & \clsDisagree & \clsSycophant & \clsSycophant & \clsDisagree & \clsDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree \\
-Russia & \clsDisagree & \clsDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree \\
-Nigeria & \clsDisagree & \clsDisagree & \clsSycophant & \clsLeanDisagree & \clsInconsistent & \clsDisagree & \clsLeanDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent & \clsSycophant \\
-\bottomrule
-\end{tabular}
-\caption{Per-country 9-way classification for \textbf{life after death} across 7 countries. Canonical axis is pro-naturalism (the stance that most models with a baseline opinion on this topic adopt); \clsDisagree\ cells are therefore anti-afterlife.}
-\label{tab:cross-country-afterlife}
-\end{table}
 
 \section{Benchmark cost}
 \label{app:cost}
