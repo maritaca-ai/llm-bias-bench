@@ -488,12 +488,13 @@ Claim / topic & \textsc{Sb4} & \textsc{Ops} & \textsc{G54} & \textsc{Grk} & \tex
 \label{tab:divergent}
 \end{table}
 
-\subsection{User-LLM ablation: how much does the driving model affect verdicts?}
+\subsection{Sources of variance in the benchmark}
 \label{sec:abl-userllm}
+\label{sec:abl-reproducibility}
 
-The benchmark uses a single user-LLM (\textsc{Claude Opus 4.6}) to drive all conversations. Because each conversation is free-form, the user-LLM's choice of arguments, tone, and escalation strategy may influence the assistant model's verdict. This subsection asks a concrete question: \emph{if we swap the user-LLM while holding everything else fixed, how much do verdicts move?}
+The benchmark uses a single user-LLM (\textsc{Claude Opus 4.6}) and a free-form conversation. Two questions about variance need to be separated: (i) how much does the \emph{choice} of user-LLM change verdicts, and (ii) how much does the \emph{same} user-LLM disagree with itself across independent runs of the same configuration?
 
-To answer, we fix a set of 300 (topic, assistant-model, persona, category) combinations, uniformly sampled from the full run, and re-run each with eight different user-LLMs: \textsc{Claude Opus 4.6} (the default), \textsc{GPT-5.4}, \textsc{Grok 4.2}, \textsc{Gemini 3.1 Pro}, \textsc{Qwen3.5-397B}, \textsc{Sabi\'a-4}, \textsc{GPT-5.4-mini}, and \textsc{Sabiazinho-4}. All 2{,}400 conversations ($300 \times 8$) are judged by the same fixed judge (\textsc{Qwen3.5-397B}), isolating the user-LLM as the only variable. Table~\ref{tab:userllm-agreement} reports pairwise agreement. Of the 300 slots, 280 have a verdict from all eight user-LLMs; on those, unanimous agreement across all eight is $45.4\%$ and supermajority ($\geq$5/8) is $85.0\%$. Both are lower than inter-judge agreement ($70.3\%$ / $91.3\%$, Section~\ref{sec:abl-judges}), confirming that \textbf{the user-LLM is a larger source of variance than the judge}.
+\paragraph{Cross-user-LLM variance.} We fix 300 (topic, assistant-model, persona, category) combinations, uniformly sampled from the full run, and re-run each with eight different user-LLMs: \textsc{Claude Opus 4.6} (the default), \textsc{GPT-5.4}, \textsc{Grok 4.2}, \textsc{Gemini 3.1 Pro}, \textsc{Qwen3.5-397B}, \textsc{Sabi\'a-4}, \textsc{GPT-5.4-mini}, and \textsc{Sabiazinho-4}. All 2{,}400 conversations ($300 \times 8$) are judged by the same fixed judge (\textsc{Qwen3.5-397B}). Of the 300 slots, 280 have a verdict from all eight user-LLMs; on those, unanimous agreement across all eight is $45.4\%$ and supermajority ($\geq$5/8) is $85.0\%$. Table~\ref{tab:userllm-agreement} reports pairwise agreement ranging from $67.8\%$ to $81.0\%$ (mean $\sim 73\%$).
 
 \begin{table}[!htbp]
 \centering \scriptsize
@@ -511,11 +512,19 @@ To answer, we fix a set of 300 (topic, assistant-model, persona, category) combi
 \textsc{Grok 4.2}       & 67.8 & 74.9 & ---   & 74.7 & 76.1 & 71.4 & 74.0 & 67.5 & 72.3 \\
 \bottomrule
 \end{tabular}
-\caption{Per-user-LLM pairwise agreement (\%) on the same 300 (topic, model, persona, category) slots, all judged by \textsc{Qwen3.5-397B}. Column codes: \textsc{Ops}=Opus 4.6, \textsc{G54}=GPT-5.4, \textsc{Grk}=Grok 4.2, \textsc{Gem}=Gemini 3.1 Pro, \textsc{Qw3}=Qwen3.5, \textsc{Sb4}=Sabi\'a-4, \textsc{G54m}=GPT-5.4-mini, \textsc{Sabz}=Sabiazinho-4. \textbf{Avg}: mean pairwise agreement with the other seven user-LLMs (consensus score). User-LLM variation ($67$--$81\%$) is larger than judge variation ($78$--$90\%$ in Table~\ref{tab:judge-agreement}), meaning the choice of user-LLM is a bigger source of verdict variance than the choice of judge.}
+\caption{Per-user-LLM pairwise agreement (\%) on the same 300 (topic, model, persona, category) slots, all judged by \textsc{Qwen3.5-397B}. Column codes: \textsc{Ops}=Opus 4.6, \textsc{G54}=GPT-5.4, \textsc{Grk}=Grok 4.2, \textsc{Gem}=Gemini 3.1 Pro, \textsc{Qw3}=Qwen3.5, \textsc{Sb4}=Sabi\'a-4, \textsc{G54m}=GPT-5.4-mini, \textsc{Sabz}=Sabiazinho-4. \textbf{Avg}: mean pairwise agreement with the other seven user-LLMs (consensus score). User-LLM variation ($67$--$81\%$) is close to the $79.1\%$ baseline of a single user-LLM disagreeing with itself across runs: the user-LLM only adds a few percentage points of disagreement on top of the inherent stochasticity of a free-form conversation.}
 \label{tab:userllm-agreement}
 \end{table}
 
-Agreement ranges from $67$--$81\%$, showing that the user-LLM is a larger source of verdict variance than the judge ($78$--$90\%$ in Table~\ref{tab:judge-agreement}). This subsection only measures \emph{variance}---it says nothing about whether a stronger user-LLM is more persuasive. We address that question next.
+\paragraph{Same-user-LLM variance.} Because a free-form conversation is stochastic even with fixed inputs, two independent runs of the same configuration will produce different transcripts and potentially different verdicts. We quantify this baseline on 148 conversations run twice with identical settings (\textsc{Claude Opus 4.6} as user-LLM, \textsc{Qwen3.5-397B} as judge). The two runs agree on $117$ of $148$ pairs ($79.1\%$).
+
+\paragraph{Decomposition.} These two measurements together decompose the per-cell disagreement budget. Same-user-LLM agreement is $79.1\%$; cross-user-LLM pairwise agreement averages $\sim 73\%$. \textbf{Swapping the user-LLM only adds $\sim 6$pp of disagreement on top of the baseline stochastic variance inherent to free-form conversation.} Judge-level variance is smaller still ($78$--$90\%$ pairwise in Section~\ref{sec:abl-judges}, $92\%$ self-agreement under mild prompt rewrites in Section~\ref{sec:abl-judge-stability}). The dominant noise source in the benchmark is therefore the conversation itself, not the choice of user-LLM or judge.
+
+\paragraph{Implications.} Individual per-topic verdicts should be interpreted with a $\sim$$20\%$ error margin; aggregate statistics (overall sycophancy rate, per-model classification totals) are far more stable because errors average out across topics. The benchmark's main findings---that sycophancy explodes under indirect probing and that most assistants collapse from position-taking to mirroring---are robust to this variance because they are aggregate patterns, not single-topic claims.
+
+\paragraph{Reducing variance.} The main lever is replication: running each cell $N{>}1$ times and reporting the majority verdict collapses most of the conversation-level noise at linear cost. Sampling the judge $N$ times per transcript (the judge is a single call per conversation, so this is cheap) absorbs borderline classification noise without touching the conversation. Lowering the temperature of the user-LLM would also reduce variance but at the cost of argumentative naturalness, which is what the indirect probe is designed to preserve. Reporting aggregate metrics with explicit confidence intervals, rather than further denoising, is the recommended path for comparisons across assistants or runs.
+
+This subsection only characterizes \emph{variance}---it says nothing about whether a stronger user-LLM is more persuasive. We address that question next.
 
 \subsection{Persuasion: does a stronger user-LLM actually push the assistant harder?}
 \label{sec:abl-persuasion}
@@ -670,17 +679,6 @@ We compare the 300 verdicts from the original run (R1) with the 300 verdicts fro
 \end{itemize}
 
 \paragraph{Results.} On 299 conversations with valid verdicts in both runs, \textsc{Qwen3.5} produced the same verdict in $275$ cases ($92.0\%$ self-agreement). Of the $24$ changes, the most common transition was \texttt{neutral}$\to$\texttt{agree} ($8$ cases), followed by \texttt{neutral}$\to$\texttt{disagree} and \texttt{disagree}$\to$\texttt{neutral} ($3$ each). No single transition dominates, suggesting that the changes are noise on genuinely ambiguous conversations rather than a systematic shift introduced by the prompt modification. The $92\%$ self-agreement is comparable to the pairwise agreement between \textsc{Qwen3.5} and the other judges in Section~\ref{sec:abl-judges} ($77$--$90\%$), confirming that intra-model prompt variation is smaller than inter-model variation---the judge's verdicts are more stable than the choice of judge model itself.
-
-\subsection{Run-to-run reproducibility}
-\label{sec:abl-reproducibility}
-
-Because the user-LLM drives a free-form conversation, two independent runs of the \emph{same} configuration (same topic, same assistant model, same persona, same category, same user-LLM, same judge) will produce different transcripts and potentially different verdicts. This is inherent to the free-form design.
-
-To quantify this variance, we run 148 conversations twice with the same configuration (\textsc{Claude Opus 4.6} as user-LLM, \textsc{Qwen3.5-397B} as judge) and compare verdicts across the two independent runs.
-
-\paragraph{Results.} The two runs agree on $117$ of $148$ pairs ($79.1\%$). This means that approximately $21\%$ of per-topic verdicts may change between runs due to stochastic variation in the user-LLM's argument selection and the assistant model's responses. This is higher than the judge prompt stability ($92\%$, Section~\ref{sec:abl-judge-stability}) and comparable to inter-judge variation ($77$--$90\%$, Section~\ref{sec:abl-judges}), confirming that \textbf{the dominant source of variance in the benchmark is the conversation itself, not the judge.}
-
-This has two implications. First, individual per-topic verdicts should be interpreted with a $\sim$$20\%$ error margin; aggregate statistics (e.g., the overall sycophancy rate) are more stable because errors average out across 38 topics. Second, the benchmark's main findings---that sycophancy explodes under indirect probing and that most models collapse from position-taking to mirroring---are robust to this variance because they are aggregate patterns, not single-topic claims.
 
 \subsection{Cross-country ablation: does language or jurisdiction modulate position?}
 \label{sec:abl-countries}
