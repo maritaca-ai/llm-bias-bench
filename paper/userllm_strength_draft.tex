@@ -38,7 +38,7 @@ Multi-Turn LLM Bias Probes}
 \maketitle
 
 \begin{abstract}
-Multi-turn LLM bias benchmarks typically instantiate a single user-LLM to argue against a subject model across several turns, and interpret the resulting verdict as the subject's ``position''. We show that this verdict is a function of the \emph{relative capability} of the user-LLM and the subject, not a property of the subject alone. Using abortion criminalization as a single controlled topic, we compare three setups with Qwen3.5-397B as both subject and judge: (A)~Qwen3.5-397B as user (self-play), (B)~GPT-4.1-mini as user (intermediate strength), and (C)~Claude Opus 4.6 as user (strongest). The 9-way indirect-probe classification of the \emph{same subject on the same topic} moves monotonically with user-LLM strength: \texttt{leaning\_disagree} $\to$ \texttt{inconsistent} $\to$ \texttt{sycophant}. Direct-probe classification shifts in parallel: \texttt{refusal} $\to$ \texttt{inconsistent} $\to$ \texttt{neutral}. Pairwise verdict agreement across 5 replications also decreases monotonically ($76.7\% \to 66.7\% \to 60.0\%$): stronger user-LLMs vary their arguments more and move the subject around more. Cost per conversation spans ${\sim}\$0.04$ to $\$0.12$. We argue that reporting benchmark results under a single user-LLM---typically a frontier assistant---systematically exaggerates the apparent sycophancy of smaller subjects, and recommend explicit variation of user-LLM strength as part of any multi-turn opinion probe. Draft / work in progress.
+Multi-turn LLM bias benchmarks typically instantiate a single user-LLM to argue against a subject model across several turns, and interpret the resulting verdict as the subject's ``position''. We show that this verdict is a function of the \emph{relative capability} of the user-LLM and the subject, not a property of the subject alone. Using abortion criminalization as a single controlled topic, we compare four setups with Qwen3.5-397B as both subject and judge, varying only the user-LLM: (0)~Llama 3.1 8B Instruct (much weaker than subject), (A)~Qwen3.5-397B (self-play, user $\approx$ subject), (B)~GPT-4.1-mini (intermediate), and (C)~Claude Opus 4.6 (strongest). Between (A) and (C) the 9-way indirect-probe classification of the \emph{same subject on the same topic} moves monotonically with user-LLM strength: \texttt{leaning\_disagree} $\to$ \texttt{inconsistent} $\to$ \texttt{sycophant}; direct-probe classification shifts in parallel: \texttt{refusal} $\to$ \texttt{inconsistent} $\to$ \texttt{neutral}. Pairwise verdict agreement also decreases monotonically from (A) to (C) ($76.7\% \to 66.7\% \to 60.0\%$): stronger user-LLMs vary their arguments more and move the subject around more. Setup (0) does \emph{not} extend the gradient monotonically: a user-LLM that is too weak produces incoherent arguments, and the subject reacts chaotically (pairwise agreement $36.7\%$). Cost per conversation spans ${\sim}\$0.04$ to $\$0.12$. We argue that reporting benchmark results under a single user-LLM---typically a frontier assistant---systematically exaggerates the apparent sycophancy of smaller subjects, and recommend explicit variation of user-LLM strength as part of any multi-turn opinion probe. Draft / work in progress.
 \end{abstract}
 
 \section{Introduction}
@@ -67,13 +67,14 @@ We show this empirically on a single controlled topic---abortion criminalization
 
 \paragraph{Personas and categories.} Each replication runs the standard $3 \times 2$ grid of the \textsc{llm-bias-bench} protocol: personas $\in \{$neutral, agree, disagree$\}$ $\times$ categories $\in \{$direct, indirect$\}$. For each of the 6 conditions, the user-LLM drives a 5-turn conversation and the judge classifies the subject's final-turn response.
 
-\paragraph{Setups.} Three fixed configurations, 5 replications each (30 conversations each).
+\paragraph{Setups.} Four fixed configurations, 5 replications each (30 conversations each).
 \begin{itemize}
+\item[(0)] \textbf{Llama-3.1-8B-as-user} (much weaker than subject): \textsc{Llama 3.1 8B Instruct} as user-LLM, \textsc{Qwen3.5-397B} as subject and judge.
 \item[(A)] \textbf{Qwen-self} (user $\approx$ subject): \textsc{Qwen3.5-397B} as user-LLM, subject, and judge.
 \item[(B)] \textbf{GPT-4.1-mini-as-user} (intermediate): \textsc{GPT-4.1-mini} as user-LLM, \textsc{Qwen3.5-397B} as subject and judge.
 \item[(C)] \textbf{Opus-as-user} (strongest): \textsc{Claude Opus 4.6} as user-LLM, \textsc{Qwen3.5-397B} as subject and judge.
 \end{itemize}
-All three use the same judge (Qwen3.5-397B) with the same system prompt, removing the judge as a source of inter-setup variance. The three configurations order the user-LLM from matched to clearly stronger than the subject.
+All four use the same judge (Qwen3.5-397B) with the same system prompt, removing the judge as a source of inter-setup variance. The four configurations order the user-LLM from clearly weaker through clearly stronger than the subject.
 
 \paragraph{Classification.} Verdicts are aggregated by majority vote across the 5 replications per (category, persona) cell, then collapsed to a 9-way behavioral class per (setup, category) following the main \textsc{llm-bias-bench} protocol.
 
@@ -90,6 +91,9 @@ All three use the same judge (Qwen3.5-397B) with the same system prompt, removin
 \toprule
 Setup & Probing & Neutral persona & Agree persona & Disagree persona \\
 \midrule
+\multirow{2}{*}{(0) Llama-3.1-8B-as-user}   & direct   & neutral  & refusal & refusal  \\
+                                            & indirect & neutral  & agree   & disagree \\
+\cmidrule(l){1-5}
 \multirow{2}{*}{(A) Qwen-self}              & direct   & refusal  & refusal & refusal  \\
                                             & indirect & disagree & neutral & disagree \\
 \cmidrule(l){1-5}
@@ -111,12 +115,13 @@ Setup & Probing & Neutral persona & Agree persona & Disagree persona \\
 \toprule
 Setup & Direct class & Indirect class & Pairwise agr. & Cost / 30 convs \\
 \midrule
+(0) Llama-3.1-8B-as-user (weakest, chaotic)    & \texttt{inconsistent} & \texttt{sycophant}         & $36.7\%$ & $\$1.17$  \\
 (A) Qwen-self (user $\approx$ subject)         & \texttt{refusal}      & \texttt{leaning\_disagree} & $76.7\%$ & $\sim \$1.50$ \\
 (B) GPT-4.1-mini-as-user (intermediate)        & \texttt{inconsistent} & \texttt{inconsistent}      & $66.7\%$ & $\$1.18$  \\
 (C) Opus-as-user (strongest)                   & \texttt{neutral}      & \texttt{sycophant}         & $60.0\%$ & $\$3.49$  \\
 \bottomrule
 \end{tabular}
-\caption{Nine-way classification, pairwise verdict-level agreement across the 5 replications, and total cost in USD, as a function of user-LLM strength. The subject's behavior moves monotonically from self-defended position (A) through partial concession (B) to full sycophancy (C) as the user-LLM gets stronger. Pairwise agreement also decreases monotonically: stronger user-LLMs produce more varied arguments, which move the subject around more across replications.}
+\caption{Nine-way classification, pairwise verdict-level agreement across the 5 replications, and total cost in USD. Between (A) and (C) the subject's behavior moves monotonically with user-LLM strength, and so does the pairwise agreement. Setup~(0) breaks the monotone pattern: \textsc{Llama 3.1 8B} is too weak to argue coherently, so its arguments vary wildly across replications and drag the subject into different behaviors (agree in one rep, sycophant in another, neutral in a third). The majority-vote collapses this into \texttt{sycophant}, but pairwise agreement ($36.7\%$) is by far the lowest in the table, indicating that the subject's response under a weak user is driven more by the specific argument fragment produced than by any stable behavioral mode.}
 \label{tab:userllm-strength-9way}
 \end{table}
 
@@ -124,7 +129,9 @@ Setup & Direct class & Indirect class & Pairwise agr. & Cost / 30 convs \\
 
 \paragraph{Cost differs substantially.} Per-conversation costs on OpenRouter are $\sim \$0.05$ for (A) Qwen-self (dominated by Qwen's reasoning-token output), $\$0.039$ for (B) GPT-4.1-mini-as-user (GPT-4.1-mini is cheaper than Qwen at these call volumes because it has no hidden reasoning tokens), and $\$0.116$ for (C) Opus-as-user (Opus accounts for ${\sim}67\%$ of the total at \$5/\$25 per 1M input/output). Opus prompt caching was attempted via OpenRouter's \texttt{cache\_control} marker, but the Anthropic minimum prefix for caching is $1024$ tokens and our system prompt is $\sim 880$ tokens, so no cache hits were registered.
 
-\paragraph{Interpretation of the monotone gradient.} If a single subject's apparent ``sycophancy'' on a topic shifts from $0/6$ cells to $6/6$ cells just by swapping the user-LLM, then the quantity measured by the indirect-probe sycophancy classification is not a property of the subject alone. It is an interaction between the subject's default position and the user-LLM's capacity to argue it off that position. Intermediate user-LLMs reveal this cleanly: GPT-4.1-mini partially dislodges Qwen from refusal (on direct) and from its baseline position (on indirect), landing on \texttt{inconsistent} in both---a classification that only exists because the subject cedes on some personas but not others. Adding a clearly weak user-LLM (e.g., \textsc{Llama 3.1 8B Instruct}) would test whether the gradient extends to a near-matched-subject setup or saturates.
+\paragraph{Interpretation of the gradient.} Between (A) self-play and (C) Opus-as-user, the subject's classification shifts monotonically. GPT-4.1-mini in (B) occupies the expected middle: partial concession that lands the subject in \texttt{inconsistent} on both probing modes. The quantity measured by the indirect-probe sycophancy classification is therefore not a property of the subject alone; it is an interaction between the subject's default position and the user-LLM's capacity to argue it off that position.
+
+\paragraph{The weakest user is not the same as a matched user.} Setup~(0), Llama 3.1 8B, illustrates a distinct phenomenon: when the user-LLM is weaker than the subject on this kind of argumentation, the conversation becomes chaotic rather than concessive. The subject does not defend a position (as in the matched self-play case) because the argument fragments it receives are incoherent enough that no clear stance is being pushed; instead, each replication drifts to a different local attractor (\texttt{agree}, \texttt{neutral}, \texttt{sycophant}, \texttt{inconsistent} in different reps). Pairwise agreement collapses to $36.7\%$. Majority-voting over 5 reps still produces a single label (\texttt{sycophant} on indirect), but that label is misleading: the behavior under a weak user is high-entropy, not sycophantic. This is the opposite pattern from the matched case and underscores that ``weaker user'' does not simply mean ``less persuasion''---it can also mean ``less stable argument to measure against.''
 
 \section{Discussion}
 
