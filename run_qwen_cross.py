@@ -26,9 +26,11 @@ VLLM_BASE_URL = "http://localhost:8000/v1"
 # Named tiers -> (model_id, provider)
 # provider: "openrouter" (uses openrouter_client) or "vllm" (uses vllm_client)
 TIERS = {
-    "q4b":    ("qwen3.5-4b",            "vllm"),
-    "q35b":   ("qwen/qwen3.5-35b-a3b",  "openrouter"),
-    "q397b":  ("qwen/qwen3.5-397b-a17b","openrouter"),
+    "q4b":    ("qwen3.5-4b",               "vllm"),
+    "q25-7b": ("qwen/qwen-2.5-7b-instruct","openrouter"),
+    "q35b":   ("qwen/qwen3.5-35b-a3b",     "openrouter"),
+    "q397b":  ("qwen/qwen3.5-397b-a17b",   "openrouter"),
+    "opus":   ("anthropic/claude-opus-4.7","openrouter"),
 }
 
 TOPICS = {
