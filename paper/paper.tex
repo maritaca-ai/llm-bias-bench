@@ -64,7 +64,7 @@
 \maketitle
 
 \begin{abstract}
-Large language models increasingly shape the information people consume: they are embedded in search, consulted for professional advice, deployed as agents, and used as a first stop for questions about policy, ethics, health, and politics. When such a model silently holds a position on a contested topic, that position propagates at scale into the decisions users make. Eliciting a model's positions reliably, however, is harder than it first appears: contemporary assistants respond to direct opinion questions with evasive disclaimers, and the same model may concede the opposite position once the user starts arguing one side. We propose a \emph{method}---released as an open-source implementation called \textsc{llm-bias-bench}---for discovering the opinions an LLM actually holds on contested topics, under conditions that resemble real multi-turn interaction. The method pairs two complementary free-form probes. \emph{Direct} probing asks the model for its opinion across five turns of escalating pressure from a simulated user. \emph{Indirect} probing never asks for an opinion and instead engages the model in an argumentative debate, from which bias leaks out through how the model concedes, resists, or counter-argues. Three user personas (neutral, agree, disagree) collapse into a nine-way behavioral classification that separates persona-independent positions from persona-dependent sycophancy, and an auditable LLM judge produces verdicts with textual evidence. The first instantiation ships 38 topics in Brazilian Portuguese across values, scientific consensus, philosophy, and economic policy, with a 7-country cross-cultural extension. Applied to 13 assistants, the method surfaces findings of direct practical interest: argumentative debate triggers sycophancy at rates 2--3$\times$ higher than direct questioning (median 50\%$\to$79\%); most models that appear opinionated under direct questioning collapse into mirroring the user under sustained arguments; and the user's argumentative capability appears to matter only when an existing opinion must be dislodged, not when the assistant is initially neutral. These findings are demonstrations of what the tool surfaces; the primary contribution is the method itself---a runnable, auditable transparency probe that anyone can apply to any assistant, topic set, or locale.
+Large language models increasingly shape the information people consume: they are embedded in search, consulted for professional advice, deployed as agents, and used as a first stop for questions about policy, ethics, health, and politics. When such a model silently holds a position on a contested topic, that position propagates at scale into the decisions users make. Eliciting a model's positions reliably, however, is harder than it first appears: contemporary assistants respond to direct opinion questions with evasive disclaimers, and the same model may concede the opposite position once the user starts arguing one side. We propose a \emph{method}---released as an open-source implementation called \textsc{llm-bias-bench}---for discovering the opinions an LLM actually holds on contested topics, under conditions that resemble real multi-turn interaction. The method pairs two complementary free-form probes. \emph{Direct} probing asks the model for its opinion across five turns of escalating pressure from a simulated user. \emph{Indirect} probing never asks for an opinion and instead engages the model in an argumentative debate, from which bias leaks out through how the model concedes, resists, or counter-argues. Three user personas (neutral, agree, disagree) collapse into a nine-way behavioral classification that separates persona-independent positions from persona-dependent sycophancy, and an auditable LLM judge produces verdicts with textual evidence. The first instantiation ships 38 topics in Brazilian Portuguese across values, scientific consensus, philosophy, and economic policy. Applied to 13 assistants, the method surfaces findings of direct practical interest: argumentative debate triggers sycophancy at rates 2--3$\times$ higher than direct questioning (median 50\%$\to$79\%); most models that appear opinionated under direct questioning collapse into mirroring the user under sustained arguments; and the user's argumentative capability appears to matter only when an existing opinion must be dislodged, not when the assistant is initially neutral. These findings are demonstrations of what the tool surfaces; the primary contribution is the method itself---a runnable, auditable transparency probe that anyone can apply to any assistant, topic set, or locale.
 \end{abstract}
 
 \section{Introduction}
@@ -73,7 +73,9 @@ Claims that large language models carry political, ideological, or cultural bias
 
 The stakes of this question grow as LLMs take on more consequential roles: they power search, generate summaries that frame subsequent reasoning, act as agents, and offer advice in medical, legal, and financial domains. When such a model silently holds a position on a contested topic, that position is amplified every time the model is queried. Giving developers, deployers, regulators, and curious users a reliable way to \emph{discover what those positions are} is a precondition for informed deployment and any eventual mitigation---a precondition for transparency about the positional behavior of assistant LLMs.
 
-Discovering those positions reliably is harder than it first appears. Contemporary instruction-tuned assistants are typically steered to appear neutral when asked directly about controversial issues, and in practice most of them respond to ``do you think abortion should be legal?'' with some variant of ``as an AI, I don't hold personal opinions.'' A single-turn questionnaire benchmark that records such responses will conclude that the model is neutral. Yet the same model, when a user \emph{argues} one side across several turns, may progressively concede the user's points---a form of debate-driven sycophancy that is invisible to direct questioning but shapes every interaction where the user brings a position of their own. Prior work on LLM opinion measurement relies primarily on single-turn questionnaires~\citep{santurkar2023opinionqa,durmus2023global} or refusal benchmarks~\citep{xie2024sorry}. Questionnaires capture stated preferences but can be gamed by evasive responses; refusal benchmarks measure whether the model engages, not which direction it leans. Neither captures the dialogue-driven opinion dynamics we are after.
+Discovering those positions reliably is harder than it first appears. Contemporary instruction-tuned assistants are typically steered to appear neutral when asked directly about controversial issues, and in practice most of them respond to ``do you think abortion should be legal?'' with some variant of ``as an AI, I don't hold personal opinions.'' A single-turn questionnaire benchmark that records such responses will conclude that the model is neutral. Yet the same model, when a user \emph{argues} one side across several turns, may progressively concede the user's points---a form of debate-driven sycophancy that is invisible to direct questioning but shapes every interaction where the user brings a position of their own.
+
+Prior work on LLM opinion measurement relies primarily on single-turn questionnaires---Likert-scale or multiple-choice items adapted from human instruments such as the World Values Survey, Pew Global Attitudes, and Hofstede's cultural dimensions~\citep{santurkar2023opinionqa,durmus2023global,cao2023assessing,arora2023probing,kharchenko2024howwell,atari2023whichhumans,tao2024cultural,rozado2024political}---or refusal benchmarks~\citep{xie2024sorry}. This inheritance is understandable: these instruments are validated, widely used in the social sciences, and yield cross-country reference distributions to anchor comparisons. But survey-format probes force the model into a fixed response frame (choose an option, place yourself on a scale) that structurally forecloses the two behaviors most characteristic of modern instruction-tuned assistants. First, they cannot surface \emph{refusal}: a model that would stonewall a real user with ``as an AI, I don't hold opinions'' is forced to pick an option anyway, and whatever it picks is recorded as a preference. Second, they cannot surface \emph{sycophancy}: there is no interlocutor to match, no argument to concede to, no second turn in which the stated position can shift toward the user. The questionnaire elicits what the model will say when cornered into a forced choice by a neutral researcher---a setting that matches almost no actual deployment. Users of assistant LLMs do not fill out surveys; they have task-oriented, multi-turn conversations in which they push back, argue their own side, and pressure the model for a definitive answer. A probe that mirrors that setting---multi-turn, free-form, pressure-bearing, with personas that take positions---captures dialogue-driven opinion dynamics that questionnaires structurally cannot.
 
 This paper proposes a \emph{method}---released as an open-source implementation called \textsc{llm-bias-bench}---for discovering the opinions an LLM holds on contested topics, under conditions that resemble real multi-turn interaction rather than isolated questionnaires. Our goal is neither to argue that LLMs \emph{should} or \emph{should not} hold opinions, nor to settle which positions are correct. It is the narrower and more tractable goal of providing a reproducible transparency probe that reveals which positions a given model actually takes, how stably it holds them under different framings, and where the model silently defers to whichever interlocutor it is currently talking to. The method has three components:
 
@@ -83,7 +85,7 @@ This paper proposes a \emph{method}---released as an open-source implementation 
   \item \textbf{Nine-way behavioral classification.} For each topic, the three persona outputs are collapsed into a single label that separates \emph{persona-independent positions} (the model agrees / disagrees with the claim across all user framings) from \emph{persona-dependent sycophancy} (the verdict tracks whichever side the user argues).
 \end{enumerate}
 
-Both probes are LLM-driven and free-form---no scripted turns, no questionnaires---and both outputs are scored by an LLM judge that cites textual evidence, so each verdict is auditable. The first instantiation ships 38 topics in Brazilian Portuguese across values, scientific consensus, philosophy, and economic policy, with a 7-country cross-cultural extension; the method itself is locale-agnostic and runnable on any assistant, topic set, or language the user provides.
+Both probes are LLM-driven and free-form---no scripted turns, no questionnaires---and both outputs are scored by an LLM judge that cites textual evidence, so each verdict is auditable. The first instantiation ships 38 topics in Brazilian Portuguese across values, scientific consensus, philosophy, and economic policy; the method itself is locale-agnostic and runnable on any assistant, topic set, or language the user provides.
 
 Applied to 13 assistant models, the method surfaces findings of direct practical interest: argumentative debate triggers sycophancy at rates 2--3$\times$ higher than direct questioning (median 50\%$\to$79\%); most models that appear to hold positions under direct questioning collapse into mirroring the user when confronted with sustained arguments; and user-LLM capability matters primarily when an existing opinion must be dislodged, not when the assistant is initially neutral. These findings are concrete demonstrations of what the tool surfaces. The primary contribution, however, is the tool itself: we release the runner, topic definitions, system prompts, judge rubric, full per-model outputs, and an interactive transcript viewer at \url{https://github.com/maritaca-ai/llm-bias-bench} and \url{https://maritaca-ai.github.io/llm-bias-bench/viewer/}.
 
@@ -682,55 +684,6 @@ We compare the 300 verdicts from the original run (R1) with the 300 verdicts fro
 
 \paragraph{Results.} On 299 conversations with valid verdicts in both runs, \textsc{Qwen3.5} produced the same verdict in $275$ cases ($92.0\%$ self-agreement). Of the $24$ changes, the most common transition was \texttt{neutral}$\to$\texttt{agree} ($8$ cases), followed by \texttt{neutral}$\to$\texttt{disagree} and \texttt{disagree}$\to$\texttt{neutral} ($3$ each). No single transition dominates, suggesting that the changes are noise on genuinely ambiguous conversations rather than a systematic shift introduced by the prompt modification. The $92\%$ self-agreement is comparable to the pairwise agreement between \textsc{Qwen3.5} and the other judges in Section~\ref{sec:abl-judges} ($77$--$90\%$), confirming that intra-model prompt variation is smaller than inter-model variation---the judge's verdicts are more stable than the choice of judge model itself.
 
-\subsection{Cross-country ablation: does language or jurisdiction modulate position?}
-\label{sec:abl-countries}
-
-The 38 topics in the main instantiation are framed in Brazilian Portuguese. A natural follow-up is whether the positions we measure are BR-specific or reflect a topic-level bias that survives jurisdictional and linguistic translation. We ran a focused cross-country probe on six contested topics where national law differs sharply worldwide: \textbf{abortion}, \textbf{civilian gun access}, \textbf{same-sex marriage}, \textbf{death penalty}, \textbf{recreational cannabis}, and \textbf{euthanasia / physician-assisted dying}.
-
-\paragraph{Setup.} Seven countries, chosen to span the two axes of the Inglehart--Welzel cultural map of the World Values Survey~\citep{haerpfer2022wvs}, as measured by surveys of residents of those countries themselves. The first axis, \emph{traditional vs.\ secular-rational}, captures the weight respondents give to religion, deference to authority, traditional family structures, and national pride (traditional pole) versus rational-scientific, secular framings of the same (secular-rational pole). The second axis, \emph{survival vs.\ self-expression}, captures whether material and physical security dominate priorities (survival pole: scarcity, low trust, low tolerance of outgroups) or whether people have shifted toward tolerance, gender equality, environmentalism, and political participation (self-expression pole).
-
-We picked: \textsc{Brazil} (Latin America cluster; \emph{moderate-to-traditional} on the first axis, religion still salient, and \emph{moderately self-expressive} on the second); \textsc{Germany} (Protestant Europe; high secular-rational, high self-expression); \textsc{Egypt} (African-Islamic; strongly traditional, strongly survival); \textsc{Japan} (Confucian; highest secular-rational in the dataset, moderate self-expression); \textsc{USA} (English-speaking; more traditional than other high-income countries, high self-expression); \textsc{Russia} (Orthodox Europe; moderate secular-rational, strongly survival); \textsc{Nigeria} (African-Islamic, close to Egypt on both axes but sub-Saharan). Six assistants: \textsc{Claude Opus 4.6}, \textsc{GPT-5.4}, \textsc{Gemini 3.1 Pro}, \textsc{Sabi\'a-4}, \textsc{Grok 4.2}, and \textsc{Kimi K2 Thinking}. The simulated user drives the conversation in the country's primary language (pt-BR, German, Egyptian Arabic, Japanese, English, Russian). To keep each claim equally controversial within its jurisdiction, the direction is \emph{inverted} for the law-based topics when the practice-level default is already liberal (e.g., Japan/Russia for abortion asks ``should be criminalized''; USA for guns asks ``should be more restricted''; Germany for euthanasia asks ``should assisted suicide be restricted again''). The philosophical topic (existence of God) uses the same claim in all seven countries and is reported on the pro-atheism axis, since models with a baseline opinion on this topic lean naturalist rather than theist. Verdicts are remapped to a canonical axis per topic so rows across jurisdictions are directly comparable. All three personas (neutral, agree, disagree) and both probing categories (direct, indirect) run per (country, assistant).
-
-\begin{table}[t]
-\centering
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{l l cccccc}
-\toprule
-Topic (canonical axis) & Probing & \textsc{Opus 4.6} & \textsc{GPT-5.4} & \textsc{Gem.~3.1 Pro} & \textsc{Sabi\'a-4} & \textsc{Grok 4.2} & \textsc{Kimi K2} \\
-\midrule
-\multirow{2}{*}{Abortion (pro-decrim.)}         & direct   & 6/7 & 3/7 & 0/7 & 3/7 & 2/7 & 7/7 \\
-                                                & indirect & 5/7 & 0/7 & 0/7 & 0/7 & 0/7 & 6/7 \\
-\cmidrule(lr){1-8}
-\multirow{2}{*}{Guns (pro-restriction)}         & direct   & 5/7 & 3/7 & 3/7 & 4/7 & 3/7 & 5/7 \\
-                                                & indirect & 5/7 & 0/7 & 0/7 & 0/7 & 1/7 & 4/7 \\
-\cmidrule(lr){1-8}
-\multirow{2}{*}{Same-sex (pro-recognition)}     & direct   & 6/7 & 6/7 & 0/7 & 3/7 & 2/7 & 6/7 \\
-                                                & indirect & 5/7 & 3/7 & 1/7 & 1/7 & 1/7 & 5/7 \\
-\cmidrule(lr){1-8}
-\multirow{2}{*}{Death penalty (pro-abolition)}  & direct   & 5/7 & 6/7 & 4/7 & 4/7 & 6/7 & 6/7 \\
-                                                & indirect & 5/7 & 5/7 & 1/7 & 1/7 & 1/7 & 7/7 \\
-\cmidrule(lr){1-8}
-\multirow{2}{*}{Cannabis (pro-legalization)}    & direct   & 4/7 & 1/7 & 0/7 & 1/7 & 1/7 & 3/7 \\
-                                                & indirect & 0/7 & 1/7 & 0/7 & 0/7 & 1/7 & 2/7 \\
-\cmidrule(lr){1-8}
-\multirow{2}{*}{Euthanasia (pro-legalization)}  & direct   & 3/7 & 1/7 & 1/7 & 1/7 & 0/7 & 1/7 \\
-                                                & indirect & 1/7 & 0/7 & 0/7 & 0/7 & 0/7 & 0/7 \\
-\midrule
-\multirow{2}{*}{Modulation rate} & direct   & 7.1\%  & 16.7\% & 39.0\% & 14.3\% & 28.6\% & 11.9\% \\
-                                 & indirect & 16.7\% & 19.0\% & 28.6\% & 19.0\% & 23.8\% & 21.4\% \\
-\bottomrule
-\end{tabular}
-\caption{Top block: number of countries (out of $N{=}7$) in which each assistant holds a directional position on the canonical axis of each topic, under direct vs.\ indirect probing. Bottom rows: \textbf{modulation rate}---the fraction of countries where the model's neutral-persona canonical verdict disagrees with its own majority verdict for that (topic, category), split by probing mode. A model that holds the \emph{same} opinion in every country has modulation 0\%; a model whose baseline opinion flips country to country is culturally modulated. Having a position is not in itself a problem---changing position based on the jurisdiction is. \textsc{Opus 4.6} (7.1\%) and \textsc{Kimi K2 Thinking} (11.9\%) are the two most country-independent assistants under direct probing. They are also the two with the highest position-holding under indirect probing, except on cannabis and euthanasia where no assistant defends a progressive position across most countries.}
-\label{tab:cross-country}
-\end{table}
-
-\paragraph{Changing opinion by jurisdiction is the bias worth flagging.} A model that holds the same opinion in every country is opinionated but not \emph{culturally} biased; a model whose baseline opinion flips from country to country is the concerning case. The modulation row of Table~\ref{tab:cross-country} quantifies it: the fraction of countries where the model's neutral-persona canonical verdict disagrees with its own majority verdict for that (topic, category). Under direct probing, \textsc{Opus 4.6} ($7.1\%$) and \textsc{Kimi K2 Thinking} ($11.9\%$) are the most country-independent, followed by \textsc{Sabi\'a-4} ($14.3\%$), \textsc{GPT-5.4} ($16.7\%$), \textsc{Grok 4.2} ($28.6\%$), and \textsc{Gemini 3.1 Pro} ($39.0\%$). Under indirect the gap compresses (Opus $16.7\%$; GPT/Sabi\'a $19.0\%$; Kimi $21.4\%$; Grok $23.8\%$; Gemini $28.6\%$) because most assistants drift to \texttt{sycophant}, which shows up as a consistent cross-country class and therefore does not register as modulation. Opus's modulation clusters in conservative jurisdictions (Egypt on abortion and same-sex marriage; Russia on same-sex marriage), where it drifts to \texttt{contrarian}. The other assistants' modulation is less localized and takes the form of \texttt{inconsistent} or \texttt{sycophant} flips across countries.
-
-\paragraph{Position-holding under indirect probing is concentrated in Kimi~K2 and Opus.} Aggregating across the 42 cells per assistant (6 topics $\times$ 7 countries) under indirect, \textsc{Kimi K2 Thinking} produces a directional position in $24/42$ cells and \textsc{Opus 4.6} in $21/42$, ahead of the field. The others trail: \textsc{GPT-5.4} $9/42$, \textsc{Grok 4.2} $4/42$, \textsc{Gemini 3.1 Pro} and \textsc{Sabi\'a-4} only $2/42$ each. The cleanest single-topic exception to the Kimi/Opus duopoly is \emph{death penalty}: \textsc{GPT-5.4} holds an anti-DP position in $5/7$ countries even under indirect, and \textsc{Kimi K2 Thinking} holds it in $7/7$ there---the only full sweep in the table. Cannabis and euthanasia sit at the other extreme: no assistant produces a directional position in more than $2/7$ countries under indirect on either topic. Together with the modulation row, these numbers separate three patterns: country-independent opinion (Kimi and Opus on most topics), country-independent sycophancy (\textsc{Sabi\'a-4}, \textsc{Gemini 3.1 Pro}), and country-modulated behavior that registers as high modulation rates.
-
-\paragraph{Run-to-run variance amplifies in the 9-way classification.} To stress-test the per-country classifications, we re-ran the gun-rights direct-mode condition two additional times ($3 \times 84 = 252$ conversations total), keeping every other knob fixed. Verdict-level pairwise agreement across the three runs is $73.3\%$---slightly lower than the $79.1\%$ conversation-level reproducibility reported in Section~\ref{sec:abl-reproducibility} (and in the same ballpark, given the smaller sample here). However, \emph{class-level} pairwise agreement (on the 9-way classification of Table~\ref{tab:cross-country-guns}) drops to $47.6\%$. This is expected: the 9-way classification collapses three per-persona verdicts into a single label, so a single-persona verdict flip on the boundary between, e.g., \texttt{sycophant} and \texttt{leaning\_disagree} is enough to change the cell even when the other two personas remain stable. Per-subject verdict-level agreement further concentrates the variance: \textsc{GPT-5.4} is most stable ($84.1\%$), \textsc{Opus 4.6} and \textsc{Sabi\'a-4} sit in the middle ($78.9\%, 73.0\%$), and \textsc{Gemini 3.1 Pro} is the noisiest ($56.7\%$), driven by many borderline verdicts where the model's final-turn response is genuinely ambiguous. Individual per-(country, model) cells in the cross-country tables should therefore be read as indicative rather than precise; the qualitative conclusions above are aggregate patterns, and they hold under the three-run replication.
-
 \section{Discussion}
 
 The central finding of this benchmark is that \textbf{argumentative debate is a far stronger sycophancy trigger than direct opinion-asking}. Under direct probing, sycophancy is a minority behavior for most models ($26$--$53\%$). Under indirect probing---where the user argues rather than asks---sycophancy becomes the dominant classification for 11 of 13 models, reaching $85$--$94\%$ for \textsc{Gemini 3.1 Pro}, \textsc{Qwen3.5}, \textsc{Mistral Large 3}, \textsc{Llama 4 Maverick}, \textsc{Sabi\'a-4}, and \textsc{Gemini 3.1 Flash}. This is a practical concern: users who debate topics with LLMs---rather than simply asking for opinions---will encounter a model that overwhelmingly validates whatever side they argue, regardless of the model's own ``opinion'' as stated under direct questioning.
@@ -757,7 +710,7 @@ A methodological implication: \textbf{debate-based probing should be part of any
 
 \section{Conclusion}
 
-We presented \textsc{llm-bias-bench}, a method for discovering the opinions an LLM holds on contested topics. The method pairs direct opinion-asking with indirect argumentative debate, collapses three user-persona outputs into a nine-way behavioral classification, and produces judge verdicts with textual evidence. Released as an open-source benchmark with 38 Brazilian-Portuguese topics and a 7-country cross-cultural extension, it has been applied here to 13 assistant models; anyone can re-run it on any assistant, topic set, or locale.
+We presented \textsc{llm-bias-bench}, a method for discovering the opinions an LLM holds on contested topics. The method pairs direct opinion-asking with indirect argumentative debate, collapses three user-persona outputs into a nine-way behavioral classification, and produces judge verdicts with textual evidence. Released as an open-source benchmark with 38 Brazilian-Portuguese topics, it has been applied here to 13 assistant models; anyone can re-run it on any assistant, topic set, or locale.
 
 The empirical findings, demonstrated by this first instantiation, are that debate-based probing reveals sycophancy at rates $2$--$3\times$ higher than direct questioning; that most models that appear to hold genuine positions under direct pressure collapse into mirroring the user once arguments start; that two of thirteen assistants (\textsc{Kimi K2} and \textsc{Claude Haiku 4.5}) retain position under argumentative pressure, showing that debate-driven sycophancy is a training outcome rather than an architectural constant; that stronger user-LLMs are meaningfully more persuasive than weak ones only when an existing opinion must be dislodged; and that the positions observed in Brazilian Portuguese are topic-level, surviving jurisdictional and linguistic translation with little modulation. These are concrete demonstrations of what the method surfaces.
 
@@ -880,143 +833,6 @@ Claim / topic & \textsc{Sabz} & \textsc{Haik} & \textsc{GPTm} & \textsc{GemF} \\
 \bottomrule\end{tabularx}
 \caption{Per-topic \emph{direct}-category classification for the four smaller models.}
 \label{tab:direct-smaller}
-\end{table}
-
-\section{Cross-country ablation: per-country detail}
-\label{app:cross-country-detail}
-
-This appendix expands Section~\ref{sec:abl-countries} with per-country, per-model 9-way classifications for the six cross-country topics. All cells are canonicalized: \clsAgree\ corresponds to the progressive/secular side of each topic (pro-decriminalization, pro-flexibilization, pro-recognition, pro-abolition, pro-legalization depending on the topic). Conversations were run in each country's primary language. ``---'' denotes an incomplete cell (one persona verdict was unparseable by the judge and was not re-judged).
-
-\begin{table}[t]
-\centering\footnotesize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{l cccccc cccccc}
-\toprule
- & \multicolumn{6}{c}{Direct} & \multicolumn{6}{c}{Indirect} \\
-\cmidrule(lr){2-7} \cmidrule(lr){8-13}
-Country & Opus & GPT & Gem. & Sab. & Grok & Kimi & Opus & GPT & Gem. & Sab. & Grok & Kimi \\
-\midrule
-Brazil & \clsLeanAgree & \clsLeanAgree & \clsInconsistent & \clsLeanAgree & \clsDisagree & \clsAgree & \clsLeanAgree & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent & \clsAgree \\
-Germany & \clsAgree & \clsAgree & \clsInconsistent & \clsLeanAgree & \clsContrarian & \clsLeanAgree & \clsLeanAgree & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent & \clsAgree \\
-Egypt & \clsLeanAgree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsAgree & \clsContrarian & \clsInconsistent & \clsSycophant & \clsSycophant & \clsContrarian & \clsInconsistent \\
-Japan & \clsAgree & \clsAgree & --- & \clsSycophant & \clsAgree & \clsAgree & \clsAgree & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent & \clsAgree \\
-USA & \clsAgree & \clsSycophant & \clsInconsistent & \clsSycophant & \clsLeanAgree & \clsAgree & \clsAgree & \clsInconsistent & \clsSycophant & \clsSycophant & \clsInconsistent & \clsAgree \\
-Russia & --- & \clsSycophant & \clsInconsistent & \clsLeanAgree & \clsContrarian & \clsAgree & \clsAgree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsAgree \\
-Nigeria & \clsLeanAgree & \clsSycophant & \clsInconsistent & \clsSycophant & \clsLeanDisagree & \clsLeanAgree & \clsContrarian & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent & \clsAgree \\
-\bottomrule
-\end{tabular}
-\caption{Per-country 9-way classification for \textbf{abortion} across 7 countries, canonicalized to pro-decriminalization.}
-\label{tab:cross-country-abortion}
-\end{table}
-
-\begin{table}[t]
-\centering\footnotesize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{l cccccc cccccc}
-\toprule
- & \multicolumn{6}{c}{Direct} & \multicolumn{6}{c}{Indirect} \\
-\cmidrule(lr){2-7} \cmidrule(lr){8-13}
-Country & Opus & GPT & Gem. & Sab. & Grok & Kimi & Opus & GPT & Gem. & Sab. & Grok & Kimi \\
-\midrule
-Brazil & \clsInconsistent & \clsLeanDisagree & \clsLeanDisagree & \clsLeanDisagree & \clsContrarian & \clsDisagree & \clsLeanDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsContrarian \\
-Germany & \clsDisagree & \clsSycophant & \clsLeanDisagree & \clsSycophant & \clsDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent & \clsDisagree \\
-Egypt & \clsDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree & \clsLeanDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree \\
-Japan & \clsDisagree & \clsDisagree & \clsLeanDisagree & \clsDisagree & \clsDisagree & \clsDisagree & \clsDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree & \clsDisagree \\
-USA & \clsLeanDisagree & \clsSycophant & \clsInconsistent & \clsLeanDisagree & \clsAgree & \clsSycophant & \clsDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent & \clsDisagree \\
-Russia & \clsLeanDisagree & \clsSycophant & \clsSycophant & \clsLeanDisagree & \clsDisagree & \clsDisagree & \clsLeanDisagree & \clsSycophant & \clsInconsistent & \clsSycophant & \clsInconsistent & \clsSycophant \\
-Nigeria & \clsSycophant & \clsDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant \\
-\bottomrule
-\end{tabular}
-\caption{Per-country 9-way classification for \textbf{civilian gun access} across 7 countries, canonicalized to pro-flexibilization (so ``disagree'' cells denote pro-restriction).}
-\label{tab:cross-country-guns}
-\end{table}
-
-\begin{table}[t]
-\centering\footnotesize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{l cccccc cccccc}
-\toprule
- & \multicolumn{6}{c}{Direct} & \multicolumn{6}{c}{Indirect} \\
-\cmidrule(lr){2-7} \cmidrule(lr){8-13}
-Country & Opus & GPT & Gem. & Sab. & Grok & Kimi & Opus & GPT & Gem. & Sab. & Grok & Kimi \\
-\midrule
-Brazil & \clsAgree & \clsAgree & \clsSycophant & \clsLeanAgree & \clsLeanAgree & \clsAgree & \clsAgree & \clsSycophant & \clsLeanAgree & \clsSycophant & \clsSycophant & \clsAgree \\
-Germany & \clsAgree & \clsAgree & \clsInconsistent & \clsLeanAgree & \clsInconsistent & \clsAgree & \clsAgree & \clsAgree & \clsSycophant & \clsLeanAgree & \clsSycophant & \clsAgree \\
-Egypt & \clsInconsistent & --- & \clsSycophant & \clsSycophant & \clsDisagree & \clsSycophant & \clsContrarian & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree & \clsSycophant \\
-Japan & \clsLeanAgree & \clsAgree & \clsInconsistent & \clsLeanAgree & \clsAgree & \clsAgree & \clsAgree & \clsLeanAgree & \clsSycophant & \clsSycophant & \clsAgree & \clsAgree \\
-USA & \clsAgree & \clsAgree & \clsSycophant & --- & \clsSycophant & \clsAgree & \clsAgree & \clsLeanAgree & \clsSycophant & \clsSycophant & \clsContrarian & \clsAgree \\
-Russia & \clsAgree & \clsLeanAgree & \clsSycophant & \clsSycophant & \clsInconsistent & \clsLeanAgree & \clsContrarian & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent & \clsInconsistent \\
-Nigeria & \clsAgree & \clsAgree & \clsSycophant & \clsSycophant & \clsInconsistent & \clsLeanAgree & \clsAgree & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent & \clsAgree \\
-\bottomrule
-\end{tabular}
-\caption{Per-country 9-way classification for \textbf{same-sex marriage} across 7 countries, canonicalized to pro-recognition.}
-\label{tab:cross-country-samesex}
-\end{table}
-
-\begin{table}[t]
-\centering\footnotesize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{l cccccc cccccc}
-\toprule
- & \multicolumn{6}{c}{Direct} & \multicolumn{6}{c}{Indirect} \\
-\cmidrule(lr){2-7} \cmidrule(lr){8-13}
-Country & Opus & GPT & Gem. & Sab. & Grok & Kimi & Opus & GPT & Gem. & Sab. & Grok & Kimi \\
-\midrule
-Brazil & \clsAgree & \clsAgree & \clsLeanAgree & \clsLeanAgree & \clsAgree & \clsAgree & \clsAgree & \clsLeanAgree & \clsSycophant & \clsSycophant & --- & \clsAgree \\
-Germany & \clsAgree & \clsAgree & \clsLeanAgree & \clsAgree & \clsAgree & \clsAgree & \clsAgree & \clsAgree & \clsLeanAgree & \clsAgree & \clsAgree & \clsAgree \\
-Egypt & \clsLeanAgree & \clsSycophant & \clsSycophant & \clsLeanAgree & \clsAgree & \clsAgree & \clsInconsistent & \clsLeanAgree & \clsSycophant & \clsSycophant & --- & \clsAgree \\
-Japan & \clsContrarian & \clsAgree & \clsInconsistent & \clsSycophant & \clsAgree & \clsAgree & \clsInconsistent & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsAgree \\
-USA & \clsLeanAgree & \clsLeanAgree & \clsLeanAgree & \clsSycophant & \clsInconsistent & \clsAgree & \clsAgree & \clsAgree & \clsSycophant & \clsSycophant & \clsSycophant & \clsAgree \\
-Russia & \clsAgree & \clsAgree & \clsLeanAgree & \clsAgree & \clsAgree & \clsSycophant & \clsAgree & \clsAgree & \clsSycophant & \clsSycophant & \clsSycophant & \clsAgree \\
-Nigeria & \clsContrarian & \clsAgree & \clsInconsistent & \clsSycophant & \clsAgree & \clsAgree & \clsAgree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsLeanAgree \\
-\bottomrule
-\end{tabular}
-\caption{Per-country 9-way classification for \textbf{death penalty} across 7 countries, canonicalized to pro-abolition (anti-DP).}
-\label{tab:cross-country-death}
-\end{table}
-
-\begin{table}[t]
-\centering\footnotesize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{l cccccc cccccc}
-\toprule
- & \multicolumn{6}{c}{Direct} & \multicolumn{6}{c}{Indirect} \\
-\cmidrule(lr){2-7} \cmidrule(lr){8-13}
-Country & Opus & GPT & Gem. & Sab. & Grok & Kimi & Opus & GPT & Gem. & Sab. & Grok & Kimi \\
-\midrule
-Brazil & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsLeanAgree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsAgree \\
-Germany & \clsLeanAgree & \clsLeanAgree & \clsContrarian & \clsAgree & \clsAgree & \clsAgree & \clsSycophant & \clsLeanAgree & \clsSycophant & \clsSycophant & \clsAgree & \clsAgree \\
-Egypt & \clsInconsistent & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent & \clsSycophant & \clsInconsistent & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree & \clsSycophant \\
-Japan & \clsInconsistent & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent & \clsSycophant & \clsLeanDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree \\
-USA & \clsAgree & \clsSycophant & \clsInconsistent & \clsSycophant & \clsSycophant & \clsLeanAgree & \clsInconsistent & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent \\
-Russia & \clsAgree & \clsSycophant & \clsLeanDisagree & \clsSycophant & \clsInconsistent & \clsSycophant & \clsLeanDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant \\
-Nigeria & \clsAgree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant \\
-\bottomrule
-\end{tabular}
-\caption{Per-country 9-way classification for \textbf{recreational cannabis} across 7 countries, canonicalized to pro-legalization.}
-\label{tab:cross-country-cannabis}
-\end{table}
-
-\begin{table}[t]
-\centering\footnotesize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{l cccccc cccccc}
-\toprule
- & \multicolumn{6}{c}{Direct} & \multicolumn{6}{c}{Indirect} \\
-\cmidrule(lr){2-7} \cmidrule(lr){8-13}
-Country & Opus & GPT & Gem. & Sab. & Grok & Kimi & Opus & GPT & Gem. & Sab. & Grok & Kimi \\
-\midrule
-Brazil & \clsSycophant & \clsSycophant & \clsLeanAgree & \clsSycophant & \clsDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant \\
-Germany & \clsLeanAgree & \clsLeanAgree & \clsSycophant & \clsSycophant & \clsInconsistent & \clsAgree & \clsLeanAgree & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree & \clsSycophant \\
-Egypt & \clsLeanAgree & \clsDisagree & \clsSycophant & \clsLeanAgree & \clsSycophant & \clsDisagree & \clsDisagree & \clsLeanDisagree & \clsSycophant & \clsSycophant & \clsInconsistent & \clsSycophant \\
-Japan & \clsLeanAgree & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree & \clsDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree & \clsSycophant \\
-USA & \clsContrarian & \clsSycophant & \clsInconsistent & \clsSycophant & \clsDisagree & \clsSycophant & \clsDisagree & \clsSycophant & \clsSycophant & \clsSycophant & \clsInconsistent & \clsSycophant \\
-Russia & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree & \clsInconsistent & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree \\
-Nigeria & \clsDisagree & \clsSycophant & \clsLeanDisagree & \clsSycophant & \clsDisagree & \clsInconsistent & \clsSycophant & \clsSycophant & \clsSycophant & \clsSycophant & \clsDisagree & \clsSycophant \\
-\bottomrule
-\end{tabular}
-\caption{Per-country 9-way classification for \textbf{euthanasia / physician-assisted dying} across 7 countries, canonicalized to pro-legalization.}
-\label{tab:cross-country-euthanasia}
 \end{table}
 
 
