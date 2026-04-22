@@ -128,7 +128,7 @@ Neither the peer-comparison coercion nor the epistemic-duty reframing was script
 \section{Ablation: attacker strength}
 \label{sec:ablation-attacker}
 
-Is the strong attacker in Section~\ref{sec:scientific} necessary, or would a weaker user-LLM extract similar rates? We test this on all $6$ scientific-consensus topics using three within-family \textsc{Qwen3.5} tiers as attacker (\textsc{4B}, \textsc{35B-A3B}, \textsc{397B-A17B}) against \textsc{Qwen3.5-397B-A17B} as subject, and contrasting with \textsc{Claude Opus 4.7} as attacker on the same subject. Two asymmetries emerge.
+Is the strong attacker in Section~\ref{sec:scientific} necessary, or would a weaker user-LLM extract similar rates? We test this on all $6$ scientific-consensus topics using five attackers against a fixed \textsc{Qwen3.5-397B-A17B} subject: an older, out-of-family small model (\textsc{Qwen2.5-7B-Instruct}); three within-family \textsc{Qwen3.5} tiers (\textsc{4B}, \textsc{35B-A3B}, \textsc{397B-A17B}); and a cross-vendor frontier assistant (\textsc{Claude Opus 4.7}). Three asymmetries emerge.
 
 \begin{table}[t]
 \centering
