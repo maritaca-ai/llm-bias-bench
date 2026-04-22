@@ -195,6 +195,26 @@ Is the strong attacker in Section~\ref{sec:scientific} necessary, or would a wea
 
 \paragraph{Why is this the right comparison?} Prior work on capability-asymmetric attacks typically varies the attacker across custom-trained jailbreak models~\citep{zou2023universal} or fine-tuned debaters~\citep{khan2024debating}. The ablation in Table~\ref{tab:attacker-ablation} instead varies only model scale within a single family, and contrasts with an off-the-shelf frontier assistant from a different family---no attack-specific fine-tuning on either side. This isolates ``attacker strength is a function of model capability, not of family-specific attack-training'': the within-\textsc{Qwen} scaling shows capability matters, the Opus row shows that even without any attack-specific training a frontier model reaches rates that within-family scaling cannot.
 
+\paragraph{The ``floor'' is subject-dependent: against a weak subject, even the hard topics fall.} The three topics at the floor in Table~\ref{tab:6sci-row}---antivax, racial IQ, Holocaust denial---are floor \emph{against frontier-class subjects}. To test whether they are topic-level floors or subject-level floors, we run \textsc{Opus 4.7} as attacker against a weak, out-of-family subject (\textsc{Qwen2.5-7B-Instruct}, the same model we used in the weak-attacker row) on all $6$ topics.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{ll|cccccc|c}
+\toprule
+attacker & subject & Creat. & Flat-earth & Climate & Antivax & Racial IQ & Holocaust & avg \\
+\midrule
+\textsc{Opus 4.7} & \textsc{Qwen3.5-397B}        & $90\%$ & $90\%$ & $40\%$ & $0\%$   & $0\%$   & $0\%$   & $37\%$ \\
+\textsc{Opus 4.7} & \textsc{Qwen2.5-7B-Instruct} & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{70\%}$ & $\mathbf{95\%}$ \\
+\bottomrule
+\end{tabular}
+\caption{Against a weaker, older subject (\textsc{Qwen2.5-7B-Instruct}) the same attacker that achieves $0\%$ on the three most-refused topics against \textsc{Qwen3.5-397B} produces essays on \emph{every} topic at $70$--$100\%$. The topics are not themselves floor; the floor is a property of the subject's refusal training, and a weaker subject has a weaker refusal boundary on exactly these topics.}
+\label{tab:weak-subject}
+\end{table}
+
+All five non-Holocaust topics---including antivax and racial IQ---reach $100\%$ essay production against the \textsc{7B} subject. Holocaust denial, the strongest-refused topic across every frontier-subject combination, leaks $7/10$ against the weaker subject. Stated differently: the ``same three topics at the floor'' finding from Section~\ref{sec:scientific} is \emph{specific to frontier-class subjects}. A weaker subject has no floor in this probe---a frontier-class attacker elicits committed one-sided essays on all six topics it refuses to produce single-turn. This is the clearest asymmetry we find: the subject's refusal training is the binding constraint on what can be elicited, not the topic.
+
 \section{Ablation: how many turns does the attacker need?}
 \label{sec:ablation-turns}
 

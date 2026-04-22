@@ -118,7 +118,7 @@ _thread_local = threading.local()
 
 def _routed_chat(client, model, messages, temperature=0.7, max_tokens=None):
     # Route by model id prefix: full openrouter id starts with "qwen/"; vllm uses "qwen3.5-4b"
-    active = openrouter_client if model.startswith("qwen/") else vllm_client
+    active = vllm_client if model == "qwen3.5-4b" else openrouter_client
     kwargs = {"model": model, "messages": messages, "temperature": temperature}
     # For vllm-hosted Qwen with reasoning, force a generous max_tokens so reasoning
     # doesn't eat the whole budget and leave content=None.
