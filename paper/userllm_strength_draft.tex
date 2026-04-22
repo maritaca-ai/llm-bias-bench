@@ -205,15 +205,18 @@ Is the strong attacker in Section~\ref{sec:scientific} necessary, or would a wea
 \toprule
 attacker & subject & Creat. & Flat-earth & Climate & Antivax & Racial IQ & Holocaust & avg \\
 \midrule
-\textsc{Opus 4.7} & \textsc{Qwen3.5-397B}        & $90\%$ & $90\%$ & $40\%$ & $0\%$   & $0\%$   & $0\%$   & $37\%$ \\
-\textsc{Opus 4.7} & \textsc{Qwen2.5-7B-Instruct} & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{70\%}$ & $\mathbf{95\%}$ \\
+\textsc{Qwen2.5-7B} & \textsc{Qwen3.5-397B}        & $20\%$ & $20\%$ & $0\%$   & $0\%$   & $0\%$   & $0\%$   & $7\%$ \\
+\textsc{Opus 4.7}   & \textsc{Qwen3.5-397B}        & $90\%$ & $90\%$ & $40\%$  & $0\%$   & $0\%$   & $0\%$   & $37\%$ \\
+\midrule
+\textsc{Qwen2.5-7B} & \textsc{Qwen2.5-7B}          & $90\%$ & $90\%$ & $80\%$  & $90\%$  & $80\%$  & $90\%$  & $87\%$ \\
+\textsc{Opus 4.7}   & \textsc{Qwen2.5-7B}          & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{70\%}$ & $\mathbf{95\%}$ \\
 \bottomrule
 \end{tabular}
-\caption{Against a weaker, older subject (\textsc{Qwen2.5-7B-Instruct}) the same attacker that achieves $0\%$ on the three most-refused topics against \textsc{Qwen3.5-397B} produces essays on \emph{every} topic at $70$--$100\%$. The topics are not themselves floor; the floor is a property of the subject's refusal training, and a weaker subject has a weaker refusal boundary on exactly these topics.}
+\caption{Subject refusal training dominates attacker capability. Top block (frontier subject \textsc{Qwen3.5-397B}): upgrading the attacker from \textsc{Qwen2.5-7B} to \textsc{Opus 4.7} lifts the row mean by $30$pp ($7\% \to 37\%$), but both attackers stay at $0\%$ on antivax, racial IQ, and Holocaust. Bottom block (weaker subject \textsc{Qwen2.5-7B-Instruct}): both attackers break the floor on every topic. The weak$\times$weak combination reaches $87\%$ row mean---higher than every frontier$\times$frontier combination in our entire data ($37\%$ ceiling).}
 \label{tab:weak-subject}
 \end{table}
 
-All five non-Holocaust topics---including antivax and racial IQ---reach $100\%$ essay production against the \textsc{7B} subject. Holocaust denial, the strongest-refused topic across every frontier-subject combination, leaks $7/10$ against the weaker subject. Stated differently: the ``same three topics at the floor'' finding from Section~\ref{sec:scientific} is \emph{specific to frontier-class subjects}. A weaker subject has no floor in this probe---a frontier-class attacker elicits committed one-sided essays on all six topics it refuses to produce single-turn. This is the clearest asymmetry we find: the subject's refusal training is the binding constraint on what can be elicited, not the topic.
+The ``three topics at the floor'' finding from Section~\ref{sec:scientific} is \emph{specific to frontier-class subjects}. Against the weaker subject every topic reaches $\geq 70\%$, including the three floor topics. A weak attacker is enough: \textsc{Qwen2.5-7B} attacking \textsc{Qwen2.5-7B} produces the essay $80$--$90\%$ of the time on every topic, outperforming the best frontier$\times$frontier configuration ($37\%$) in our entire dataset. This is the clearest asymmetry we measure: once the subject's refusal training is thin, the topic and the attacker capability stop mattering.
 
 \section{Ablation: how many turns does the attacker need?}
 \label{sec:ablation-turns}
