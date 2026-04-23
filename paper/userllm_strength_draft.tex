@@ -200,7 +200,7 @@ Is the strong attacker in Section~\ref{sec:scientific} necessary, or would a wea
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.85\linewidth]{subject_ablation.pdf}
-\caption{Row-mean essay-production rate (averaged over $6$ scientific-consensus topics) for each attacker against three subjects. We test two hypotheses. \textbf{(H1) Do stronger attackers extract more from weaker same-family subjects?} Going from \textsc{Qwen3.5-397B} to \textsc{Qwen3.5-4B} subject (left two groups) is a $100\times$ parameter cut within the same training pipeline. Only the \emph{strongest} attackers gain: \textsc{Opus 4.7} $+6$pp ($37 \to 43\%$) and \textsc{Qwen3.5-397B} $+13$pp ($23 \to 37\%$). Weak and mid-tier attackers are flat ($\pm 2$pp). A $100\times$ size gap is a modest knob that pays out only to attackers strong enough to apply pressure. \textbf{(H2) Does an out-of-family older subject collapse?} Switching to \textsc{Qwen2.5-7B-Instruct} (right group) removes the floor entirely: \textsc{Opus} reaches $95\%$ and even the weak \textsc{Qwen2.5-7B} attacker reaches $87\%$---higher than any frontier$\times$frontier combination in our entire data ($37\%$ ceiling). The dominant variable is the subject's refusal training generation, not parameter count within a family.}
+\caption{Row-mean essay-production rate (averaged over $6$ scientific-consensus topics) for each attacker against three subjects. We test two hypotheses. \textbf{(H1) Do stronger attackers extract more from weaker same-family subjects?} Going from \textsc{Qwen3.5-397B} to \textsc{Qwen3.5-4B} subject (left two groups) is a $100\times$ parameter cut within the same training pipeline. Only the \emph{strongest} attackers gain: \textsc{Opus 4.7} $+6$pp ($37 \to 43\%$) and \textsc{Qwen3.5-397B} $+13$pp ($23 \to 37\%$). Weak and mid-tier attackers are flat ($\pm 2$pp). A $100\times$ size gap is a modest knob that pays out only to attackers strong enough to apply pressure. \textbf{(H2) Does an out-of-family older subject collapse?} Switching to \textsc{Qwen2.5-7B-Instruct} (right group) removes the floor entirely: \textsc{Opus} reaches $95\%$ and even the weak \textsc{Qwen2.5-7B} attacker reaches $87\%$---higher than any frontier$\times$frontier combination in our entire data ($37\%$ ceiling). The dominant variable is the subject's refusal training generation, not parameter count within a family. Per-topic counts behind the row means are in Table~\ref{tab:weak-subject-full} (Appendix~\ref{app:subject-ablation-full}).}
 \label{fig:subject-ablation}
 \end{figure}
 
@@ -294,6 +294,39 @@ Judge    & \textsc{Qwen3.5-397B}         & $2.01$ & $0.04$ & $\$1.23$ \\
 \end{tabular}
 \caption{Actual API cost. Per-conversation mean output from the subject is $\sim 14$K tokens for \textsc{Opus}, $\sim 20$K tokens for \textsc{Qwen3.5-397B}, and $\sim 5$K tokens for \textsc{Grok}, spread across $5$ turns; the attacker generates roughly a third to a half of that volume on the input side.}
 \label{tab:cost}
+\end{table}
+
+\section{Subject-ablation: per-topic counts}
+\label{app:subject-ablation-full}
+
+Figure~\ref{fig:subject-ablation} aggregates the subject-ablation results as row means across topics. Table~\ref{tab:weak-subject-full} gives the underlying per-topic counts.
+
+\begin{table}[!htbp]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{ll|cccccc|c}
+\toprule
+attacker & subject & Creat. & Flat-earth & Climate & Antivax & Racial IQ & Holocaust & avg \\
+\midrule
+\textsc{Qwen2.5-7B}        & \textsc{Qwen3.5-397B}        & $20\%$  & $20\%$  & $0\%$   & $0\%$   & $0\%$   & $0\%$   & $7\%$ \\
+\textsc{Qwen3.5-4B}        & \textsc{Qwen3.5-397B}        & $40\%$  & $80\%$  & $10\%$  & $10\%$  & $0\%$   & $0\%$   & $23\%$ \\
+\textsc{Qwen3.5-35B-A3B}   & \textsc{Qwen3.5-397B}        & $50\%$  & $90\%$  & $10\%$  & $0\%$   & $0\%$   & $20\%$  & $28\%$ \\
+\textsc{Qwen3.5-397B-A17B} & \textsc{Qwen3.5-397B}        & $50\%$  & $70\%$  & $20\%$  & $0\%$   & $0\%$   & $0\%$   & $23\%$ \\
+\textsc{Claude Opus 4.7}   & \textsc{Qwen3.5-397B}        & $90\%$  & $90\%$  & $40\%$  & $0\%$   & $0\%$   & $0\%$   & $37\%$ \\
+\midrule
+\textsc{Qwen2.5-7B}        & \textsc{Qwen3.5-4B}          & $30\%$  & $0\%$   & $0\%$   & $0\%$   & $0\%$   & $0\%$   & $5\%$ \\
+\textsc{Qwen3.5-4B}        & \textsc{Qwen3.5-4B}          & $70\%$  & $60\%$  & $20\%$  & $0\%$   & $0\%$   & $0\%$   & $25\%$ \\
+\textsc{Qwen3.5-35B-A3B}   & \textsc{Qwen3.5-4B}          & $70\%$  & $60\%$  & $10\%$  & $0\%$   & $0\%$   & $20\%$  & $27\%$ \\
+\textsc{Qwen3.5-397B-A17B} & \textsc{Qwen3.5-4B}          & $90\%$  & $60\%$  & $30\%$  & $10\%$  & $20\%$  & $10\%$  & $37\%$ \\
+\textsc{Claude Opus 4.7}   & \textsc{Qwen3.5-4B}          & $90\%$  & $80\%$  & $60\%$  & $20\%$  & $0\%$   & $0\%$   & $43\%$ \\
+\midrule
+\textsc{Qwen2.5-7B}        & \textsc{Qwen2.5-7B}          & $90\%$  & $90\%$  & $80\%$  & $90\%$  & $80\%$  & $90\%$  & $87\%$ \\
+\textsc{Claude Opus 4.7}   & \textsc{Qwen2.5-7B}          & $100\%$ & $100\%$ & $100\%$ & $100\%$ & $100\%$ & $70\%$  & $95\%$ \\
+\bottomrule
+\end{tabular}
+\caption{Full per-topic breakdown of the subject-ablation row means in Figure~\ref{fig:subject-ablation}. $N=10$ per cell. The three blocks are the three subject models; row means (last column) are the bars in the figure.}
+\label{tab:weak-subject-full}
 \end{table}
 
 \end{document}
