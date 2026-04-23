@@ -1,0 +1,212 @@
+\begin{thebibliography}{27}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Arora et~al.(2023)Arora, Kaffee, and Augenstein]{arora2023probing}
+Arnav Arora, Lucie-Aim{\'e}e Kaffee, and Isabelle Augenstein.
+\newblock Probing pre-trained language models for cross-cultural differences in
+  values.
+\newblock In \emph{Proceedings of the First Workshop on Cross-Cultural
+  Considerations in NLP (C3NLP) at EACL}, 2023.
+
+\bibitem[Atari et~al.(2023)Atari, Xue, Park, Blasi, and
+  Henrich]{atari2023whichhumans}
+Mohammad Atari, Mona~J. Xue, Peter~S. Park, Dami{\'a}n~E. Blasi, and Joseph
+  Henrich.
+\newblock Which humans?
+\newblock \emph{PsyArXiv preprint}, 2023.
+\newblock \doi{10.31234/osf.io/5b26t}.
+
+\bibitem[Cao et~al.(2023)Cao, Zhou, Lee, Cabello, Chen, and
+  Hershcovich]{cao2023assessing}
+Yong Cao, Li~Zhou, Seolhwa Lee, Laura Cabello, Min Chen, and Daniel
+  Hershcovich.
+\newblock Assessing cross-cultural alignment between {ChatGPT} and human
+  societies: An empirical study.
+\newblock \emph{arXiv preprint arXiv:2303.17466}, 2023.
+
+\bibitem[Cheng et~al.(2025)Cheng, Yu, and Lee]{cheng2025elephant}
+Myra Cheng, Sunny Yu, and Cinoo Lee.
+\newblock {ELEPHANT}: Measuring and understanding social sycophancy in {LLMs}.
+\newblock \emph{arXiv preprint arXiv:2505.13995}, 2025.
+
+\bibitem[Denison et~al.(2024)Denison, MacDiarmid, Barez, Duvenaud, Kravec,
+  Marks, Schiefer, Soklaski, Tamkin, Kaplan, Shlegeris, Bowman, Perez, and
+  Hubinger]{denison2024sycophancy}
+Carson Denison, Monte MacDiarmid, Fazl Barez, David Duvenaud, Shauna Kravec,
+  Samuel Marks, Nicholas Schiefer, Ryan Soklaski, Alex Tamkin, Jared Kaplan,
+  Buck Shlegeris, Samuel~R. Bowman, Ethan Perez, and Evan Hubinger.
+\newblock Sycophancy to subterfuge: Investigating reward-tampering in large
+  language models.
+\newblock \emph{arXiv preprint arXiv:2406.10162}, 2024.
+
+\bibitem[Durmus et~al.(2023)Durmus, Nguyen, Liao, Schiefer, Askell, Bakhtin,
+  Chen, Hatfield-Dodds, Hernandez, Joseph, et~al.]{durmus2023global}
+Esin Durmus, Karina Nguyen, Thomas~I Liao, Nicholas Schiefer, Amanda Askell,
+  Anton Bakhtin, Carol Chen, Zac Hatfield-Dodds, Danny Hernandez, Nicholas
+  Joseph, et~al.
+\newblock Towards measuring the representation of subjective global opinions in
+  language models.
+\newblock \emph{arXiv preprint arXiv:2306.16388}, 2023.
+
+\bibitem[Feng et~al.(2023)Feng, Park, Liu, and Tsvetkov]{feng2023pretraining}
+Shangbin Feng, Chan~Young Park, Yuhan Liu, and Yulia Tsvetkov.
+\newblock From pretraining data to language models to downstream tasks:
+  Tracking the trails of political biases leading to unfair {NLP} models.
+\newblock In \emph{Proceedings of the 61st Annual Meeting of the Association
+  for Computational Linguistics (ACL)}, 2023.
+
+\bibitem[Hartmann et~al.(2023)Hartmann, Schwenzow, and
+  Witte]{hartmann2023political}
+Jochen Hartmann, Jasper Schwenzow, and Maximilian Witte.
+\newblock The political ideology of conversational {AI}: Converging evidence on
+  {ChatGPT}'s pro-environmental, left-libertarian orientation.
+\newblock \emph{arXiv preprint arXiv:2301.01768}, 2023.
+
+\bibitem[Hong et~al.(2025)Hong, Byun, Kim, Shu, and Choi]{hong2025sycon}
+Jiseung Hong, Grace Byun, Seungone Kim, Kai Shu, and Jinho~D Choi.
+\newblock Measuring sycophancy of language models in multi-turn dialogues.
+\newblock \emph{arXiv preprint arXiv:2505.23840}, 2025.
+
+\bibitem[Kabir et~al.(2025)Kabir, Abrar, and Ananiadou]{kabir2025break}
+Mohsinul Kabir, Ajwad Abrar, and Sophia Ananiadou.
+\newblock Break the checkbox: Challenging closed-style evaluations of cultural
+  alignment in {LLM}s.
+\newblock In \emph{Proceedings of the 2025 Conference on Empirical Methods in
+  Natural Language Processing (EMNLP)}, 2025.
+\newblock \url{https://arxiv.org/abs/2502.08045}.
+
+\bibitem[Kaur(2025)]{kaur2025echoes}
+Avneet Kaur.
+\newblock Echoes of agreement: Argument driven sycophancy in large language
+  models.
+\newblock In \emph{Findings of the Association for Computational Linguistics:
+  EMNLP 2025}, pages 22803--22812, 2025.
+
+\bibitem[Khan et~al.(2024)Khan, Hughes, Valentine, Ruis, Sachan, Radhakrishnan,
+  Grefenstette, Bowman, Rockt{\"a}schel, and Perez]{khan2024debating}
+Akbir Khan, John Hughes, Dan Valentine, Laura Ruis, Kshitij Sachan, Ansh
+  Radhakrishnan, Edward Grefenstette, Samuel~R. Bowman, Tim Rockt{\"a}schel,
+  and Ethan Perez.
+\newblock Debating with more persuasive {LLMs} leads to more truthful answers.
+\newblock In \emph{Proceedings of the 41st International Conference on Machine
+  Learning (ICML)}, 2024.
+
+\bibitem[Khan et~al.(2025)Khan, Casper, and
+  Hadfield-Menell]{khan2025randomness}
+Ariba Khan, Stephen Casper, and Dylan Hadfield-Menell.
+\newblock Randomness, not representation: The unreliability of evaluating
+  cultural alignment in {LLM}s.
+\newblock \emph{arXiv preprint arXiv:2503.08688}, 2025.
+
+\bibitem[Kharchenko et~al.(2024)Kharchenko, Roosta, Chadha, and
+  Shah]{kharchenko2024howwell}
+Julia Kharchenko, Tanya Roosta, Aman Chadha, and Chirag Shah.
+\newblock How well do {LLM}s represent values across cultures? empirical
+  analysis of {LLM} responses based on {H}ofstede cultural dimensions.
+\newblock \emph{arXiv preprint arXiv:2406.14805}, 2024.
+
+\bibitem[Kim and Khashabi(2025)]{kim2025sycophancy}
+Sungwon Kim and Daniel Khashabi.
+\newblock Challenging the evaluator: {LLM} sycophancy under user rebuttal.
+\newblock \emph{arXiv preprint arXiv:2509.16533}, 2025.
+
+\bibitem[Nadeem et~al.(2021)Nadeem, Bethke, and Reddy]{nadeem2021stereoset}
+Moin Nadeem, Anna Bethke, and Siva Reddy.
+\newblock {StereoSet}: Measuring stereotypical bias in pretrained language
+  models.
+\newblock In \emph{Proceedings of the 59th Annual Meeting of the Association
+  for Computational Linguistics and the 11th International Joint Conference on
+  Natural Language Processing (ACL-IJCNLP)}, pages 5356--5371, 2021.
+
+\bibitem[Naous et~al.(2024)Naous, Ryan, Ritter, and Xu]{naous2024beer}
+Tarek Naous, Michael~J Ryan, Alan Ritter, and Wei Xu.
+\newblock Having beer after prayer? measuring cultural bias in large language
+  models.
+\newblock In \emph{Proceedings of the 62nd annual meeting of the association
+  for computational linguistics (volume 1: Long papers)}, pages 16366--16393,
+  2024.
+
+\bibitem[Parrish et~al.(2022)Parrish, Chen, Nangia, Padmakumar, Phang,
+  Thompson, Htut, and Bowman]{parrish2022bbq}
+Alicia Parrish, Angelica Chen, Nikita Nangia, Vishakh Padmakumar, Jason Phang,
+  Jana Thompson, Phu~Mon Htut, and Samuel~R. Bowman.
+\newblock {BBQ}: A hand-built bias benchmark for question answering.
+\newblock In \emph{Findings of the Association for Computational Linguistics:
+  ACL 2022}, pages 2086--2105, 2022.
+
+\bibitem[Perez et~al.(2022)Perez, Ringer, Luko{\v{s}}i{\={u}}t{\.{e}}, Nguyen,
+  Chen, Heiner, Pettit, Olsson, Kundu, Kadavath, et~al.]{perez2022discovering}
+Ethan Perez, Sam Ringer, Kamil{\.{e}} Luko{\v{s}}i{\={u}}t{\.{e}}, Karina
+  Nguyen, Edwin Chen, Scott Heiner, Craig Pettit, Catherine Olsson, Sandipan
+  Kundu, Saurav Kadavath, et~al.
+\newblock Discovering language model behaviors with model-written evaluations.
+\newblock \emph{arXiv preprint arXiv:2212.09251}, 2022.
+
+\bibitem[Rennard et~al.(2025)Rennard, Xypolopoulos, and
+  Vazirgiannis]{rennard2025bias}
+Virgile Rennard, Christos Xypolopoulos, and Michalis Vazirgiannis.
+\newblock Bias in the mirror: Are {LLMs}' opinions robust to their own
+  adversarial attacks?
+\newblock In \emph{Proceedings of the 63rd Annual Meeting of the Association
+  for Computational Linguistics (ACL)}, 2025.
+
+\bibitem[R{\"o}ttger et~al.(2024)R{\"o}ttger, Kirk, Vidgen, Attanasio, Bianchi,
+  and Hovy]{rottger2024xstest}
+Paul R{\"o}ttger, Hannah Kirk, Bertie Vidgen, Giuseppe Attanasio, Federico
+  Bianchi, and Dirk Hovy.
+\newblock Xstest: A test suite for identifying exaggerated safety behaviours in
+  large language models.
+\newblock In \emph{Proceedings of the 2024 Conference of the North American
+  Chapter of the Association for Computational Linguistics: Human Language
+  Technologies (Volume 1: Long Papers)}, pages 5377--5400, 2024.
+
+\bibitem[Rozado(2024)]{rozado2024political}
+David Rozado.
+\newblock The political preferences of {LLM}s.
+\newblock \emph{PLoS ONE}, 19\penalty0 (7), 2024.
+\newblock \doi{10.1371/journal.pone.0306621}.
+
+\bibitem[Rozen et~al.(2024)Rozen, Bezalel, Elidan, Globerson, and
+  Daniel]{rozen2024llmconsistent}
+Naama Rozen, Liat Bezalel, Gal Elidan, Amir Globerson, and Ella Daniel.
+\newblock Do {LLM}s have consistent values?
+\newblock \emph{arXiv preprint arXiv:2407.12878}, 2024.
+
+\bibitem[Santurkar et~al.(2023)Santurkar, Durmus, Ladhak, Lee, Liang, and
+  Hashimoto]{santurkar2023opinionqa}
+Shibani Santurkar, Esin Durmus, Faisal Ladhak, Cinoo Lee, Percy Liang, and
+  Tatsunori Hashimoto.
+\newblock Whose opinions do language models reflect?
+\newblock In \emph{Proceedings of the 40th International Conference on Machine
+  Learning (ICML)}, 2023.
+\newblock URL \url{https://github.com/tatsu-lab/opinions_qa}.
+
+\bibitem[Sharma et~al.(2023)Sharma, Tong, Korbak, Duvenaud, Askell, Bowman,
+  Cheng, Durmus, Hatfield-Dodds, Johnston, et~al.]{sharma2023towards}
+Mrinank Sharma, Meg Tong, Tomasz Korbak, David Duvenaud, Amanda Askell,
+  Samuel~R. Bowman, Newton Cheng, Esin Durmus, Zac Hatfield-Dodds, Scott~R.
+  Johnston, et~al.
+\newblock Towards understanding sycophancy in language models.
+\newblock \emph{arXiv preprint arXiv:2310.13548}, 2023.
+
+\bibitem[Tao et~al.(2024)Tao, Viberg, Baker, and Kizilcec]{tao2024cultural}
+Yan Tao, Olga Viberg, Ryan~S. Baker, and Ren{\'e}~F. Kizilcec.
+\newblock Cultural bias and cultural alignment of large language models.
+\newblock \emph{PNAS Nexus}, 3\penalty0 (9), 2024.
+\newblock \url{https://arxiv.org/abs/2311.14096}.
+
+\bibitem[Xie et~al.(2024)Xie, Qi, Zeng, Huang, Sehwag, Huang, He, Wei, Li,
+  Sheng, Jia, Li, Li, Chen, Henderson, and Mittal]{xie2024sorry}
+Tinghao Xie, Xiangyu Qi, Yi~Zeng, Yangsibo Huang, Udari~Madhushani Sehwag,
+  Kaixuan Huang, Luxi He, Boyi Wei, Dacheng Li, Ying Sheng, Ruoxi Jia, Bo~Li,
+  Kai Li, Danqi Chen, Peter Henderson, and Prateek Mittal.
+\newblock Sorry-bench: Systematically evaluating large language model safety
+  refusal.
+\newblock \emph{arXiv preprint arXiv:2406.14598}, 2024.
+\newblock URL \url{https://sorry-bench.github.io/}.
+
+\end{thebibliography}
