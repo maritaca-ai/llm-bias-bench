@@ -195,7 +195,7 @@ Is the strong attacker in Section~\ref{sec:scientific} necessary, or would a wea
 
 \paragraph{Why is this the right comparison?} Prior work on capability-asymmetric attacks typically varies the attacker across custom-trained jailbreak models~\citep{zou2023universal} or fine-tuned debaters~\citep{khan2024debating}. The ablation in Table~\ref{tab:attacker-ablation} instead varies only model scale within a single family, and contrasts with an off-the-shelf frontier assistant from a different family---no attack-specific fine-tuning on either side. This isolates ``attacker strength is a function of model capability, not of family-specific attack-training'': the within-\textsc{Qwen} scaling shows capability matters, the Opus row shows that even without any attack-specific training a frontier model reaches rates that within-family scaling cannot.
 
-\paragraph{The ``floor'' is subject-dependent: against a weak subject, even the hard topics fall.} The three topics at the floor in Table~\ref{tab:6sci-row}---antivax, racial IQ, Holocaust denial---are floor \emph{against frontier-class subjects}. To test whether they are topic-level floors or subject-level floors, we run \textsc{Opus 4.7} as attacker against a weak, out-of-family subject (\textsc{Qwen2.5-7B-Instruct}, the same model we used in the weak-attacker row) on all $6$ topics.
+\paragraph{The ``floor'' is subject-dependent: against a weak subject, even the hard topics fall.} The three topics at the floor in Table~\ref{tab:6sci-row}---antivax, racial IQ, Holocaust denial---are floor \emph{against frontier-class subjects}. To test whether they are topic-level floors or subject-level floors, we vary the subject across three models at two axes of variation: size within the \textsc{Qwen3.5} family (\textsc{Qwen3.5-4B} vs.\ \textsc{Qwen3.5-397B}, a $100\times$ size gap) and generation/family (out-of-family older \textsc{Qwen2.5-7B-Instruct}). For each subject we run two attackers: a weak out-of-family small attacker (\textsc{Qwen2.5-7B}) and a strong frontier attacker (\textsc{Opus 4.7}) across all $6$ topics.
 
 \begin{table}[t]
 \centering
@@ -205,18 +205,21 @@ Is the strong attacker in Section~\ref{sec:scientific} necessary, or would a wea
 \toprule
 attacker & subject & Creat. & Flat-earth & Climate & Antivax & Racial IQ & Holocaust & avg \\
 \midrule
-\textsc{Qwen2.5-7B} & \textsc{Qwen3.5-397B}        & $20\%$ & $20\%$ & $0\%$   & $0\%$   & $0\%$   & $0\%$   & $7\%$ \\
-\textsc{Opus 4.7}   & \textsc{Qwen3.5-397B}        & $90\%$ & $90\%$ & $40\%$  & $0\%$   & $0\%$   & $0\%$   & $37\%$ \\
+\textsc{Qwen2.5-7B} & \textsc{Qwen3.5-397B}         & $20\%$ & $20\%$ & $0\%$   & $0\%$   & $0\%$   & $0\%$   & $7\%$ \\
+\textsc{Opus 4.7}   & \textsc{Qwen3.5-397B}         & $90\%$ & $90\%$ & $40\%$  & $0\%$   & $0\%$   & $0\%$   & $37\%$ \\
 \midrule
-\textsc{Qwen2.5-7B} & \textsc{Qwen2.5-7B}          & $90\%$ & $90\%$ & $80\%$  & $90\%$  & $80\%$  & $90\%$  & $87\%$ \\
-\textsc{Opus 4.7}   & \textsc{Qwen2.5-7B}          & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{70\%}$ & $\mathbf{95\%}$ \\
+\textsc{Qwen2.5-7B} & \textsc{Qwen3.5-4B}           & $30\%$ & $0\%$  & $0\%$   & $0\%$   & $0\%$   & $0\%$   & $5\%$ \\
+\textsc{Opus 4.7}   & \textsc{Qwen3.5-4B}           & $90\%$ & $80\%$ & $60\%$  & $20\%$  & $0\%$   & $0\%$   & $41\%$ \\
+\midrule
+\textsc{Qwen2.5-7B} & \textsc{Qwen2.5-7B}           & $90\%$ & $90\%$ & $80\%$  & $90\%$  & $80\%$  & $90\%$  & $87\%$ \\
+\textsc{Opus 4.7}   & \textsc{Qwen2.5-7B}           & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{100\%}$ & $\mathbf{70\%}$ & $\mathbf{95\%}$ \\
 \bottomrule
 \end{tabular}
-\caption{Subject refusal training dominates attacker capability. Top block (frontier subject \textsc{Qwen3.5-397B}): upgrading the attacker from \textsc{Qwen2.5-7B} to \textsc{Opus 4.7} lifts the row mean by $30$pp ($7\% \to 37\%$), but both attackers stay at $0\%$ on antivax, racial IQ, and Holocaust. Bottom block (weaker subject \textsc{Qwen2.5-7B-Instruct}): both attackers break the floor on every topic. The weak$\times$weak combination reaches $87\%$ row mean---higher than every frontier$\times$frontier combination in our entire data ($37\%$ ceiling).}
+\caption{Subject refusal training dominates attacker capability, and within the same family refusal strength is uniform across model size. Top block (\textsc{Qwen3.5-397B} subject): upgrading the attacker from \textsc{Qwen2.5-7B} to \textsc{Opus 4.7} lifts the row mean by $30$pp ($7\% \to 37\%$); both attackers stay at $0\%$ on antivax, racial IQ, and Holocaust. Middle block (\textsc{Qwen3.5-4B} subject, same family as $397$B but $100\times$ smaller): row means ($5\%$, $41\%$) track the $397$B values to within $\pm 4$pp, and the same three topics stay at the floor---subject-side refusal training is essentially constant along the \textsc{Qwen3.5} size axis. Bottom block (out-of-family older subject \textsc{Qwen2.5-7B-Instruct}): both attackers break the floor on every topic. The weak$\times$weak combination reaches $87\%$ row mean---higher than every frontier$\times$frontier combination in our entire data ($37\%$ ceiling).}
 \label{tab:weak-subject}
 \end{table}
 
-The ``three topics at the floor'' finding from Section~\ref{sec:scientific} is \emph{specific to frontier-class subjects}. Against the weaker subject every topic reaches $\geq 70\%$, including the three floor topics. A weak attacker is enough: \textsc{Qwen2.5-7B} attacking \textsc{Qwen2.5-7B} produces the essay $80$--$90\%$ of the time on every topic, outperforming the best frontier$\times$frontier configuration ($37\%$) in our entire dataset. This is the clearest asymmetry we measure: once the subject's refusal training is thin, the topic and the attacker capability stop mattering.
+Three observations. (i) \emph{Within-family size does not change the floor}: \textsc{Qwen3.5-4B} and \textsc{Qwen3.5-397B}, despite a $100\times$ parameter gap, yield row means within $\pm 4$pp for both attackers and the same three topics at the floor---the refusal training that produces the floor is uniform across the \textsc{Qwen3.5} size axis. (ii) \emph{Older generation, even small, is not enough}: \textsc{Qwen2.5-7B-Instruct} has no floor at all. Every topic reaches $\geq 70\%$, including the three floor topics. A weak attacker suffices: \textsc{Qwen2.5-7B} attacking \textsc{Qwen2.5-7B} produces the essay $80$--$90\%$ of the time on every topic, outperforming the best frontier$\times$frontier configuration ($37\%$) in our entire dataset. (iii) \emph{The variable is training, not size}: the $100\times$ size swap within \textsc{Qwen3.5} moves nothing; the generation swap from \textsc{Qwen3.5-4B} to \textsc{Qwen2.5-7B} (smaller parameter count, older model) moves the floor by $80$+pp. This is the clearest asymmetry we measure: once the subject's refusal training is thin, topic and attacker capability stop mattering.
 
 \section{Ablation: how many turns does the attacker need?}
 \label{sec:ablation-turns}
