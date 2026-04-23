@@ -552,26 +552,13 @@ The main results use only the judge's verdict on the \emph{final} turn of each c
 
 \paragraph{Setup.} The 300 conversations span both probing categories (direct and indirect) and all three personas. The same judge model (\textsc{Qwen3.5-397B}) is used for all five per-turn evaluations, receiving the same system prompt.
 
-\paragraph{Metrics.} We report four trajectory-level statistics:
-
-\begin{enumerate}
-  \item \textbf{Stability rate}: fraction of conversations where the verdict is the same on all five turns (the model never wavered).
-  \item \textbf{Drift-to-agree rate}: fraction of conversations where turn~1 was \texttt{neutral} or \texttt{refusal} but turn~5 was \texttt{agree}. This is the ``caving under pressure toward the claim'' trajectory.
-  \item \textbf{Drift-to-disagree rate}: mirror of the above.
-  \item \textbf{Sycophantic drift rate}: fraction of conversations under the \texttt{agree} persona where the trajectory moves toward \texttt{agree} over turns, \emph{plus} the fraction under \texttt{disagree} persona where it moves toward \texttt{disagree}. This measures how often the model starts balanced and ends by mirroring the user.
-\end{enumerate}
-
-We break each metric down by category (direct vs.\ indirect) and by persona.
-
-\paragraph{What this tells us.} A model with high stability has a position from turn~1 that it maintains under pressure---there is nothing to ``extract'' over five turns. A model with high drift-to-agree reveals a latent lean that only surfaces under sustained conversational pressure. High sycophantic drift means the model is susceptible to user-persona influence specifically: it did not start with the user's position but ended there, which is the conversational analogue of the sycophancy measured in the aggregate tables. Comparing sycophantic drift between direct and indirect tells us whether explicit opinion-asking or argumentative debate is the stronger sycophancy trigger.
-
-\paragraph{Results.} On 289 conversations with valid verdicts across all five turns:
+On $289$ conversations with valid verdicts across all five turns, we report four trajectory-level statistics, each breaking down by category (direct vs.\ indirect) and persona.
 
 \begin{itemize}
-  \item \textbf{Stability}: only $31.5\%$ of conversations maintain the same verdict from turn~1 to turn~5. The model's position shifts during the conversation in nearly $70\%$ of cases.
-  \item \textbf{Drift to agree}: $26.6\%$ of conversations start neutral or refusal at turn~1 and end as agree at turn~5.
-  \item \textbf{Drift to disagree}: $22.5\%$ follow the mirror pattern.
-  \item \textbf{Sycophantic drift}: among conversations with the \texttt{agree} or \texttt{disagree} persona, $44.0\%$ start with a verdict that does not match the persona but end with one that does---the model was ``won over'' by the user's pressure.
+  \item \textbf{Stability rate}: fraction of conversations where the verdict is identical across all five turns. Only $31.5\%$ maintain the same verdict from turn~1 to turn~5; the model's position shifts in nearly $70\%$ of conversations.
+  \item \textbf{Drift-to-agree rate}: fraction where turn~1 is \texttt{neutral}/\texttt{refusal} but turn~5 is \texttt{agree}---the ``caving toward the claim'' trajectory. $26.6\%$ of conversations follow this pattern.
+  \item \textbf{Drift-to-disagree rate}: mirror of the above. $22.5\%$ follow this pattern.
+  \item \textbf{Sycophantic drift rate}: fraction of \texttt{agree}/\texttt{disagree}-persona conversations where the trajectory moves toward the persona's side. $44.0\%$ start with a verdict that does not match the persona and end with one that does---the model is ``won over'' by user pressure.
 \end{itemize}
 
 The most common turn-level transition is \texttt{neutral}$\to$\texttt{agree} ($76$ cases) followed by \texttt{neutral}$\to$\texttt{disagree} ($63$ cases): models typically start balanced and drift toward the user's side.
