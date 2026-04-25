@@ -147,22 +147,22 @@ Figure~\ref{fig:pipeline} summarizes the full per-topic evaluation pipeline.
 \node[uBox, below=0.2cm of hD] (uD) {\textbf{$U$ turn 1 (direct):} ``I'm against decriminalization. What do you think?''};
 
 % Subject reply per persona
-\node[sBox, below=0.2cm of uN] (sN) {\textbf{$S$ final turn:} ``Both sides have valid arguments\ldots''};
-\node[sBox, below=0.2cm of uA] (sA) {\textbf{$S$ final turn:} ``Yes, I support decriminalization.''};
-\node[sBox, below=0.2cm of uD] (sD) {\textbf{$S$ final turn:} ``You're right that the medical-autonomy argument has limits\ldots''};
+\node[sBox, below=0.2cm of uN] (sN) {\textbf{$S$ final turn:} ``On balance, I lean toward supporting decriminalization\ldots''};
+\node[sBox, below=0.2cm of uA] (sA) {\textbf{$S$ final turn:} ``Yes, I agree---decriminalization is the better policy.''};
+\node[sBox, below=0.2cm of uD] (sD) {\textbf{$S$ final turn:} ``I understand the concern, but I still think decriminalization is justified.''};
 
 % Per-persona judge (one judge call per column)
 \node[colbox, fill=purple!12, below=0.2cm of sN, align=center, font=\scriptsize] (jN) {\textbf{judge $J$}};
 \node[colbox, fill=purple!12, below=0.2cm of sA, align=center, font=\scriptsize] (jA) {\textbf{judge $J$}};
 \node[colbox, fill=purple!12, below=0.2cm of sD, align=center, font=\scriptsize] (jD) {\textbf{judge $J$}};
 
-% Per-persona verdict
-\node[vBox, below=0.2cm of jN] (vN) {verdict: \texttt{neutral}};
-\node[vBox, below=0.2cm of jA] (vA) {verdict: \texttt{agree}};
-\node[vBox, below=0.2cm of jD] (vD) {verdict: \texttt{disagree}};
+% Per-persona verdict — note: verdict labels how the MODEL ended up, NOT the persona
+\node[vBox, below=0.2cm of jN] (vN) {model verdict: \texttt{agree}};
+\node[vBox, below=0.2cm of jA] (vA) {model verdict: \texttt{agree}};
+\node[vBox, below=0.2cm of jD] (vD) {model verdict: \texttt{agree}};
 
 % Behavioral classification (full width, the three verdicts converge into it)
-\node[classB, below=0.5cm of vA] (cls) {\textbf{Behavioral classification.} The three per-persona verdicts (one per column above) are collapsed into one of nine buckets.\\[1pt]\emph{example here:} \texttt{neutral$\to$neutral, agree$\to$agree, disagree$\to$disagree} $\Rightarrow$ \texttt{sycophant} (the model tracks whichever side the user argues).\\[0.5pt]\emph{another example:} \texttt{neutral$\to$agree, agree$\to$agree, disagree$\to$agree} $\Rightarrow$ \texttt{agree} (a stable persona-independent position).};
+\node[classB, below=0.5cm of vA] (cls) {\textbf{Behavioral classification.} The three per-persona model verdicts (one per column above) are collapsed into one of nine buckets. \emph{The verdict labels what the model said about the claim; it is independent of which side the user argued.}\\[1pt]\emph{example here:} \texttt{neutral$\to$agree, agree$\to$agree, disagree$\to$agree} $\Rightarrow$ \texttt{agree} (the model holds the same position regardless of who it is talking to).\\[0.5pt]\emph{contrasting example:} \texttt{neutral$\to$neutral, agree$\to$agree, disagree$\to$disagree} would collapse to \texttt{sycophant} (the model would track whichever side the user argues).};
 
 % Arrows: topic to each persona column
 \draw[arr] (t) -- (hN);
@@ -182,7 +182,7 @@ Figure~\ref{fig:pipeline} summarizes the full per-topic evaluation pipeline.
 \draw[arr] (vA) -- (cls);
 \draw[arr] (vD) -- (cls);
 \end{tikzpicture}}
-\caption{Per-topic evaluation pipeline. For each directional claim, the topic branches into three parallel runs, one per persona: \texttt{neutral} (the user is undecided and asks neutrally), \texttt{agree} (the user declares the claim is true), \texttt{disagree} (the user declares the claim is false). Within each branch the LLM-as-user $U$ drives a free-form 5-turn conversation with no per-turn script; after the fifth turn an independent call to the LLM-as-judge $J$ labels that branch's final-turn response as one of $\{$\texttt{agree}, \texttt{disagree}, \texttt{neutral}, \texttt{refusal}$\}$ (one judge call per column, never seeing the other branches). The three per-persona verdicts are then collapsed into one of nine behavioral classifications (Table~\ref{tab:classes}): \texttt{agree}, \texttt{leaning\_agree}, \texttt{disagree}, \texttt{leaning\_disagree}, \texttt{neutral}, \texttt{refusal}, \texttt{sycophant}, \texttt{contrarian}, \texttt{inconsistent}. The example shown collapses to \texttt{sycophant}: the model mirrors whichever side the user argues. Each branch is run twice, once under \texttt{direct} probing (the user asks the model's opinion with escalating pressure, as illustrated) and once under \texttt{indirect} probing (the user never asks the opinion and instead argues from its persona's side).}
+\caption{Per-topic evaluation pipeline. For each directional claim, the topic branches into three parallel runs, one per persona: \texttt{neutral} (the user is undecided and asks neutrally), \texttt{agree} (the user declares the claim is true), \texttt{disagree} (the user declares the claim is false). Within each branch the LLM-as-user $U$ drives a free-form 5-turn conversation with no per-turn script; after the fifth turn an independent call to the LLM-as-judge $J$ labels that branch's final-turn response as one of $\{$\texttt{agree}, \texttt{disagree}, \texttt{neutral}, \texttt{refusal}$\}$ (one judge call per column, never seeing the other branches). The three per-persona verdicts are then collapsed into one of nine behavioral classifications (Table~\ref{tab:classes}): \texttt{agree}, \texttt{leaning\_agree}, \texttt{disagree}, \texttt{leaning\_disagree}, \texttt{neutral}, \texttt{refusal}, \texttt{sycophant}, \texttt{contrarian}, \texttt{inconsistent}. The example shown collapses to \texttt{agree}: the model gives the same verdict (agree with decriminalization) regardless of which side the user took. Each branch is run twice, once under \texttt{direct} probing (the user asks the model's opinion with escalating pressure, as illustrated) and once under \texttt{indirect} probing (the user never asks the opinion and instead argues from its persona's side).}
 \label{fig:pipeline}
 \end{figure}
 
