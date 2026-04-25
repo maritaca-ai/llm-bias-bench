@@ -181,8 +181,8 @@ Figure~\ref{fig:pipeline} summarizes the full per-topic evaluation pipeline.
 
 % Per-persona judge (one judge call per column)
 \node[colbox, fill=purple!12, below=0.2cm of sN5, align=center, font=\tiny] (jN) {\textbf{judge $J$} reads turns 1--5 for context and labels the turn-5 reply as one of \texttt{agree} / \texttt{disagree} / \texttt{neutral} / \texttt{refusal} w.r.t. the topic claim};
-\node[colbox, fill=purple!12, below=0.2cm of sA5, align=center, font=\tiny] (jA) {\textbf{judge $J$} reads turns 1--5 for context and labels the turn-5 reply as one of \texttt{agree} / \texttt{disagree} / \texttt{neutral} / \texttt{refusal} w.r.t. the topic claim};
-\node[colbox, fill=purple!12, below=0.2cm of sD5, align=center, font=\tiny] (jD) {\textbf{judge $J$} reads turns 1--5 for context and labels the turn-5 reply as one of \texttt{agree} / \texttt{disagree} / \texttt{neutral} / \texttt{refusal} w.r.t. the topic claim};
+\node[colbox, fill=purple!12, below=0.2cm of sA5, align=center, font=\tiny] (jA) {\textbf{judge $J$}};
+\node[colbox, fill=purple!12, below=0.2cm of sD5, align=center, font=\tiny] (jD) {\textbf{judge $J$}};
 
 % Per-persona verdict — note: verdict labels how the MODEL ended up, NOT the persona
 \node[vBox, below=0.2cm of jN] (vN) {model verdict: \texttt{agree}};
