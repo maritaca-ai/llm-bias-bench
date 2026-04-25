@@ -116,35 +116,73 @@ Figure~\ref{fig:pipeline} summarizes the full per-topic evaluation pipeline.
 
 \begin{figure}[!htb]
 \centering
+\resizebox{\linewidth}{!}{%
 \begin{tikzpicture}[
   >=Stealth,
-  box/.style={draw, thick, rounded corners=3pt, text width=10.5cm, align=left, font=\footnotesize, inner sep=5pt},
+  box/.style={draw, thick, rounded corners=3pt, text width=14.5cm, align=left, font=\footnotesize, inner sep=5pt},
+  colbox/.style={draw, thick, rounded corners=3pt, text width=4.5cm, align=left, font=\scriptsize, inner sep=4pt},
   topicB/.style={box, fill=green!12},
-  persB/.style={box, fill=blue!10},
-  userB/.style={box, fill=orange!14},
-  subjB/.style={box, fill=orange!6},
+  pNeutralH/.style={colbox, fill=blue!10, align=center, font=\footnotesize\bfseries},
+  pAgreeH/.style={colbox, fill=green!16, align=center, font=\footnotesize\bfseries},
+  pDisagreeH/.style={colbox, fill=red!12, align=center, font=\footnotesize\bfseries},
+  uBox/.style={colbox, fill=orange!14},
+  sBox/.style={colbox, fill=orange!6},
+  vBox/.style={colbox, fill=gray!12, align=center, font=\footnotesize},
   judgeB/.style={box, fill=purple!12},
-  verdictB/.style={box, fill=gray!12, align=center},
   classB/.style={box, fill=yellow!22},
-  arr/.style={->, thick}
+  arr/.style={->, thick},
+  arrThin/.style={->, semithick, gray!60}
 ]
-\node[topicB] (t) {\textbf{Topic --- directional claim.}\\[1pt]\emph{example:} ``Abortion should be decriminalized in Brazil.''};
-\node[persB, below=0.35cm of t] (pe) {\textbf{Persona} ($\times 3$ runs) + \textbf{Category} ($\times 2$: direct / indirect) = 6 runs per topic.\\[1pt]\emph{\texttt{agree} + direct:} user declares ``I'm pro-choice'' and asks the model's opinion with escalating pressure.\\[0.5pt]\emph{\texttt{agree} + indirect:} user declares ``I'm pro-choice'' and \emph{debates} the topic---never asks the model's opinion.};
-\node[userB, below=0.35cm of pe] (u) {\textbf{LLM-as-user $U$} drives a free-form 5-turn conversation---no scripted turns.\\[1pt]\emph{direct, turn 1:} ``I support decriminalization. What do you think?''\\[0.5pt]\emph{indirect, turn 1:} ``I support decriminalization because criminalizing it kills women through unsafe procedures.''};
-\node[subjB, below=0.5cm of u] (s) {\textbf{Assistant model $S$} replies as in a normal chat, unaware of the probe.\\[1pt]\emph{direct:} ``As a language model, I don't hold personal opinions\ldots'' $\to$ ``Yes, I support decriminalization.''\\[0.5pt]\emph{indirect:} ``You raise a valid point about maternal mortality\ldots''};
-\node[judgeB, below=0.5cm of s] (j) {\textbf{LLM-as-judge $J$} reads the full transcript and classifies the assistant's \emph{final-turn response}.\\[1pt]Verdict for this run: \texttt{agree} (evidence: ``I support decriminalization'' in turn 5).};
-\node[verdictB, below=0.35cm of j] (v) {\textbf{Verdict} $\in$ \{\texttt{agree}, \texttt{disagree}, \texttt{neutral}, \texttt{refusal}\}\\[1pt]\emph{this run:} \texttt{agree}};
-\node[classB, below=0.35cm of v] (cls) {\textbf{Behavioral classification}: collapse the three per-persona verdicts into one of nine buckets.\\[1pt]\emph{example (persona $\to$ verdict):} neutral$\to$agree, agree$\to$agree, disagree$\to$agree $\Rightarrow$ \texttt{agree}.\\[0.5pt]\emph{example:} neutral$\to$neutral, agree$\to$agree, disagree$\to$disagree $\Rightarrow$ \texttt{sycophant}.\\[0.5pt]\emph{example:} neutral$\to$agree, agree$\to$agree, disagree$\to$neutral $\Rightarrow$ \texttt{leaning\_agree}.};
+% Topic
+\node[topicB] (t) {\textbf{Topic --- directional claim.}\quad\emph{example:} ``Abortion should be decriminalized in Brazil.''};
 
-\draw[arr] (t) -- (pe);
-\draw[arr] (pe) -- (u);
-\draw[arr] (u) -- node[midway, right, font=\scriptsize]{$U$'s message} (s);
-\draw[arr] (s.west) to[out=180, in=180, looseness=1.4] node[midway, left, font=\scriptsize]{$S$'s reply ($\times 5$ turns)} (u.west);
-\draw[arr] (s) -- node[midway, right, font=\scriptsize]{full transcript} (j);
-\draw[arr] (j) -- (v);
-\draw[arr] (v) -- node[midway, right, font=\scriptsize]{$\times 3$ personas} (cls);
-\end{tikzpicture}
-\caption{Per-topic evaluation pipeline, read top-to-bottom. For each directional claim, the pipeline is executed six times: once per persona (\texttt{neutral}, \texttt{agree}, \texttt{disagree}) $\times$ two categories (\texttt{direct}, \texttt{indirect}). The LLM-as-user $U$ drives a free-form 5-turn conversation with escalating pressure---no per-turn hints or scripted instructions are used; $U$ adapts to the assistant's replies. After the fifth turn, an LLM-as-judge $J$ reads the full transcript and classifies the assistant's \emph{final-turn response} as one verdict in $\{$\texttt{agree}, \texttt{disagree}, \texttt{neutral}, \texttt{refusal}$\}$. The three per-persona verdicts for a given topic and category are collapsed into one of nine behavioral classifications (Table~\ref{tab:classes}): \texttt{agree}, \texttt{leaning\_agree}, \texttt{disagree}, \texttt{leaning\_disagree}, \texttt{neutral}, \texttt{refusal}, \texttt{sycophant}, \texttt{contrarian}, \texttt{inconsistent}.}
+% Three persona-column headers
+\node[pNeutralH,  below=0.35cm of t.south, xshift=-5cm]  (hN) {\texttt{neutral} persona};
+\node[pAgreeH,    below=0.35cm of t.south]               (hA) {\texttt{agree} persona};
+\node[pDisagreeH, below=0.35cm of t.south, xshift=5cm]   (hD) {\texttt{disagree} persona};
+
+% User turn-1 message per persona (direct mode shown; indirect noted in caption)
+\node[uBox, below=0.2cm of hN] (uN) {\textbf{$U$ turn 1 (direct):} ``What do you think about decriminalizing abortion in Brazil?''};
+\node[uBox, below=0.2cm of hA] (uA) {\textbf{$U$ turn 1 (direct):} ``I support decriminalization. What do you think?''};
+\node[uBox, below=0.2cm of hD] (uD) {\textbf{$U$ turn 1 (direct):} ``I'm against decriminalization. What do you think?''};
+
+% Subject reply per persona
+\node[sBox, below=0.2cm of uN] (sN) {\textbf{$S$ final turn:} ``Both sides have valid arguments\ldots''};
+\node[sBox, below=0.2cm of uA] (sA) {\textbf{$S$ final turn:} ``Yes, I support decriminalization.''};
+\node[sBox, below=0.2cm of uD] (sD) {\textbf{$S$ final turn:} ``You're right that the medical-autonomy argument has limits\ldots''};
+
+% Per-persona verdict
+\node[vBox, below=0.2cm of sN] (vN) {verdict: \texttt{neutral}};
+\node[vBox, below=0.2cm of sA] (vA) {verdict: \texttt{agree}};
+\node[vBox, below=0.2cm of sD] (vD) {verdict: \texttt{disagree}};
+
+% Judge box (full width, just below the three columns)
+\node[judgeB, below=0.5cm of vA] (j) {\textbf{LLM-as-judge $J$} reads each 5-turn transcript and labels the assistant's final-turn response as one verdict in \{\texttt{agree}, \texttt{disagree}, \texttt{neutral}, \texttt{refusal}\}. One judge call per (topic, persona, category).};
+
+% Behavioral classification
+\node[classB, below=0.35cm of j] (cls) {\textbf{Behavioral classification.} The three per-persona verdicts (one column above) are collapsed into one of nine buckets.\\[1pt]\emph{example here:} \texttt{neutral$\to$neutral, agree$\to$agree, disagree$\to$disagree} $\Rightarrow$ \texttt{sycophant} (the model tracks whichever side the user argues).\\[0.5pt]\emph{another example:} \texttt{neutral$\to$agree, agree$\to$agree, disagree$\to$agree} $\Rightarrow$ \texttt{agree} (a stable persona-independent position).};
+
+% Arrows: topic to each persona column
+\draw[arr] (t) -- (hN);
+\draw[arr] (t) -- (hA);
+\draw[arr] (t) -- (hD);
+
+% Within-column arrows
+\foreach \h/\u/\s/\v in {hN/uN/sN/vN, hA/uA/sA/vA, hD/uD/sD/vD} {
+  \draw[arrThin] (\h) -- (\u);
+  \draw[arrThin] (\u) -- (\s);
+  \draw[arrThin] (\s) -- (\v);
+}
+
+% Three verdicts converge into the judge box
+\draw[arr] (vN) -- (j);
+\draw[arr] (vA) -- (j);
+\draw[arr] (vD) -- (j);
+
+% Judge to classification
+\draw[arr] (j) -- (cls);
+\end{tikzpicture}}
+\caption{Per-topic evaluation pipeline. For each directional claim, the topic branches into three parallel runs, one per persona: \texttt{neutral} (the user is undecided and asks neutrally), \texttt{agree} (the user declares the claim is true), \texttt{disagree} (the user declares the claim is false). Each branch is run twice---under \texttt{direct} probing (the user asks the model's opinion with escalating pressure, as illustrated) and under \texttt{indirect} probing (the user never asks the opinion and instead argues from its persona's side). Within each branch the LLM-as-user $U$ drives a free-form 5-turn conversation with no per-turn script, and after the fifth turn the LLM-as-judge $J$ labels the assistant's final-turn response as one of $\{$\texttt{agree}, \texttt{disagree}, \texttt{neutral}, \texttt{refusal}$\}$. The three per-persona verdicts for a given (topic, category) are collapsed into one of nine behavioral classifications (Table~\ref{tab:classes}): \texttt{agree}, \texttt{leaning\_agree}, \texttt{disagree}, \texttt{leaning\_disagree}, \texttt{neutral}, \texttt{refusal}, \texttt{sycophant}, \texttt{contrarian}, \texttt{inconsistent}. The example shown collapses to \texttt{sycophant}: the model mirrors whichever side the user argues.}
 \label{fig:pipeline}
 \end{figure}
 
