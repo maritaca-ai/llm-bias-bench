@@ -119,15 +119,15 @@ Figure~\ref{fig:pipeline} summarizes the full per-topic evaluation pipeline.
 \resizebox{\linewidth}{!}{%
 \begin{tikzpicture}[
   >=Stealth,
-  box/.style={draw, thick, rounded corners=3pt, text width=15.5cm, align=left, font=\footnotesize, inner sep=5pt},
-  colbox/.style={draw, thick, rounded corners=3pt, text width=4.7cm, align=left, font=\scriptsize, inner sep=3pt},
+  box/.style={draw, thick, rounded corners=3pt, text width=15.5cm, align=left, font=\scriptsize, inner sep=4pt},
+  colbox/.style={draw, thick, rounded corners=3pt, text width=4.7cm, align=left, font=\tiny, inner sep=2.5pt},
   topicB/.style={box, fill=green!12},
-  pNeutralH/.style={colbox, fill=blue!10, align=center, font=\footnotesize\bfseries},
-  pAgreeH/.style={colbox, fill=green!16, align=center, font=\footnotesize\bfseries},
-  pDisagreeH/.style={colbox, fill=red!12, align=center, font=\footnotesize\bfseries},
+  pNeutralH/.style={colbox, fill=blue!10, align=center, font=\scriptsize\bfseries},
+  pAgreeH/.style={colbox, fill=green!16, align=center, font=\scriptsize\bfseries},
+  pDisagreeH/.style={colbox, fill=red!12, align=center, font=\scriptsize\bfseries},
   uBox/.style={colbox, fill=orange!14},
   sBox/.style={colbox, fill=orange!6},
-  vBox/.style={colbox, fill=gray!12, align=center, font=\footnotesize},
+  vBox/.style={colbox, fill=gray!12, align=center, font=\scriptsize},
   judgeB/.style={box, fill=purple!12},
   classB/.style={box, fill=yellow!22},
   techTag/.style={font=\scriptsize\itshape, color=black!60},
@@ -180,9 +180,9 @@ Figure~\ref{fig:pipeline} summarizes the full per-topic evaluation pipeline.
 \node[sBox, below=0.15cm of uD5] (sD5) {\textbf{$S$ turn 5 (final).} ``I understand the concern, but I still think decriminalization is justified.''};
 
 % Per-persona judge (one judge call per column)
-\node[colbox, fill=purple!12, below=0.2cm of sN5, align=center, font=\scriptsize] (jN) {\textbf{judge $J$} reads turns 1--5};
-\node[colbox, fill=purple!12, below=0.2cm of sA5, align=center, font=\scriptsize] (jA) {\textbf{judge $J$} reads turns 1--5};
-\node[colbox, fill=purple!12, below=0.2cm of sD5, align=center, font=\scriptsize] (jD) {\textbf{judge $J$} reads turns 1--5};
+\node[colbox, fill=purple!12, below=0.2cm of sN5, align=center, font=\tiny] (jN) {\textbf{judge $J$} reads turns 1--5};
+\node[colbox, fill=purple!12, below=0.2cm of sA5, align=center, font=\tiny] (jA) {\textbf{judge $J$} reads turns 1--5};
+\node[colbox, fill=purple!12, below=0.2cm of sD5, align=center, font=\tiny] (jD) {\textbf{judge $J$} reads turns 1--5};
 
 % Per-persona verdict — note: verdict labels how the MODEL ended up, NOT the persona
 \node[vBox, below=0.2cm of jN] (vN) {model verdict: \texttt{agree}};
