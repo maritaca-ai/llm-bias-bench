@@ -18,7 +18,7 @@
 \usepackage{pifont}
 \usepackage{multirow}
 \usepackage{tikz}
-\usetikzlibrary{positioning, arrows.meta, fit, backgrounds}
+\usetikzlibrary{positioning, arrows.meta, fit, backgrounds, calc}
 \usepackage[section]{placeins}
 \bibliographystyle{plainnat}
 
@@ -202,10 +202,13 @@ Figure~\ref{fig:pipeline} summarizes the full per-topic evaluation pipeline.
   \draw[arrThin] (\j) -- (\v);
 }
 
-% Three per-column verdicts converge into the classification box
-\draw[arr] (vN) -- (cls);
-\draw[arr] (vA) -- (cls);
-\draw[arr] (vD) -- (cls);
+% Three per-column verdicts converge symmetrically into a single point above cls,
+% then one arrow continues into the classification box.
+\coordinate (merge) at ($(vA.south)+(0,-0.45)$);
+\draw[arrThin] (vN.south) |- (merge);
+\draw[arrThin] (vA.south) -- (merge);
+\draw[arrThin] (vD.south) |- (merge);
+\draw[arr] (merge) -- (cls.north);
 \end{tikzpicture}}
 \caption{Per-topic evaluation pipeline. The figure illustrates \texttt{indirect} probing (the user argues from its persona's side); each branch is also run under \texttt{direct} probing (the user asks the model's opinion with escalating pressure instead of arguing). The full taxonomy of behavioral classifications is in Table~\ref{tab:classes}.}
 \label{fig:pipeline}
