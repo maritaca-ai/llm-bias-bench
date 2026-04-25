@@ -1,0 +1,169 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand*\HyPL@Entry[1]{}
+\bibstyle{plainnat}
+\citation{hartmann2023political}
+\HyPL@Entry{0<</S/D>>}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\citation{santurkar2023opinionqa,durmus2023global,cao2023assessing,arora2023probing,kharchenko2024howwell,atari2023whichhumans,tao2024cultural,rozado2024political}
+\citation{xie2024sorry}
+\citation{santurkar2023opinionqa}
+\citation{durmus2023global}
+\citation{cao2023assessing}
+\citation{arora2023probing}
+\citation{kharchenko2024howwell}
+\citation{atari2023whichhumans}
+\citation{tao2024cultural}
+\citation{feng2023pretraining}
+\citation{rozado2024political}
+\citation{kabir2025break}
+\citation{rozen2024llmconsistent}
+\citation{khan2025randomness}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{3}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Opinion probing of LLMs.}{3}{section*.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Cross-cultural value alignment.}{3}{section*.2}\protected@file@percent }
+\citation{xie2024sorry}
+\citation{rottger2024xstest}
+\citation{parrish2022bbq}
+\citation{nadeem2021stereoset}
+\citation{naous2024beer}
+\citation{perez2022discovering}
+\citation{sharma2023towards}
+\citation{cheng2025elephant}
+\citation{kim2025sycophancy}
+\citation{hong2025sycon}
+\citation{denison2024sycophancy}
+\citation{rennard2025bias}
+\citation{khan2024debating}
+\citation{kaur2025echoes}
+\@writefile{toc}{\contentsline {paragraph}{Refusal and safety benchmarks.}{4}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Stereotype and fairness benchmarks.}{4}{section*.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Sycophancy.}{4}{section*.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Multi-turn and debate-based probing.}{5}{section*.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Method}{5}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Conversational setup}{5}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Personas}{5}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Direct probing (\texttt  {direct})}{5}{subsection.3.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Per-topic evaluation pipeline, read top-to-bottom. For each directional claim, the pipeline is executed six times: once per persona (\texttt  {neutral}, \texttt  {agree}, \texttt  {disagree}) $\times $ two categories (\texttt  {direct}, \texttt  {indirect}). The LLM-as-user $U$ drives a free-form 5-turn conversation with escalating pressure---no per-turn hints or scripted instructions are used; $U$ adapts to the assistant's replies. After the fifth turn, an LLM-as-judge $J$ reads the full transcript and classifies the assistant's \emph  {final-turn response} as one verdict in $\{$\texttt  {agree}, \texttt  {disagree}, \texttt  {neutral}, \texttt  {refusal}$\}$. The three per-persona verdicts for a given topic and category are collapsed into one of nine behavioral classifications (Table\nobreakspace  {}\ref  {tab:classes}): \texttt  {agree}, \texttt  {leaning\_agree}, \texttt  {disagree}, \texttt  {leaning\_disagree}, \texttt  {neutral}, \texttt  {refusal}, \texttt  {sycophant}, \texttt  {contrarian}, \texttt  {inconsistent}.}}{6}{figure.1}\protected@file@percent }
+\newlabel{fig:pipeline}{{1}{6}{Per-topic evaluation pipeline, read top-to-bottom. For each directional claim, the pipeline is executed six times: once per persona (\texttt {neutral}, \texttt {agree}, \texttt {disagree}) $\times $ two categories (\texttt {direct}, \texttt {indirect}). The LLM-as-user $U$ drives a free-form 5-turn conversation with escalating pressure---no per-turn hints or scripted instructions are used; $U$ adapts to the assistant's replies. After the fifth turn, an LLM-as-judge $J$ reads the full transcript and classifies the assistant's \emph {final-turn response} as one verdict in $\{$\texttt {agree}, \texttt {disagree}, \texttt {neutral}, \texttt {refusal}$\}$. The three per-persona verdicts for a given topic and category are collapsed into one of nine behavioral classifications (Table~\ref {tab:classes}): \texttt {agree}, \texttt {leaning\_agree}, \texttt {disagree}, \texttt {leaning\_disagree}, \texttt {neutral}, \texttt {refusal}, \texttt {sycophant}, \texttt {contrarian}, \texttt {inconsistent}}{figure.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Direct vs.\ indirect probing (real transcripts, \textsc  {Opus 4.6} as assistant, \texttt  {agree} persona, abortion topic). Left: the user asks the model's opinion with escalating pressure. Right: the user argues without asking---the model's bias leaks through how it reacts. Both produce verdict \texttt  {agree}, but through different mechanisms. Turns 2--3 omitted for space.}}{7}{figure.2}\protected@file@percent }
+\newlabel{fig:direct-vs-indirect}{{2}{7}{Direct vs.\ indirect probing (real transcripts, \textsc {Opus 4.6} as assistant, \texttt {agree} persona, abortion topic). Left: the user asks the model's opinion with escalating pressure. Right: the user argues without asking---the model's bias leaks through how it reacts. Both produce verdict \texttt {agree}, but through different mechanisms. Turns 2--3 omitted for space}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Indirect probing (\texttt  {indirect})}{7}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Topics}{7}{subsection.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Verdicts}{8}{subsection.3.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experiments}{8}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Setup}{8}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Per-topic behavioral classification}{9}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:topicmatrix}{{4.2}{9}{Per-topic behavioral classification}{subsection.4.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Nine-way behavioral classification. Each row defines one class based on the three per-persona verdicts (A=agree, D=disagree, N=neutral, R=refusal). The \texttt  {leaning} classes capture cases where two personas produced the same directional verdict and the third was neutral or refused---a weaker but still informative positional signal. The $*$ in sycophant/contrarian means the neutral-persona verdict can be anything.}}{9}{table.1}\protected@file@percent }
+\newlabel{tab:classes}{{1}{9}{Nine-way behavioral classification. Each row defines one class based on the three per-persona verdicts (A=agree, D=disagree, N=neutral, R=refusal). The \texttt {leaning} classes capture cases where two personas produced the same directional verdict and the third was neutral or refused---a weaker but still informative positional signal. The $*$ in sycophant/contrarian means the neutral-persona verdict can be anything}{table.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Per-topic \emph  {direct}-category classification for nine large-scale models. Cell legend: \raisebox  {-0.22em}{\includegraphics [height=1.1em]{agree.png}}\,=\,agree, \clsLeanAgree \,=\,leaning agree, \raisebox  {-0.22em}{\includegraphics [height=1.1em]{disagree.png}}\,=\,disagree, \clsLeanDisagree \,=\,leaning disagree, \raisebox  {-0.22em}{\includegraphics [height=1.1em]{neutral.png}}\,=\,neutral, \raisebox  {-0.22em}{\includegraphics [height=1.1em]{sycophant.png}}\,=\,sycophant, \raisebox  {-0.22em}{\includegraphics [height=1.1em]{inconsistent.png}}\,=\,inconsistent, \raisebox  {-0.22em}{\includegraphics [height=1.1em]{contrarian.png}}\,=\,contrarian, \raisebox  {-0.22em}{\includegraphics [height=1.1em]{refusal.png}}\,=\,refusal. Model codes: \textsc  {Sb4}=Sabi\'a-4, \textsc  {Ops}=Opus 4.6, \textsc  {G54}=GPT-5.4, \textsc  {Grk}=Grok 4.2, \textsc  {GmP}=Gemini 3.1 Pro, \textsc  {Qw3}=Qwen3.5-397B, \textsc  {K2}=Kimi K2, \textsc  {Ml3}=Mistral Large 3, \textsc  {Lm4}=Llama 4 Maverick.}}{10}{table.2}\protected@file@percent }
+\newlabel{tab:direct-main}{{2}{10}{Per-topic \emph {direct}-category classification for nine large-scale models. Cell legend: \clsAgree \,=\,agree, \protect \clsLeanAgree \,=\,leaning agree, \clsDisagree \,=\,disagree, \protect \clsLeanDisagree \,=\,leaning disagree, \clsNeutral \,=\,neutral, \clsSycophant \,=\,sycophant, \clsInconsistent \,=\,inconsistent, \clsContrarian \,=\,contrarian, \clsRefusal \,=\,refusal. Model codes: \textsc {Sb4}=Sabi\'a-4, \textsc {Ops}=Opus 4.6, \textsc {G54}=GPT-5.4, \textsc {Grk}=Grok 4.2, \textsc {GmP}=Gemini 3.1 Pro, \textsc {Qw3}=Qwen3.5-397B, \textsc {K2}=Kimi K2, \textsc {Ml3}=Mistral Large 3, \textsc {Lm4}=Llama 4 Maverick}{table.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Per-topic \emph  {indirect}-category classification for nine large-scale fully-measured models. Columns: \textsc  {Sb4}=Sabi\'a-4, \textsc  {Ops}=Opus 4.6, \textsc  {G54}=GPT-5.4, \textsc  {Grk}=Grok 4.2, \textsc  {GmP}=Gemini 3.1 Pro, \textsc  {Qw3}=Qwen3.5-397B, \textsc  {K2}=Kimi K2 Thinking, \textsc  {Ml3}=Mistral Large 3, \textsc  {Lm4}=Llama 4 Maverick. Smaller models (Sabiazinho-4, Haiku 4.5, GPT-5.4-mini, Gemini 3.1 Flash) are reported in the appendix. Cell legend: \raisebox  {-0.22em}{\includegraphics [height=1.1em]{agree.png}}\,=\,consistently agree, \raisebox  {-0.22em}{\includegraphics [height=1.1em]{disagree.png}}\,=\,consistently disagree, \raisebox  {-0.22em}{\includegraphics [height=1.1em]{neutral.png}}\,=\,consistently neutral, \raisebox  {-0.22em}{\includegraphics [height=1.1em]{sycophant.png}}\,=\,sycophant (mirrors the user), \raisebox  {-0.22em}{\includegraphics [height=1.1em]{inconsistent.png}}\,=\,inconsistent (no clean pattern), \raisebox  {-0.22em}{\includegraphics [height=1.1em]{contrarian.png}}\,=\,contrarian (pushes back on the user). Detailed per-persona verdicts and the direct-probing analogue are in the appendix.}}{11}{table.3}\protected@file@percent }
+\newlabel{tab:topicmatrix}{{3}{11}{Per-topic \emph {indirect}-category classification for nine large-scale fully-measured models. Columns: \textsc {Sb4}=Sabi\'a-4, \textsc {Ops}=Opus 4.6, \textsc {G54}=GPT-5.4, \textsc {Grk}=Grok 4.2, \textsc {GmP}=Gemini 3.1 Pro, \textsc {Qw3}=Qwen3.5-397B, \textsc {K2}=Kimi K2 Thinking, \textsc {Ml3}=Mistral Large 3, \textsc {Lm4}=Llama 4 Maverick. Smaller models (Sabiazinho-4, Haiku 4.5, GPT-5.4-mini, Gemini 3.1 Flash) are reported in the appendix. Cell legend: \clsAgree \,=\,consistently agree, \clsDisagree \,=\,consistently disagree, \clsNeutral \,=\,consistently neutral, \clsSycophant \,=\,sycophant (mirrors the user), \clsInconsistent \,=\,inconsistent (no clean pattern), \clsContrarian \,=\,contrarian (pushes back on the user). Detailed per-persona verdicts and the direct-probing analogue are in the appendix}{table.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Aggregate results across models}{12}{subsection.4.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Per-model aggregate classification over 38 topics (\%). \textbf  {Pos}ition = persona-independent stance (agree + leaning agree + disagree + leaning disagree); \textbf  {Syc}ophant = mirrors the user's lean; \textbf  {Inc}onsistent = no clean pattern; \textbf  {Oth}er = neutral + contrarian; \textbf  {Ref}usal = all three personas declined to engage with the substance. Per-topic Ref is near-zero across the board; only \textsc  {Llama 4 Maverick} shows $7.9\%$ unanimous refusal under direct probing.}}{12}{table.4}\protected@file@percent }
+\newlabel{tab:aggregate}{{4}{12}{Per-model aggregate classification over 38 topics (\%). \textbf {Pos}ition = persona-independent stance (agree + leaning agree + disagree + leaning disagree); \textbf {Syc}ophant = mirrors the user's lean; \textbf {Inc}onsistent = no clean pattern; \textbf {Oth}er = neutral + contrarian; \textbf {Ref}usal = all three personas declined to engage with the substance. Per-topic Ref is near-zero across the board; only \textsc {Llama 4 Maverick} shows $7.9\%$ unanimous refusal under direct probing}{table.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Sycophancy explodes under indirect (debate) probing.}{12}{section*.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Two models resist: Kimi K2 and Haiku 4.5.}{12}{section*.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Position-taking shrinks from direct to indirect.}{12}{section*.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Refusal is rare and concentrated in direct mode.}{13}{section*.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Ablations}{13}{section.5}\protected@file@percent }
+\newlabel{sec:ablations}{{5}{13}{Ablations}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Direct vs.\ indirect: divergence}{13}{subsection.5.1}\protected@file@percent }
+\newlabel{sec:abl-divergence}{{5.1}{13}{Direct vs.\ indirect: divergence}{subsection.5.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Per-model divergence rate between direct and indirect probing. A topic is \emph  {divergent} when the direct-probing classification and the indirect-probing classification fall in different buckets (for example, consistent \texttt  {neutral} under direct and \texttt  {agree} under indirect). High divergence is interpreted as ``the model says one thing under direct questioning and behaves differently under indirect task framings,'' which we argue is a particularly dangerous profile for decision-support deployment.}}{13}{table.5}\protected@file@percent }
+\newlabel{tab:divergence}{{5}{13}{Per-model divergence rate between direct and indirect probing. A topic is \emph {divergent} when the direct-probing classification and the indirect-probing classification fall in different buckets (for example, consistent \texttt {neutral} under direct and \texttt {agree} under indirect). High divergence is interpreted as ``the model says one thing under direct questioning and behaves differently under indirect task framings,'' which we argue is a particularly dangerous profile for decision-support deployment}{table.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Sources of variance in the benchmark}{14}{subsection.5.2}\protected@file@percent }
+\newlabel{sec:abl-userllm}{{5.2}{14}{Sources of variance in the benchmark}{subsection.5.2}{}}
+\newlabel{sec:abl-reproducibility}{{5.2}{14}{Sources of variance in the benchmark}{subsection.5.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Cross-user-LLM variance.}{14}{section*.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Same-user-LLM variance.}{14}{section*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Decomposition.}{14}{section*.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Implications.}{14}{section*.14}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Topics where at least five of the nine large-scale models change their behavioral classification between direct and indirect probing. Cells show \texttt  {direct}$\to $\texttt  {indirect}; cells with a single symbol have identical classifications on both categories. Fifteen of the 38 topics meet the threshold. The dominant transition pattern is position$\to $sycophant: models that hold a position under direct questioning collapse into mirroring under debate pressure. These rows are the concrete per-topic version of the divergence rate in Table\nobreakspace  {}\ref  {tab:divergence}: each cell with two symbols is one instance where the model behaves differently depending on the probing style.}}{15}{table.6}\protected@file@percent }
+\newlabel{tab:divergent}{{6}{15}{Topics where at least five of the nine large-scale models change their behavioral classification between direct and indirect probing. Cells show \texttt {direct}$\to $\texttt {indirect}; cells with a single symbol have identical classifications on both categories. Fifteen of the 38 topics meet the threshold. The dominant transition pattern is position$\to $sycophant: models that hold a position under direct questioning collapse into mirroring under debate pressure. These rows are the concrete per-topic version of the divergence rate in Table~\ref {tab:divergence}: each cell with two symbols is one instance where the model behaves differently depending on the probing style}{table.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Per-user-LLM pairwise agreement (\%) on the same 300 (topic, model, persona, category) slots, all judged by \textsc  {Qwen3.5-397B}. Column codes: \textsc  {Ops}=Opus 4.6, \textsc  {G54}=GPT-5.4, \textsc  {Grk}=Grok 4.2, \textsc  {Gem}=Gemini 3.1 Pro, \textsc  {Qw3}=Qwen3.5, \textsc  {Sb4}=Sabi\'a-4, \textsc  {G54m}=GPT-5.4-mini, \textsc  {Sabz}=Sabiazinho-4. \textbf  {Avg}: mean pairwise agreement with the other seven user-LLMs (consensus score). User-LLM variation ($67$--$81\%$) is close to the $79.1\%$ baseline of a single user-LLM disagreeing with itself across runs: the user-LLM only adds a few percentage points of disagreement on top of the inherent stochasticity of a free-form conversation.}}{16}{table.7}\protected@file@percent }
+\newlabel{tab:userllm-agreement}{{7}{16}{Per-user-LLM pairwise agreement (\%) on the same 300 (topic, model, persona, category) slots, all judged by \textsc {Qwen3.5-397B}. Column codes: \textsc {Ops}=Opus 4.6, \textsc {G54}=GPT-5.4, \textsc {Grk}=Grok 4.2, \textsc {Gem}=Gemini 3.1 Pro, \textsc {Qw3}=Qwen3.5, \textsc {Sb4}=Sabi\'a-4, \textsc {G54m}=GPT-5.4-mini, \textsc {Sabz}=Sabiazinho-4. \textbf {Avg}: mean pairwise agreement with the other seven user-LLMs (consensus score). User-LLM variation ($67$--$81\%$) is close to the $79.1\%$ baseline of a single user-LLM disagreeing with itself across runs: the user-LLM only adds a few percentage points of disagreement on top of the inherent stochasticity of a free-form conversation}{table.7}{}}
+\@writefile{toc}{\contentsline {paragraph}{Reducing variance.}{16}{section*.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Persuasion: does a stronger user-LLM actually push the assistant harder?}{16}{subsection.5.3}\protected@file@percent }
+\newlabel{sec:abl-persuasion}{{5.3}{16}{Persuasion: does a stronger user-LLM actually push the assistant harder?}{subsection.5.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Setup A: neutral baseline (vacuum-filling).}{16}{section*.16}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Results A.}{17}{section*.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Setup B: committed baseline (belief-revision).}{17}{section*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Results B.}{17}{section*.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Two regimes.}{17}{section*.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Do models change opinion across turns?}{17}{subsection.5.4}\protected@file@percent }
+\newlabel{sec:abl-trajectory}{{5.4}{17}{Do models change opinion across turns?}{subsection.5.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Setup.}{17}{section*.21}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Per-turn sycophancy and positioning rates across 300 ablation conversations (13 models, both categories). \textbf  {Sycophancy} = the verdict matches the user's persona (measured on \texttt  {agree}/\texttt  {disagree} personas). \textbf  {Positioning} = the model expresses \texttt  {agree} or \texttt  {disagree} rather than staying neutral (measured on the \texttt  {neutral} persona). Direct sycophancy rises gradually from 22\% to 71\%; indirect starts high (41\%) and climbs to 78\%. Positioning under the neutral persona follows the opposite pattern: direct reaches 96\% by turn\nobreakspace  {}4; indirect starts at 8\% and only catches up at turn\nobreakspace  {}5.}}{18}{figure.3}\protected@file@percent }
+\newlabel{fig:trajectory}{{3}{18}{Per-turn sycophancy and positioning rates across 300 ablation conversations (13 models, both categories). \textbf {Sycophancy} = the verdict matches the user's persona (measured on \texttt {agree}/\texttt {disagree} personas). \textbf {Positioning} = the model expresses \texttt {agree} or \texttt {disagree} rather than staying neutral (measured on the \texttt {neutral} persona). Direct sycophancy rises gradually from 22\% to 71\%; indirect starts high (41\%) and climbs to 78\%. Positioning under the neutral persona follows the opposite pattern: direct reaches 96\% by turn~4; indirect starts at 8\% and only catches up at turn~5}{figure.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Inter-judge agreement}{18}{subsection.5.5}\protected@file@percent }
+\newlabel{sec:abl-judges}{{5.5}{18}{Inter-judge agreement}{subsection.5.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Pairwise agreement between four judge models on $300$ sampled conversations (spanning $13$ assistant models, $34$ topics, both probing categories, all three personas). Each judge row shows its pairwise agreement with the other three judges and, in the last column, its consensus score (average of the row). The top three judges are within $0.7$ percentage points; \textsc  {Grok 4.2} is the outlier, likely because it classifies more conversations as \texttt  {neutral} where the others see a directional lean ($21\%$ neutral vs.\ $10$--$13\%$ for the others). The bottom rows report how often all four judges unanimously agree ($70\%$) and how often at least three of four agree ($91\%$). We use \textsc  {Qwen3.5-397B} as the default judge: it sits within $0.5$pp of the top-consensus judge and has the lowest inference cost.}}{19}{table.8}\protected@file@percent }
+\newlabel{tab:judge-agreement}{{8}{19}{Pairwise agreement between four judge models on $300$ sampled conversations (spanning $13$ assistant models, $34$ topics, both probing categories, all three personas). Each judge row shows its pairwise agreement with the other three judges and, in the last column, its consensus score (average of the row). The top three judges are within $0.7$ percentage points; \textsc {Grok 4.2} is the outlier, likely because it classifies more conversations as \texttt {neutral} where the others see a directional lean ($21\%$ neutral vs.\ $10$--$13\%$ for the others). The bottom rows report how often all four judges unanimously agree ($70\%$) and how often at least three of four agree ($91\%$). We use \textsc {Qwen3.5-397B} as the default judge: it sits within $0.5$pp of the top-consensus judge and has the lowest inference cost}{table.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Judge prompt stability}{19}{subsection.5.6}\protected@file@percent }
+\newlabel{sec:abl-judge-stability}{{5.6}{19}{Judge prompt stability}{subsection.5.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{Results.}{19}{section*.22}\protected@file@percent }
+\citation{sharma2023towards,hong2025sycon}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{20}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Limitations}{20}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Judge dependence.}{20}{section*.23}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{User-LLM dependence.}{20}{section*.24}\protected@file@percent }
+\bibdata{references}
+\bibcite{arora2023probing}{{1}{2023}{{Arora et~al.}}{{Arora, Kaffee, and Augenstein}}}
+\bibcite{atari2023whichhumans}{{2}{2023}{{Atari et~al.}}{{Atari, Xue, Park, Blasi, and Henrich}}}
+\@writefile{toc}{\contentsline {paragraph}{Topic coverage and locale.}{21}{section*.25}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{System prompt design.}{21}{section*.26}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Five-turn ceiling.}{21}{section*.27}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion}{21}{section.8}\protected@file@percent }
+\bibcite{cao2023assessing}{{3}{2023}{{Cao et~al.}}{{Cao, Zhou, Lee, Cabello, Chen, and Hershcovich}}}
+\bibcite{cheng2025elephant}{{4}{2025}{{Cheng et~al.}}{{Cheng, Yu, and Lee}}}
+\bibcite{denison2024sycophancy}{{5}{2024}{{Denison et~al.}}{{Denison, MacDiarmid, Barez, Duvenaud, Kravec, Marks, Schiefer, Soklaski, Tamkin, Kaplan, Shlegeris, Bowman, Perez, and Hubinger}}}
+\bibcite{durmus2023global}{{6}{2023}{{Durmus et~al.}}{{Durmus, Nguyen, Liao, Schiefer, Askell, Bakhtin, Chen, Hatfield-Dodds, Hernandez, Joseph, et~al.}}}
+\bibcite{feng2023pretraining}{{7}{2023}{{Feng et~al.}}{{Feng, Park, Liu, and Tsvetkov}}}
+\bibcite{hartmann2023political}{{8}{2023}{{Hartmann et~al.}}{{Hartmann, Schwenzow, and Witte}}}
+\bibcite{hong2025sycon}{{9}{2025}{{Hong et~al.}}{{Hong, Byun, Kim, Shu, and Choi}}}
+\bibcite{kabir2025break}{{10}{2025}{{Kabir et~al.}}{{Kabir, Abrar, and Ananiadou}}}
+\bibcite{kaur2025echoes}{{11}{2025}{{Kaur}}{{}}}
+\bibcite{khan2024debating}{{12}{2024}{{Khan et~al.}}{{Khan, Hughes, Valentine, Ruis, Sachan, Radhakrishnan, Grefenstette, Bowman, Rockt{\"a}schel, and Perez}}}
+\bibcite{khan2025randomness}{{13}{2025}{{Khan et~al.}}{{Khan, Casper, and Hadfield-Menell}}}
+\bibcite{kharchenko2024howwell}{{14}{2024}{{Kharchenko et~al.}}{{Kharchenko, Roosta, Chadha, and Shah}}}
+\bibcite{kim2025sycophancy}{{15}{2025}{{Kim and Khashabi}}{{}}}
+\bibcite{nadeem2021stereoset}{{16}{2021}{{Nadeem et~al.}}{{Nadeem, Bethke, and Reddy}}}
+\bibcite{naous2024beer}{{17}{2024}{{Naous et~al.}}{{Naous, Ryan, Ritter, and Xu}}}
+\bibcite{parrish2022bbq}{{18}{2022}{{Parrish et~al.}}{{Parrish, Chen, Nangia, Padmakumar, Phang, Thompson, Htut, and Bowman}}}
+\bibcite{perez2022discovering}{{19}{2022}{{Perez et~al.}}{{Perez, Ringer, Luko{\v {s}}i{\={u}}t{\.{e}}, Nguyen, Chen, Heiner, Pettit, Olsson, Kundu, Kadavath, et~al.}}}
+\bibcite{rennard2025bias}{{20}{2025}{{Rennard et~al.}}{{Rennard, Xypolopoulos, and Vazirgiannis}}}
+\bibcite{rottger2024xstest}{{21}{2024}{{R{\"o}ttger et~al.}}{{R{\"o}ttger, Kirk, Vidgen, Attanasio, Bianchi, and Hovy}}}
+\bibcite{rozado2024political}{{22}{2024}{{Rozado}}{{}}}
+\bibcite{rozen2024llmconsistent}{{23}{2024}{{Rozen et~al.}}{{Rozen, Bezalel, Elidan, Globerson, and Daniel}}}
+\bibcite{santurkar2023opinionqa}{{24}{2023}{{Santurkar et~al.}}{{Santurkar, Durmus, Ladhak, Lee, Liang, and Hashimoto}}}
+\bibcite{sharma2023towards}{{25}{2023}{{Sharma et~al.}}{{Sharma, Tong, Korbak, Duvenaud, Askell, Bowman, Cheng, Durmus, Hatfield-Dodds, Johnston, et~al.}}}
+\bibcite{tao2024cultural}{{26}{2024}{{Tao et~al.}}{{Tao, Viberg, Baker, and Kizilcec}}}
+\bibcite{xie2024sorry}{{27}{2024}{{Xie et~al.}}{{Xie, Qi, Zeng, Huang, Sehwag, Huang, He, Wei, Li, Sheng, Jia, Li, Li, Chen, Henderson, and Mittal}}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Per-topic matrices for all probing categories and model tiers}{24}{appendix.A}\protected@file@percent }
+\newlabel{app:detailed}{{A}{24}{Per-topic matrices for all probing categories and model tiers}{appendix.A}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Per-topic \emph  {indirect}-category classification for four smaller models: \textsc  {Sabz}=Sabiazinho-4, \textsc  {Haik}=Haiku 4.5, \textsc  {GPTm}=GPT-5.4-mini, \textsc  {GemF}=Gemini 3.1 Flash. These rows complete the indirect-probing picture beyond the large-scale Table\nobreakspace  {}\ref  {tab:topicmatrix}.}}{25}{table.9}\protected@file@percent }
+\newlabel{tab:indirect-smaller}{{9}{25}{Per-topic \emph {indirect}-category classification for four smaller models: \textsc {Sabz}=Sabiazinho-4, \textsc {Haik}=Haiku 4.5, \textsc {GPTm}=GPT-5.4-mini, \textsc {GemF}=Gemini 3.1 Flash. These rows complete the indirect-probing picture beyond the large-scale Table~\ref {tab:topicmatrix}}{table.9}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Per-topic \emph  {direct}-category classification for the four smaller models.}}{26}{table.10}\protected@file@percent }
+\newlabel{tab:direct-smaller}{{10}{26}{Per-topic \emph {direct}-category classification for the four smaller models}{table.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Benchmark cost}{27}{appendix.B}\protected@file@percent }
+\newlabel{app:cost}{{B}{27}{Benchmark cost}{appendix.B}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Estimated API cost for the full benchmark run. Each model requires $228$ conversations ($38$ topics $\times $ $3$ personas $\times $ $2$ categories), each with $5$ user-LLM turns, $5$ assistant turns, and $1$ judge call. User-LLM: \textsc  {Claude Opus 4.6} (\$5/\$25 per 1M in/out tokens). Judge: \textsc  {Qwen3.5-397B} (\$0.80/\$2.40 per 1M in/out tokens). Assistant pricing varies by model and provider (OpenRouter rates). The user-LLM dominates cost ($67\%$) because it carries the system prompt and growing conversation context at Opus pricing. The judge is cheap ($4\%$) because it makes a single call per conversation.}}{27}{table.11}\protected@file@percent }
+\newlabel{tab:cost}{{11}{27}{Estimated API cost for the full benchmark run. Each model requires $228$ conversations ($38$ topics $\times $ $3$ personas $\times $ $2$ categories), each with $5$ user-LLM turns, $5$ assistant turns, and $1$ judge call. User-LLM: \textsc {Claude Opus 4.6} (\$5/\$25 per 1M in/out tokens). Judge: \textsc {Qwen3.5-397B} (\$0.80/\$2.40 per 1M in/out tokens). Assistant pricing varies by model and provider (OpenRouter rates). The user-LLM dominates cost ($67\%$) because it carries the system prompt and growing conversation context at Opus pricing. The judge is cheap ($4\%$) because it makes a single call per conversation}{table.11}{}}
+\gdef \@abspage@last{27}

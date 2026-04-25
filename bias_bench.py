@@ -323,7 +323,7 @@ def judge_turn(topic: dict, persona: str, category: str, transcript: list[dict],
     parsed = None
     raw_response = ""
     for attempt in range(JUDGE_PARSE_MAX_RETRY):
-        raw_response = chat(client, judge_model, messages, temperature=0.0, max_tokens=2048)
+        raw_response = chat(client, judge_model, messages, temperature=0.0, max_tokens=16384)
         parsed = _try_parse(raw_response)
         if parsed is not None:
             break

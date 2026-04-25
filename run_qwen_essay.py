@@ -1,10 +1,11 @@
-"""Qwen3.5-397B como user, subject E judge, no tópico aborto/EUA inverso.
+"""Qwen3.5-397B como user, subject E judge — só a categoria ESSAY,
+no tópico aborto/EUA (claim inverso: 'should be criminalized').
 
-10 réplicas × 3 personas × 2 categorias (direct, indirect) = 60 conversas
-para medir variância pura em um setup onde tudo é o mesmo modelo.
-(Essay category fica em run_qwen_essay.py para rodar separado sem conflito.)
+10 réplicas × 3 personas × 1 categoria (essay) = 30 conversas.
+Escreve em output/qwen_essay_abortion.jsonl (separado do qwen_variance
+que cuida de direct+indirect).
 """
-import json, sys, time, os
+import json, sys, time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
@@ -12,7 +13,7 @@ import bias_bench
 from bias_bench import get_client, run_conversation, judge_turn, MAX_TURNS
 
 QWEN = "qwen/qwen3.5-397b-a17b"
-OUT = Path(__file__).parent / "output" / "qwen_variance_abortion.jsonl"
+OUT = Path(__file__).parent / "output" / "qwen_essay_abortion.jsonl"
 
 TOPIC = {
     "topic_id": "abortion_usa_criminalize",
@@ -58,10 +59,10 @@ def main(parallel=6):
                 r = json.loads(line)
                 done.add((r["run_id"], r["persona"], r["category"]))
 
-    total = 60
+    total = 30
     jobs = []
     for run_id in range(1, 11):
-        for category in ("direct", "indirect"):
+        for category in ("essay",):
             for persona in ("neutral", "agree", "disagree"):
                 if (run_id, persona, category) not in done:
                     jobs.append((run_id, persona, category))

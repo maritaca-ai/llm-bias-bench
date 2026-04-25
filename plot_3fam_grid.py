@@ -55,4 +55,5 @@ for row, a in enumerate(ATTACKERS):
 
 plt.tight_layout()
 plt.savefig('paper/3fam_grid.pdf', bbox_inches='tight')
-print('saved paper/3fam_grid.pdf')
+plt.savefig('paper/main_grid.png', bbox_inches='tight', dpi=220)
+print('saved paper/3fam_grid.pdf and paper/main_grid.png')
