@@ -151,38 +151,38 @@ Figure~\ref{fig:pipeline} summarizes the full per-topic evaluation pipeline.
 \node[sBox, below=0.2cm of uA] (sA) {\textbf{$S$ final turn:} ``Yes, I support decriminalization.''};
 \node[sBox, below=0.2cm of uD] (sD) {\textbf{$S$ final turn:} ``You're right that the medical-autonomy argument has limits\ldots''};
 
+% Per-persona judge (one judge call per column)
+\node[colbox, fill=purple!12, below=0.2cm of sN, align=center, font=\scriptsize] (jN) {\textbf{judge $J$}};
+\node[colbox, fill=purple!12, below=0.2cm of sA, align=center, font=\scriptsize] (jA) {\textbf{judge $J$}};
+\node[colbox, fill=purple!12, below=0.2cm of sD, align=center, font=\scriptsize] (jD) {\textbf{judge $J$}};
+
 % Per-persona verdict
-\node[vBox, below=0.2cm of sN] (vN) {verdict: \texttt{neutral}};
-\node[vBox, below=0.2cm of sA] (vA) {verdict: \texttt{agree}};
-\node[vBox, below=0.2cm of sD] (vD) {verdict: \texttt{disagree}};
+\node[vBox, below=0.2cm of jN] (vN) {verdict: \texttt{neutral}};
+\node[vBox, below=0.2cm of jA] (vA) {verdict: \texttt{agree}};
+\node[vBox, below=0.2cm of jD] (vD) {verdict: \texttt{disagree}};
 
-% Judge box (full width, just below the three columns)
-\node[judgeB, below=0.5cm of vA] (j) {\textbf{LLM-as-judge $J$} reads each 5-turn transcript and labels the assistant's final-turn response as one verdict in \{\texttt{agree}, \texttt{disagree}, \texttt{neutral}, \texttt{refusal}\}. One judge call per (topic, persona, category).};
-
-% Behavioral classification
-\node[classB, below=0.35cm of j] (cls) {\textbf{Behavioral classification.} The three per-persona verdicts (one column above) are collapsed into one of nine buckets.\\[1pt]\emph{example here:} \texttt{neutral$\to$neutral, agree$\to$agree, disagree$\to$disagree} $\Rightarrow$ \texttt{sycophant} (the model tracks whichever side the user argues).\\[0.5pt]\emph{another example:} \texttt{neutral$\to$agree, agree$\to$agree, disagree$\to$agree} $\Rightarrow$ \texttt{agree} (a stable persona-independent position).};
+% Behavioral classification (full width, the three verdicts converge into it)
+\node[classB, below=0.5cm of vA] (cls) {\textbf{Behavioral classification.} The three per-persona verdicts (one per column above) are collapsed into one of nine buckets.\\[1pt]\emph{example here:} \texttt{neutral$\to$neutral, agree$\to$agree, disagree$\to$disagree} $\Rightarrow$ \texttt{sycophant} (the model tracks whichever side the user argues).\\[0.5pt]\emph{another example:} \texttt{neutral$\to$agree, agree$\to$agree, disagree$\to$agree} $\Rightarrow$ \texttt{agree} (a stable persona-independent position).};
 
 % Arrows: topic to each persona column
 \draw[arr] (t) -- (hN);
 \draw[arr] (t) -- (hA);
 \draw[arr] (t) -- (hD);
 
-% Within-column arrows
-\foreach \h/\u/\s/\v in {hN/uN/sN/vN, hA/uA/sA/vA, hD/uD/sD/vD} {
+% Within-column arrows: header → U → S → judge → verdict
+\foreach \h/\u/\s/\j/\v in {hN/uN/sN/jN/vN, hA/uA/sA/jA/vA, hD/uD/sD/jD/vD} {
   \draw[arrThin] (\h) -- (\u);
   \draw[arrThin] (\u) -- (\s);
-  \draw[arrThin] (\s) -- (\v);
+  \draw[arrThin] (\s) -- (\j);
+  \draw[arrThin] (\j) -- (\v);
 }
 
-% Three verdicts converge into the judge box
-\draw[arr] (vN) -- (j);
-\draw[arr] (vA) -- (j);
-\draw[arr] (vD) -- (j);
-
-% Judge to classification
-\draw[arr] (j) -- (cls);
+% Three per-column verdicts converge into the classification box
+\draw[arr] (vN) -- (cls);
+\draw[arr] (vA) -- (cls);
+\draw[arr] (vD) -- (cls);
 \end{tikzpicture}}
-\caption{Per-topic evaluation pipeline. For each directional claim, the topic branches into three parallel runs, one per persona: \texttt{neutral} (the user is undecided and asks neutrally), \texttt{agree} (the user declares the claim is true), \texttt{disagree} (the user declares the claim is false). Each branch is run twice---under \texttt{direct} probing (the user asks the model's opinion with escalating pressure, as illustrated) and under \texttt{indirect} probing (the user never asks the opinion and instead argues from its persona's side). Within each branch the LLM-as-user $U$ drives a free-form 5-turn conversation with no per-turn script, and after the fifth turn the LLM-as-judge $J$ labels the assistant's final-turn response as one of $\{$\texttt{agree}, \texttt{disagree}, \texttt{neutral}, \texttt{refusal}$\}$. The three per-persona verdicts for a given (topic, category) are collapsed into one of nine behavioral classifications (Table~\ref{tab:classes}): \texttt{agree}, \texttt{leaning\_agree}, \texttt{disagree}, \texttt{leaning\_disagree}, \texttt{neutral}, \texttt{refusal}, \texttt{sycophant}, \texttt{contrarian}, \texttt{inconsistent}. The example shown collapses to \texttt{sycophant}: the model mirrors whichever side the user argues.}
+\caption{Per-topic evaluation pipeline. For each directional claim, the topic branches into three parallel runs, one per persona: \texttt{neutral} (the user is undecided and asks neutrally), \texttt{agree} (the user declares the claim is true), \texttt{disagree} (the user declares the claim is false). Within each branch the LLM-as-user $U$ drives a free-form 5-turn conversation with no per-turn script; after the fifth turn an independent call to the LLM-as-judge $J$ labels that branch's final-turn response as one of $\{$\texttt{agree}, \texttt{disagree}, \texttt{neutral}, \texttt{refusal}$\}$ (one judge call per column, never seeing the other branches). The three per-persona verdicts are then collapsed into one of nine behavioral classifications (Table~\ref{tab:classes}): \texttt{agree}, \texttt{leaning\_agree}, \texttt{disagree}, \texttt{leaning\_disagree}, \texttt{neutral}, \texttt{refusal}, \texttt{sycophant}, \texttt{contrarian}, \texttt{inconsistent}. The example shown collapses to \texttt{sycophant}: the model mirrors whichever side the user argues. Each branch is run twice, once under \texttt{direct} probing (the user asks the model's opinion with escalating pressure, as illustrated) and once under \texttt{indirect} probing (the user never asks the opinion and instead argues from its persona's side).}
 \label{fig:pipeline}
 \end{figure}
 
