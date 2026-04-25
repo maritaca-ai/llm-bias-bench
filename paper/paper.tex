@@ -152,9 +152,9 @@ Figure~\ref{fig:pipeline} summarizes the full per-topic evaluation pipeline.
 \node[sBox, below=0.15cm of uD1] (sD1) {\textbf{$S$ turn 1.} ``Yes, fetal-life concerns are a serious moral consideration.''};
 
 % ---- gap (turn 2 omitted) ----
-\node[below=0.05cm of sN1, font=\scriptsize\itshape, text=black!50] (gapN1) {\quad$\vdots$\quad turn 2 \quad$\vdots$};
-\node[below=0.05cm of sA1, font=\scriptsize\itshape, text=black!50] (gapA1) {\quad$\vdots$\quad turn 2 \quad$\vdots$};
-\node[below=0.05cm of sD1, font=\scriptsize\itshape, text=black!50] (gapD1) {\quad$\vdots$\quad turn 2 \quad$\vdots$};
+\node[below=0.05cm of sN1, font=\scriptsize\itshape, text=black!50] (gapN1) {turn 2 \ldots};
+\node[below=0.05cm of sA1, font=\scriptsize\itshape, text=black!50] (gapA1) {turn 2 \ldots};
+\node[below=0.05cm of sD1, font=\scriptsize\itshape, text=black!50] (gapD1) {turn 2 \ldots};
 
 % ---- Turn 3 ----
 \node[uBox, below=0.05cm of gapN1] (uN3) {\textbf{$U$ turn 3} \emph{[force a comparison]}\\``Which side has more empirical support?''};
@@ -166,9 +166,9 @@ Figure~\ref{fig:pipeline} summarizes the full per-topic evaluation pipeline.
 \node[sBox, below=0.15cm of uD3] (sD3) {\textbf{$S$ turn 3.} ``Legal tradition isn't a sufficient argument when health outcomes are at stake.''};
 
 % ---- gap (turn 4 omitted) ----
-\node[below=0.05cm of sN3, font=\scriptsize\itshape, text=black!50] (gapN3) {\quad$\vdots$\quad turn 4 \quad$\vdots$};
-\node[below=0.05cm of sA3, font=\scriptsize\itshape, text=black!50] (gapA3) {\quad$\vdots$\quad turn 4 \quad$\vdots$};
-\node[below=0.05cm of sD3, font=\scriptsize\itshape, text=black!50] (gapD3) {\quad$\vdots$\quad turn 4 \quad$\vdots$};
+\node[below=0.05cm of sN3, font=\scriptsize\itshape, text=black!50] (gapN3) {turn 4 \ldots};
+\node[below=0.05cm of sA3, font=\scriptsize\itshape, text=black!50] (gapA3) {turn 4 \ldots};
+\node[below=0.05cm of sD3, font=\scriptsize\itshape, text=black!50] (gapD3) {turn 4 \ldots};
 
 % ---- Turn 5 (final) ----
 \node[uBox, below=0.05cm of gapN3] (uN5) {\textbf{$U$ turn 5} \emph{[demand a side]}\\``If you had to pick the side with stronger evidence, which would it be?''};
@@ -197,20 +197,9 @@ Figure~\ref{fig:pipeline} summarizes the full per-topic evaluation pipeline.
 \draw[arr] (t) -- (hA);
 \draw[arr] (t) -- (hD);
 
-% Within-column arrows
-\foreach \h/\u/\s/\uu/\ss/\uuu/\sss/\j/\v in {%
-  hN/uN1/sN1/uN3/sN3/uN5/sN5/jN/vN,
-  hA/uA1/sA1/uA3/sA3/uA5/sA5/jA/vA,
-  hD/uD1/sD1/uD3/sD3/uD5/sD5/jD/vD%
-} {
-  \draw[arrThin] (\h)  -- (\u);
-  \draw[arrThin] (\u)  -- (\s);
-  \draw[arrThin] (\s)  -- (\uu);
-  \draw[arrThin] (\uu) -- (\ss);
-  \draw[arrThin] (\ss) -- (\uuu);
-  \draw[arrThin] (\uuu)-- (\sss);
-  \draw[arrThin] (\sss)-- (\j);
-  \draw[arrThin] (\j)  -- (\v);
+% Within-column: stacked layout implies sequence; only mark the judge→verdict step.
+\foreach \j/\v in {jN/vN, jA/vA, jD/vD} {
+  \draw[arrThin] (\j) -- (\v);
 }
 
 % Three per-column verdicts converge into the classification box
