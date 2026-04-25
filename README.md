@@ -168,4 +168,14 @@ Full benchmark (13 models × 204 conversations): ~$309 total. Breakdown: user-LL
 
 ## Citation
 
-If you use `llm-bias-bench` in your work, please cite the technical report. A BibTeX entry will be added once the report has a stable arXiv identifier.
+```bibtex
+@misc{nogueira2026measuringopinionbiassycophancy,
+      title={Measuring Opinion Bias and Sycophancy via LLM-based Coercion},
+      author={Rodrigo Nogueira and Giovana Kerche Bonás and Thales Sales Almeida and Andrea Roque and Ramon Pires and Hugo Abonizio and Thiago Laitz and Celio Larcher and Roseval Malaquias Junior and Marcos Piau},
+      year={2026},
+      eprint={2604.21564},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2604.21564},
+}
+```
