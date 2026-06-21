@@ -292,7 +292,7 @@ The judge is required to cite textual evidence from the model's final-turn respo
 
 \subsection{Setup}
 
-We run the full benchmark on 13 assistant models across 38 topics $\times$ 3 personas $\times$ 2 categories = 228 conversations per model. The user-LLM is \textsc{Claude Opus 4.6} and the judge is \textsc{Qwen3.5-397B} (selected for its high consensus score in Section~\ref{sec:abl-judges} and lower cost). The impact of varying the judge and user-LLM is measured in Sections~\ref{sec:abl-judges} and~\ref{sec:abl-userllm}, respectively. \textsc{Sabi\'a-4} and \textsc{Sabiazinho-4} are served via Maritaca's native API; all other assistant models are served via OpenRouter. Each conversation uses five turns. Large-scale models are: \textsc{Sabi\'a-4}, \textsc{Claude Opus 4.6}, \textsc{GPT-5.4}, \textsc{Grok 4.2}, \textsc{Gemini 3.1 Pro}, \textsc{Qwen3.5-397B}, \textsc{Kimi K2 Thinking}, \textsc{Mistral Large 3}, and \textsc{Llama 4 Maverick}. Smaller models are: \textsc{Sabiazinho-4}, \textsc{Claude Haiku 4.5}, \textsc{GPT-5.4-mini}, and \textsc{Gemini 3.1 Flash}.
+We run the full benchmark on 13 assistant models across 38 topics $\times$ 3 personas $\times$ 2 categories = 228 conversations per model. The user-LLM is \textsc{Claude Opus 4.6} and the judge is \textsc{Qwen3.5-397B} (selected for its high consensus score in Section~\ref{sec:abl-judges} and lower cost). The impact of varying the judge and user-LLM is measured in Sections~\ref{sec:abl-judges} and~\ref{sec:abl-userllm}, respectively. \textsc{Sabi\'a-4} and \textsc{Sabiazinho-4} are served via Maritaca's native API; all other assistant models are served via OpenRouter. Each conversation uses five turns. Large-scale models are: \textsc{Sabi\'a-4}, \textsc{Claude Opus 4.6}, \textsc{GPT-5.4}, \textsc{Grok 4.2}, \textsc{Gemini 3.1 Pro}, \textsc{Qwen3.5-397B}, \textsc{Kimi K2 Thinking}, \textsc{Mistral Large 3}, and \textsc{Llama 4 Maverick}. Smaller models are: \textsc{Sabiazinho-4}, \textsc{Claude Haiku 4.5}, \textsc{GPT-5.4-mini}, and \textsc{Gemini 3.1 Flash}. We additionally evaluate \textsc{Sabi\'a-4 Thinking}, the reasoning variant of \textsc{Sabi\'a-4} (served via Maritaca's native API), to test whether test-time reasoning mitigates sycophancy; its aggregate and divergence results appear alongside the other models in Tables~\ref{tab:aggregate} and~\ref{tab:divergence}.
 
 \subsection{Per-topic behavioral classification}
 \label{sec:topicmatrix}
@@ -466,6 +466,7 @@ Model & Pos & Syc & Inc & Oth & Ref & Pos & Syc & Inc & Oth & Ref \\
 \textsc{Mistral Large 3}   & 21.1 & 78.9 &  0.0 &  0.0 &  0.0 & 10.5 & 89.5 &  0.0 &  0.0 & 0.0 \\
 \textsc{Llama 4 Maverick}  & 21.1 & 34.2 & 36.8 &  0.0 &  7.9 &  2.6 & 94.7 &  2.6 &  0.0 & 0.0 \\
 \textsc{Sabi\'a-4}         & 39.5 & 60.5 &  0.0 &  0.0 &  0.0 &  7.9 & 92.1 &  0.0 &  0.0 & 0.0 \\
+\textsc{Sabi\'a-4 Thinking} & 50.0 & 47.4 &  2.6 &  0.0 &  0.0 & 13.2 & 86.8 &  0.0 &  0.0 & 0.0 \\
 \midrule
 \multicolumn{11}{l}{\textit{Smaller}} \\
 \textsc{Haiku 4.5}         & 50.0 &  5.3 & 31.6 & 13.2 &  0.0 & 60.5 &  7.9 & 10.5 & 21.1 & 0.0 \\
@@ -474,7 +475,7 @@ Model & Pos & Syc & Inc & Oth & Ref & Pos & Syc & Inc & Oth & Ref \\
 \textsc{Sabiazinho-4}      & 47.4 & 50.0 &  2.6 &  0.0 &  0.0 & 18.4 & 78.9 &  2.6 &  0.0 & 0.0 \\
 \bottomrule
 \end{tabular}
-\caption{Per-model aggregate classification over 38 topics (\%). \textbf{Pos}ition = persona-independent stance (agree + leaning agree + disagree + leaning disagree); \textbf{Syc}ophant = mirrors the user's lean; \textbf{Inc}onsistent = no clean pattern; \textbf{Oth}er = neutral + contrarian; \textbf{Ref}usal = all three personas declined to engage with the substance. Per-topic Ref is near-zero across the board; only \textsc{Llama 4 Maverick} shows $7.9\%$ unanimous refusal under direct probing.}
+\caption{Per-model aggregate classification over 38 topics (\%). \textbf{Pos}ition = persona-independent stance (agree + leaning agree + disagree + leaning disagree); \textbf{Syc}ophant = mirrors the user's lean; \textbf{Inc}onsistent = no clean pattern; \textbf{Oth}er = neutral + contrarian; \textbf{Ref}usal = all three personas declined to engage with the substance. Per-topic Ref is near-zero across the board; only \textsc{Llama 4 Maverick} shows $7.9\%$ unanimous refusal under direct probing. \textsc{Sabi\'a-4 Thinking} is the reasoning variant of \textsc{Sabi\'a-4}, evaluated as an additional model.}
 \label{tab:aggregate}
 \end{table}
 
@@ -487,6 +488,8 @@ Four observations stand out.
 \paragraph{Position-taking shrinks from direct to indirect.} Most models that hold persona-independent positions under direct questioning lose those positions under indirect debate. \textsc{Opus 4.6} is relatively stable ($55.3\% \to 55.3\%$), but \textsc{Sabi\'a-4} drops from $39.5\%$ to $7.9\%$, and \textsc{Llama 4 Maverick} from $21.1\%$ to $2.6\%$. The positions that survive direct questioning often do not survive argumentative pressure from the opposing side---they were verbal commitments, not deeply held behavioral patterns.
 
 \paragraph{Refusal is rare and concentrated in direct mode.} Refusal can be measured at two levels. The strict, per-topic metric counts a topic as refusal only when all three personas produced a refusal verdict; this is what the \textbf{Ref} column of Table~\ref{tab:aggregate} reports, and only \textsc{Llama 4 Maverick} reaches a non-zero value ($7.9\%$, i.e., 3 of 38 topics) under direct probing. The softer, per-conversation metric is the fraction of individual conversations---there are $38\times3=114$ per (model, category)---that the judge labels as refusal, regardless of whether the other two personas for the same topic refused. At this granularity, refusal is noticeably more common: \textsc{Llama 4 Maverick} refuses in $29.8\%$ of its direct conversations, followed by \textsc{Gemini 3.1 Pro} ($8.8\%$), \textsc{Haiku 4.5} ($7.9\%$), and \textsc{Gemini 3.1 Flash} ($7.0\%$). The two metrics disagree for \textsc{Llama 4 Maverick} because it refuses inconsistently across personas on the same topic, rather than unanimously on a handful of topics. Under indirect probing, both metrics drop to near zero ($\leq 1\%$): when a user argues rather than asks, every model engages. This is substantive: the high sycophancy rates under indirect probing reflect genuine engagement with the user's arguments, not refusal disguised as agreement.
+
+\paragraph{Does test-time reasoning help? Under direct probing, yes; under debate, barely.} To test whether test-time reasoning mitigates sycophancy, we evaluate \textsc{Sabi\'a-4 Thinking}, the reasoning variant of \textsc{Sabi\'a-4}. Under direct probing the variant is markedly less sycophantic than the base model ($60.5\% \to 47.4\%$) and takes a persona-independent position more often ($39.5\% \to 50.0\%$). Under indirect (debate) probing, however, the gain nearly vanishes: sycophancy stays at $86.8\%$ (base: $92.1\%$) and position-taking at $13.2\%$ (base: $7.9\%$). Test-time reasoning thus adds backbone to the model's \emph{stated} opinions when it is asked directly, but confers little robustness to sustained argumentative pressure; the variant's divergence rate ($42\%$, Table~\ref{tab:divergence}) is in fact higher than the base model's ($34\%$), reflecting positions that hold under direct questioning yet still collapse under debate.
 
 \section{Ablations}
 \label{sec:ablations}
@@ -509,6 +512,7 @@ Model & Divergent topics & Rate \\
 \textsc{Kimi K2}           & 20/38 & 53\% \\
 \textsc{Opus 4.6}          & 17/38 & 45\% \\
 \textsc{Sabiazinho-4}      & 17/38 & 45\% \\
+\textsc{Sabi\'a-4 Thinking} & 16/38 & 42\% \\
 \textsc{GPT-5.4}           & 15/38 & 39\% \\
 \textsc{GPT-5.4-mini}      & 14/38 & 37\% \\
 \textsc{Gemini 3.1 Flash}  & 14/38 & 37\% \\

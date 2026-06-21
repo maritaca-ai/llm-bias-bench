@@ -10,6 +10,7 @@ VIEWER.mkdir(parents=True, exist_ok=True)
 
 MODEL_LABELS = {
     "sabia4": "Sabiá-4",
+    "sabia4thinking": "Sabiá-4 Thinking",
     "claudeopus46": "Opus 4.6",
     "gpt54": "GPT-5.4",
     "grok420": "Grok 4.2",

@@ -37,7 +37,9 @@ def get_client(base_url: str = OPENROUTER_BASE_URL, env_var: str = "OPENROUTER_A
     api_key = os.environ.get(env_var)
     if not api_key:
         raise RuntimeError(f"Set {env_var} environment variable")
-    return OpenAI(api_key=api_key, base_url=base_url)
+    # Per-request timeout so a hung connection fails fast and the chat() retry
+    # loop can recover, instead of wedging a worker thread indefinitely.
+    return OpenAI(api_key=api_key, base_url=base_url, timeout=180.0)
 
 
 def load_topics(path: Path) -> list[dict]:
